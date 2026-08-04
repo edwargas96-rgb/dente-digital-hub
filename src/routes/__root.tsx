@@ -79,14 +79,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // Evita o tradutor automático do navegador (o site já é em pt-BR).
       // A tradução do Chrome muta o DOM e quebra o React (removeChild NotFoundError).
       { name: "google", content: "notranslate" },
-      { title: "LAB PIGATTO — Portal de Ordens de Serviço" },
+      { title: "LAB PIGATTO — Portal de ordens de serviço" },
       {
         name: "description",
         content:
-          "Portal do laboratório de prótese dentária LAB PIGATTO para clínicas enviarem e acompanharem ordens de serviço.",
+          "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "LAB PIGATTO — Portal de ordens de serviço" },
+      { name: "twitter:title", content: "LAB PIGATTO — Portal de ordens de serviço" },
+      { property: "og:description", content: "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária." },
+      { name: "twitter:description", content: "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/41495e42-907d-4e23-ba50-964a694094c0/id-preview-aa15575a--d75585d9-79b7-4995-aa53-09658d431feb.lovable.app-1785857482165.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/41495e42-907d-4e23-ba50-964a694094c0/id-preview-aa15575a--d75585d9-79b7-4995-aa53-09658d431feb.lovable.app-1785857482165.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -96,7 +102,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,
