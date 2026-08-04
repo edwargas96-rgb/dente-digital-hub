@@ -1,10 +1,11 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
+# AGENTS
+
+Projeto: **LAB PIGATTO** — portal de ordens de serviço para laboratório de
+prótese dentária.
+
+- Stack: TanStack Start (React 19) + Vite + Tailwind, backend Supabase
+  (Postgres, Auth e Storage) com Row Level Security.
+- Perfis de acesso: `clinica` (abre e acompanha as próprias ordens) e
+  `laboratorio` (analisa todas as ordens e atualiza status; não cria ordens).
+- Variáveis de ambiente necessárias: `VITE_SUPABASE_URL`,
+  `VITE_SUPABASE_PUBLISHABLE_KEY` (e as equivalentes sem `VITE_` para SSR).
