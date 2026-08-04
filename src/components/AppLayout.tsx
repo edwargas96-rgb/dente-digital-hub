@@ -13,9 +13,16 @@ import {
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
-const navBase = [
+const navPainel = [
   { to: "/dashboard", label: "Painel", icon: LayoutDashboard },
+] as const;
+
+// Abrir ordens é exclusivo das clínicas/dentistas; o laboratório apenas analisa.
+const navClinica = [
   { to: "/nova-ordem", label: "Nova ordem", icon: FilePlus2 },
+] as const;
+
+const navCalendario = [
   { to: "/calendario", label: "Calendário", icon: CalendarDays },
 ] as const;
 
@@ -40,7 +47,10 @@ export function AppLayout({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [aberto, setAberto] = useState(false);
 
-  const itens = role === "laboratorio" ? [...navBase, ...navLab] : navBase;
+  const itens =
+    role === "laboratorio"
+      ? [...navPainel, ...navCalendario, ...navLab]
+      : [...navPainel, ...navClinica, ...navCalendario];
 
   const sair = async () => {
     await signOut();
