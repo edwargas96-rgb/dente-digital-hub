@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppCalendarioRouteImport } from './routes/_app.calendario'
 import { Route as AppClinicasRouteImport } from './routes/_app.clinicas'
+import { Route as AppConfiguracoesRouteImport } from './routes/_app.configuracoes'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppNovaOrdemRouteImport } from './routes/_app.nova-ordem'
 import { Route as AppOrdensIdRouteImport } from './routes/_app.ordens.$id'
@@ -42,6 +43,11 @@ const AppClinicasRoute = AppClinicasRouteImport.update({
   path: '/clinicas',
   getParentRoute: () => AppRoute,
 } as any)
+const AppConfiguracoesRoute = AppConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
+  '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
   '/ordens/$id': typeof AppOrdensIdRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
+  '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
   '/ordens/$id': typeof AppOrdensIdRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_app/calendario': typeof AppCalendarioRoute
   '/_app/clinicas': typeof AppClinicasRoute
+  '/_app/configuracoes': typeof AppConfiguracoesRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/nova-ordem': typeof AppNovaOrdemRoute
   '/_app/ordens/$id': typeof AppOrdensIdRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/calendario'
     | '/clinicas'
+    | '/configuracoes'
     | '/dashboard'
     | '/nova-ordem'
     | '/ordens/$id'
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/calendario'
     | '/clinicas'
+    | '/configuracoes'
     | '/dashboard'
     | '/nova-ordem'
     | '/ordens/$id'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_app/calendario'
     | '/_app/clinicas'
+    | '/_app/configuracoes'
     | '/_app/dashboard'
     | '/_app/nova-ordem'
     | '/_app/ordens/$id'
@@ -161,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClinicasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/configuracoes': {
+      id: '/_app/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof AppConfiguracoesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dashboard': {
       id: '/_app/dashboard'
       path: '/dashboard'
@@ -188,6 +207,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppCalendarioRoute: typeof AppCalendarioRoute
   AppClinicasRoute: typeof AppClinicasRoute
+  AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppNovaOrdemRoute: typeof AppNovaOrdemRoute
   AppOrdensIdRoute: typeof AppOrdensIdRoute
@@ -196,6 +216,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppCalendarioRoute: AppCalendarioRoute,
   AppClinicasRoute: AppClinicasRoute,
+  AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppNovaOrdemRoute: AppNovaOrdemRoute,
   AppOrdensIdRoute: AppOrdensIdRoute,
