@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CalendarIcon, Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,6 +70,11 @@ function NovaOrdem() {
   const navigate = useNavigate();
   const { clinicId, clinicNome, role, userId, nomeCompleto, email } = useAuth();
   const isLab = role === "laboratorio";
+
+  // O laboratório apenas analisa as ordens — não pode abrir novas.
+  useEffect(() => {
+    if (isLab) navigate({ to: "/dashboard", replace: true });
+  }, [isLab, navigate]);
 
   const { data: itemTypes = [] } = useCatalogo("item_types");
   const { data: materiais = [] } = useCatalogo("materials");
@@ -187,6 +192,16 @@ function NovaOrdem() {
       setEnviando(false);
     }
   };
+
+  if (isLab) {
+    return (
+      <AppLayout titulo="Nova ordem de serviço">
+        <p className="text-sm text-muted-foreground">
+          O laboratório apenas analisa as ordens recebidas. Redirecionando…
+        </p>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout titulo="Nova ordem de serviço" descricao="Preencha os dados do trabalho protético">

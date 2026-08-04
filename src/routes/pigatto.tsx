@@ -1,52 +1,77 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/pigatto")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Entrar — LAB PIGATTO" },
+      { title: "Acesso do laboratório — LAB PIGATTO" },
       {
         name: "description",
-        content: "Acesso das clínicas e dentistas parceiros do LAB PIGATTO.",
+        content: "Área restrita da equipe do laboratório LAB PIGATTO.",
       },
-      { property: "og:title", content: "Entrar — LAB PIGATTO" },
-      { property: "og:description", content: "Portal de ordens de serviço do LAB PIGATTO." },
+      { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Acesso do laboratório — LAB PIGATTO" },
+      { property: "og:description", content: "Área restrita do LAB PIGATTO." },
     ],
   }),
-  component: Login,
+  component: LoginPigatto,
 });
 
-function Login() {
+function LoginPigatto() {
   const navigate = useNavigate();
-  const { session, loading } = useAuth();
+  const { session, role, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [enviando, setEnviando] = useState(false);
 
+  // Se já estiver autenticado como laboratório, segue direto para o painel.
   useEffect(() => {
-    if (!loading && session) navigate({ to: "/dashboard", replace: true });
-  }, [loading, session, navigate]);
+    if (!loading && session && role === "laboratorio") {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }, [loading, session, role, navigate]);
 
   const entrar = async (e: React.FormEvent) => {
     e.preventDefault();
     setEnviando(true);
-    const { error } = await supabase.auth.signInWithPassword({
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password: senha,
     });
-    setEnviando(false);
-    if (error) {
+
+    if (error || !data.user) {
+      setEnviando(false);
       toast.error("Não foi possível entrar", { description: "Verifique o e-mail e a senha." });
       return;
     }
-    toast.success("Bem-vindo(a) ao LAB PIGATTO");
+
+    // Confirma que a conta pertence à equipe do laboratório.
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id);
+    const isLab = (roles ?? []).some((r) => r.role === "laboratorio");
+
+    if (!isLab) {
+      await supabase.auth.signOut();
+      setEnviando(false);
+      toast.error("Acesso restrito", {
+        description: "Esta área é exclusiva da equipe do laboratório.",
+      });
+      return;
+    }
+
+    setEnviando(false);
+    toast.success("Bem-vindo(a) à área do laboratório");
     navigate({ to: "/dashboard", replace: true });
   };
 
@@ -58,16 +83,16 @@ function Login() {
             LAB <span className="text-sidebar-primary">PIGATTO</span>
           </div>
           <div className="mt-2 text-xs tracking-[0.18em] text-sidebar-foreground/55 uppercase">
-            Laboratório de prótese dentária
+            Área interna do laboratório
           </div>
         </div>
         <div className="max-w-md">
           <h2 className="font-display text-3xl leading-tight text-sidebar-accent-foreground">
-            Ordens de serviço com precisão clínica, do consultório à bancada.
+            Central de produção do laboratório.
           </h2>
           <p className="mt-4 text-sm text-sidebar-foreground/70">
-            Envie arquivos e fotos, marque os elementos no odontograma e acompanhe cada etapa da
-            produção em tempo real.
+            Analise as ordens recebidas de todas as clínicas, acompanhe prazos e atualize o status de
+            cada trabalho na bancada.
           </p>
         </div>
         <div className="numeric text-xs text-sidebar-foreground/45">
@@ -82,13 +107,16 @@ function Login() {
               LAB <span className="text-primary">PIGATTO</span>
             </div>
             <div className="mt-1 text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
-              Prótese dentária
+              Área interna
             </div>
           </div>
 
-          <h1 className="text-2xl font-semibold">Entrar</h1>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary-soft/50 px-3 py-1 text-xs font-medium text-primary">
+            <ShieldCheck className="size-3.5" /> Acesso restrito
+          </div>
+          <h1 className="text-2xl font-semibold">Entrar no laboratório</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Acesso das clínicas e dentistas parceiros. Use o e-mail e a senha do seu cadastro.
+            Área exclusiva da equipe interna do LAB PIGATTO.
           </p>
 
           <form onSubmit={entrar} className="mt-6 space-y-4">
@@ -101,7 +129,7 @@ function Login() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="clinica@exemplo.com.br"
+                placeholder="equipe@labpigatto.com.br"
               />
             </div>
             <div className="space-y-1.5">
@@ -122,7 +150,11 @@ function Login() {
           </form>
 
           <p className="mt-6 text-xs text-muted-foreground">
-            Ainda não tem acesso? Solicite o cadastro da sua clínica ao LAB PIGATTO.
+            É de uma clínica parceira?{" "}
+            <a href="/login" className="text-primary hover:underline">
+              Acesse por aqui
+            </a>
+            .
           </p>
         </div>
       </div>

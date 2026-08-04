@@ -68,11 +68,13 @@ function Dashboard() {
         isLab ? "Todas as ordens das clínicas parceiras" : "Ordens enviadas pela sua clínica"
       }
       acao={
-        <Button asChild>
-          <Link to="/nova-ordem">
-            <Plus className="size-4" /> Nova ordem
-          </Link>
-        </Button>
+        isLab ? undefined : (
+          <Button asChild>
+            <Link to="/nova-ordem">
+              <Plus className="size-4" /> Nova ordem
+            </Link>
+          </Button>
+        )
       }
     >
       {isLab && (
@@ -98,9 +100,11 @@ function Dashboard() {
         ) : ordens.length === 0 ? (
           <div className="p-10 text-center">
             <p className="text-sm text-muted-foreground">Nenhuma ordem por aqui ainda.</p>
-            <Button asChild className="mt-4">
-              <Link to="/nova-ordem">Abrir primeira ordem</Link>
-            </Button>
+            {!isLab && (
+              <Button asChild className="mt-4">
+                <Link to="/nova-ordem">Abrir primeira ordem</Link>
+              </Button>
+            )}
           </div>
         ) : (
           <ul className="divide-y divide-border">

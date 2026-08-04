@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PigattoRouteImport } from './routes/pigatto'
 import { Route as AppCalendarioRouteImport } from './routes/_app.calendario'
 import { Route as AppClinicasRouteImport } from './routes/_app.clinicas'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app.configuracoes'
@@ -31,6 +32,11 @@ const AppRoute = AppRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PigattoRoute = PigattoRouteImport.update({
+  id: '/pigatto',
+  path: '/pigatto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppCalendarioRoute = AppCalendarioRouteImport.update({
@@ -67,6 +73,7 @@ const AppOrdensIdRoute = AppOrdensIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/pigatto': typeof PigattoRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/pigatto': typeof PigattoRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/pigatto': typeof PigattoRoute
   '/_app/calendario': typeof AppCalendarioRoute
   '/_app/clinicas': typeof AppClinicasRoute
   '/_app/configuracoes': typeof AppConfiguracoesRoute
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/pigatto'
     | '/calendario'
     | '/clinicas'
     | '/configuracoes'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/pigatto'
     | '/calendario'
     | '/clinicas'
     | '/configuracoes'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/login'
+    | '/pigatto'
     | '/_app/calendario'
     | '/_app/clinicas'
     | '/_app/configuracoes'
@@ -134,6 +146,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  PigattoRoute: typeof PigattoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -157,6 +170,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pigatto': {
+      id: '/pigatto'
+      path: '/pigatto'
+      fullPath: '/pigatto'
+      preLoaderRoute: typeof PigattoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/calendario': {
@@ -228,6 +248,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  PigattoRoute: PigattoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
