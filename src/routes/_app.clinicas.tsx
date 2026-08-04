@@ -47,7 +47,7 @@ function Clinicas() {
   const [nome, setNome] = useState("");
   const [responsavel, setResponsavel] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [endereco, setEndereço] = useState("");
+  const [endereco, setEndereco] = useState("");
 
   const [emailAcesso, setEmailAcesso] = useState("");
   const [nomeAcesso, setNomeAcesso] = useState("");
@@ -83,7 +83,7 @@ function Clinicas() {
     setNome("");
     setResponsavel("");
     setTelefone("");
-    setEndereço("");
+    setEndereco("");
     setNovaAberta(false);
     queryClient.invalidateQueries({ queryKey: ["clinicas"] });
   };
@@ -203,7 +203,7 @@ function Clinicas() {
                 id="endereco"
                 maxLength={80}
                 value={endereco}
-                onChange={(e) => setEndereço(e.target.value)}
+                onChange={(e) => setEndereco(e.target.value)}
               />
             </div>
             <DialogFooter>
