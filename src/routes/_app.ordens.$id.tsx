@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { STATUS_LISTA, formatarData, formatarDataHora, formatarTamanho } from "@/lib/ordens";
+import { STATUS_LIST, formatarData, formatarDataHora, formatarTamanho } from "@/lib/ordens";
 
 export const Route = createFileRoute("/_app/ordens/$id")({
   head: () => ({
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/_app/ordens/$id")({
   component: DetalheOrdem,
 });
 
-function Campo({ rotulo, valor }: { rotulo: string; valor?: string | null }) {
+function Campo({ rotulo, valor }: { rotulo: string; valor?: string | null | undefined }) {
   return (
     <div>
       <div className="text-xs tracking-wide text-muted-foreground uppercase">{rotulo}</div>
@@ -277,7 +277,7 @@ function DetalheOrdem() {
                     <SelectValue placeholder="Novo status" />
                   </SelectTrigger>
                   <SelectContent>
-                    {STATUS_LISTA.map((s) => (
+                    {STATUS_LIST.map((s) => (
                       <SelectItem key={s} value={s}>
                         {s}
                       </SelectItem>
