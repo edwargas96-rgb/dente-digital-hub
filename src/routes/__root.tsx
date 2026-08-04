@@ -42,17 +42,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-2xl text-center">
+      <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           This page didn't load
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
-        <pre className="mt-4 max-h-64 overflow-auto rounded-md bg-muted p-3 text-left text-xs whitespace-pre-wrap text-destructive">
-          {error?.message}
-          {error?.stack ? `\n\n${error.stack}` : ""}
-        </pre>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -80,6 +76,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      // Evita o tradutor automático do navegador (o site já é em pt-BR).
+      // A tradução do Chrome muta o DOM e quebra o React (removeChild NotFoundError).
+      { name: "google", content: "notranslate" },
       { title: "LAB PIGATTO — Portal de Ordens de Serviço" },
       {
         name: "description",
@@ -109,8 +108,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" translate="no" className="notranslate">
       <head>
+        <meta name="google" content="notranslate" />
         <HeadContent />
       </head>
       <body>
