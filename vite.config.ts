@@ -6,9 +6,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 // Configuração de build própria do projeto.
 // - vite-tsconfig-paths resolve o alias "@/*" do tsconfig.
-// - tanstackStart usa src/server.ts como entry de SSR (nosso wrapper de erro).
-// - O alvo de deploy (Nitro) é detectado automaticamente na Vercel; em outros
-//   hosts, defina a variável de ambiente NITRO_PRESET (ex.: "vercel", "node-server").
+// - tanstackStart({ target: "vercel" }) faz o build de servidor no formato de
+//   saída da Vercel (Build Output API), necessário para o SSR responder às rotas.
+//   Em outros hosts, troque o target (ex.: "node-server", "netlify", "cloudflare-module").
 export default defineConfig({
   server: {
     port: 3000,
@@ -16,9 +16,7 @@ export default defineConfig({
   plugins: [
     tsConfigPaths(),
     tailwindcss(),
-    tanstackStart({
-      server: { entry: "./src/server.ts" },
-    }),
+    tanstackStart({ target: "vercel" }),
     viteReact(),
   ],
 });
