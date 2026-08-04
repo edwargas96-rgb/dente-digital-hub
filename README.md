@@ -108,23 +108,42 @@ Estilo clínico, preciso e profissional (área odontológica), NÃO genérico.
 
 Comece construindo esse escopo. Deixe os catálogos já populados com opções comuns (materiais: Zircônia, Dissilicato, Metalocerâmica, PMMA; sistemas de implante: Neodent, Straumann, Nobel Biocare, Zimmer, Conexão, S.I.N.; cores VITA: A1, A2, A3, A3.5, B1, B2, C1, D2).
 
-This project was built with [Lovable](https://lovable.dev).
+## Stack
 
-## Build with Lovable
+- **Frontend:** TanStack Start (React 19) + Vite + Tailwind CSS.
+- **Backend:** Supabase (Postgres, Auth por e-mail/senha e Storage) com Row Level Security.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/d75585d9-79b7-4995-aa53-09658d431feb).
+## Variáveis de ambiente
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+Crie um arquivo `.env` na raiz com as credenciais do seu projeto Supabase:
 
-## Development
+```sh
+VITE_SUPABASE_URL="https://SEU-PROJETO.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="sb_publishable_..."
+# Equivalentes sem VITE_ são usadas no SSR:
+SUPABASE_URL="https://SEU-PROJETO.supabase.co"
+SUPABASE_PUBLISHABLE_KEY="sb_publishable_..."
+```
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Desenvolvimento local
+
+Requer Node.js. As dependências usam Bun (há `bunfig.toml`), mas `npm` também funciona.
 
 ```sh
 git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+cd dente-digital-hub
+bun install   # ou: npm install
+bun run dev   # ou: npm run dev
 ```
+
+## Deploy (Vercel)
+
+1. Importe o repositório na [Vercel](https://vercel.com/new).
+2. Configure as variáveis de ambiente acima nas *Project Settings → Environment Variables*.
+3. A Vercel roda `vite build`; o alvo de servidor (Nitro) é detectado automaticamente.
+
+## Banco de dados
+
+As migrations ficam em `supabase/migrations/`. Aplique-as no seu projeto com a
+[CLI do Supabase](https://supabase.com/docs/guides/local-development) (`supabase db push`)
+ou pelo SQL Editor do painel.
