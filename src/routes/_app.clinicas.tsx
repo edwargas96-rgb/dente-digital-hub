@@ -47,7 +47,7 @@ function Clinicas() {
   const [nome, setNome] = useState("");
   const [responsavel, setResponsavel] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [cidade, setCidade] = useState("");
+  const [endereco, setEndereço] = useState("");
 
   const [emailAcesso, setEmailAcesso] = useState("");
   const [nomeAcesso, setNomeAcesso] = useState("");
@@ -72,7 +72,7 @@ function Clinicas() {
       nome: nome.trim(),
       responsavel: responsavel.trim() || null,
       telefone: telefone.trim() || null,
-      cidade: cidade.trim() || null,
+      endereco: endereco.trim() || null,
     });
     setSalvando(false);
     if (error) {
@@ -83,7 +83,7 @@ function Clinicas() {
     setNome("");
     setResponsavel("");
     setTelefone("");
-    setCidade("");
+    setEndereço("");
     setNovaAberta(false);
     queryClient.invalidateQueries({ queryKey: ["clinicas"] });
   };
@@ -144,7 +144,7 @@ function Clinicas() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-medium">{c.nome}</div>
                   <div className="truncate text-sm text-muted-foreground">
-                    {[c.responsavel, c.cidade, c.telefone].filter(Boolean).join(" · ") || "—"}
+                    {[c.responsavel, c.endereco, c.telefone].filter(Boolean).join(" · ") || "—"}
                   </div>
                 </div>
                 <Button
@@ -198,12 +198,12 @@ function Clinicas() {
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="cidade">Cidade</Label>
+              <Label htmlFor="endereco">Endereço</Label>
               <Input
-                id="cidade"
+                id="endereco"
                 maxLength={80}
-                value={cidade}
-                onChange={(e) => setCidade(e.target.value)}
+                value={endereco}
+                onChange={(e) => setEndereço(e.target.value)}
               />
             </div>
             <DialogFooter>
