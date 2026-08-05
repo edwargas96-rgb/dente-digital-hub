@@ -560,10 +560,15 @@ function ModalEntrega({
         <DialogHeader>
           <DialogTitle>Entregar {os.numero}</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-muted-foreground">Deseja imprimir o comprovante de entrega?</p>
+        <p className="text-sm text-muted-foreground">
+          Imprima a nota do serviço antes de concluir a entrega.
+        </p>
         <div className="mt-4 flex flex-col gap-2">
+          <Button variant="secondary" onClick={() => imprimirNota(os)}>
+            <Printer className="size-4" /> Imprimir nota
+          </Button>
           <Button onClick={() => onEntregar(true)}>
-            <Printer className="size-4" /> Imprimir e entregar
+            <Printer className="size-4" /> Imprimir comprovante e entregar
           </Button>
           <Button variant="outline" onClick={() => onEntregar(false)}>
             Entregar sem imprimir
@@ -800,6 +805,25 @@ function fichaHtml(os: OS, tecnico?: string): string {
     `<b>Entrega</b><span>${formatarData(os.data_entrega)}</span>`,
     `<b>Observações</b><span>${os.observacoes ?? "—"}</span>`,
   ]);
+}
+
+function imprimirNota(os: OS) {
+  const w = window.open("", "_blank", "width=780,height=900");
+  if (!w) return;
+  w.document.write(
+    fichaBase("Nota de serviço", os, [
+      `<b>Cliente</b><span>${os.clinics?.nome ?? "—"}</span>`,
+      `<b>Paciente</b><span>${os.paciente}</span>`,
+      `<b>Serviço</b><span>${os.item ?? "—"}</span>`,
+      `<b>Elementos</b><span>${(os.elementos ?? []).join(", ") || "—"}</span>`,
+      `<b>Convênio</b><span>${os.convenio ?? "—"}</span>`,
+      `<b>Valor</b><span class="tit">${formatarMoeda(os.valor)}</span>`,
+      `<b>Data</b><span>${new Date().toLocaleDateString("pt-BR")}</span>`,
+    ]),
+  );
+  w.document.close();
+  w.focus();
+  w.print();
 }
 
 function imprimirComprovante(os: OS) {
