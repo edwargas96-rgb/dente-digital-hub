@@ -72,7 +72,7 @@ export function AppLayout({
   };
 
   const menu = (
-    <nav className="flex flex-1 flex-col gap-1 px-3">
+    <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-3">
       {itens.map((item) => {
         const ativo = pathname === item.to || pathname.startsWith(item.to + "/");
         return (
@@ -96,12 +96,15 @@ export function AppLayout({
   );
 
   const marca = (
-    <div className="px-5 py-6">
-      <div className="font-display text-lg leading-none font-bold tracking-tight text-sidebar-accent-foreground">
-        LAB <span className="text-sidebar-primary">PIGATTO</span>
-      </div>
-      <div className="mt-1.5 text-[11px] tracking-[0.14em] text-sidebar-foreground/55 uppercase">
-        Prótese dentária
+    <div className="flex items-center gap-3 px-5 py-6">
+      <img src="/logo.svg" alt="" className="size-9 shrink-0" />
+      <div>
+        <div className="font-display text-lg leading-none font-bold tracking-tight text-sidebar-accent-foreground">
+          LAB <span className="text-sidebar-primary">PIGATTO</span>
+        </div>
+        <div className="mt-1.5 text-[11px] tracking-[0.14em] text-sidebar-foreground/55 uppercase">
+          Prótese dentária
+        </div>
       </div>
     </div>
   );
@@ -125,7 +128,7 @@ export function AppLayout({
 
   return (
     <div className="flex min-h-screen w-full bg-background">
-      <aside className="hidden w-64 shrink-0 flex-col bg-sidebar md:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sidebar md:flex">
         {marca}
         {menu}
         {rodape}
