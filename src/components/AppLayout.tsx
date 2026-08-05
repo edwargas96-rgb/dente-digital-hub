@@ -2,7 +2,10 @@ import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
+  LayoutGrid,
   ClipboardList,
+  Truck,
+  BarChart3,
   Wallet,
   Users,
   FilePlus2,
@@ -29,9 +32,12 @@ const navCalendario = [
   { to: "/calendario", label: "Calendário", icon: CalendarDays },
 ] as const;
 
-// Laboratório: Ordens e Financeiro logo após o Painel.
+// Laboratório: tudo na barra lateral.
 const navLab = [
+  { to: "/visao", label: "Visão geral", icon: LayoutGrid },
   { to: "/os", label: "Ordens", icon: ClipboardList },
+  { to: "/expedicao", label: "Expedição", icon: Truck },
+  { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/tecnicos", label: "Técnicos", icon: Users },
   { to: "/calendario", label: "Calendário", icon: CalendarDays },

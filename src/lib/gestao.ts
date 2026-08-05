@@ -37,6 +37,17 @@ export function proximoStatus(atual: LabStatus): LabStatus | null {
   }
 }
 
+// Mapeia o status de gestão do laboratório para o status que a clínica vê
+// (enum order_status), mantendo os dois lados sincronizados.
+export const LAB_TO_ORDER_STATUS: Record<LabStatus, string> = {
+  Pendente: "Recebida",
+  Aceita: "Em análise",
+  "Em Produção": "Em produção",
+  Concluída: "Pronta",
+  Entregue: "Enviada/Entregue",
+  Recusada: "Recebida",
+};
+
 export function rotuloAvanco(atual: LabStatus): string | null {
   switch (atual) {
     case "Pendente":

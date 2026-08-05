@@ -17,6 +17,9 @@ import { Route as AppCalendarioRouteImport } from './routes/_app.calendario'
 import { Route as AppClinicasRouteImport } from './routes/_app.clinicas'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app.configuracoes'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppVisaoRouteImport } from './routes/_app.visao'
+import { Route as AppExpedicaoRouteImport } from './routes/_app.expedicao'
+import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
 import { Route as AppFinanceiroRouteImport } from './routes/_app.financeiro'
 import { Route as AppOsRouteImport } from './routes/_app.os'
 import { Route as AppTecnicosRouteImport } from './routes/_app.tecnicos'
@@ -62,6 +65,21 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
+const AppVisaoRoute = AppVisaoRouteImport.update({
+  id: '/visao',
+  path: '/visao',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppExpedicaoRoute = AppExpedicaoRouteImport.update({
+  id: '/expedicao',
+  path: '/expedicao',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
   id: '/financeiro',
   path: '/financeiro',
@@ -96,6 +114,9 @@ export interface FileRoutesByFullPath {
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
+  '/visao': typeof AppVisaoRoute
+  '/expedicao': typeof AppExpedicaoRoute
+  '/analytics': typeof AppAnalyticsRoute
   '/financeiro': typeof AppFinanceiroRoute
   '/os': typeof AppOsRoute
   '/tecnicos': typeof AppTecnicosRoute
@@ -110,6 +131,9 @@ export interface FileRoutesByTo {
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
+  '/visao': typeof AppVisaoRoute
+  '/expedicao': typeof AppExpedicaoRoute
+  '/analytics': typeof AppAnalyticsRoute
   '/financeiro': typeof AppFinanceiroRoute
   '/os': typeof AppOsRoute
   '/tecnicos': typeof AppTecnicosRoute
@@ -126,6 +150,9 @@ export interface FileRoutesById {
   '/_app/clinicas': typeof AppClinicasRoute
   '/_app/configuracoes': typeof AppConfiguracoesRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/visao': typeof AppVisaoRoute
+  '/_app/expedicao': typeof AppExpedicaoRoute
+  '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/financeiro': typeof AppFinanceiroRoute
   '/_app/os': typeof AppOsRoute
   '/_app/tecnicos': typeof AppTecnicosRoute
@@ -142,6 +169,9 @@ export interface FileRouteTypes {
     | '/clinicas'
     | '/configuracoes'
     | '/dashboard'
+    | '/visao'
+    | '/expedicao'
+    | '/analytics'
     | '/financeiro'
     | '/os'
     | '/tecnicos'
@@ -156,6 +186,9 @@ export interface FileRouteTypes {
     | '/clinicas'
     | '/configuracoes'
     | '/dashboard'
+    | '/visao'
+    | '/expedicao'
+    | '/analytics'
     | '/financeiro'
     | '/os'
     | '/tecnicos'
@@ -171,6 +204,9 @@ export interface FileRouteTypes {
     | '/_app/clinicas'
     | '/_app/configuracoes'
     | '/_app/dashboard'
+    | '/_app/visao'
+    | '/_app/expedicao'
+    | '/_app/analytics'
     | '/_app/financeiro'
     | '/_app/os'
     | '/_app/tecnicos'
@@ -243,6 +279,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/visao': {
+      id: '/_app/visao'
+      path: '/visao'
+      fullPath: '/visao'
+      preLoaderRoute: typeof AppVisaoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/expedicao': {
+      id: '/_app/expedicao'
+      path: '/expedicao'
+      fullPath: '/expedicao'
+      preLoaderRoute: typeof AppExpedicaoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/analytics': {
+      id: '/_app/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/financeiro': {
       id: '/_app/financeiro'
       path: '/financeiro'
@@ -286,6 +343,9 @@ interface AppRouteChildren {
   AppClinicasRoute: typeof AppClinicasRoute
   AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppVisaoRoute: typeof AppVisaoRoute
+  AppExpedicaoRoute: typeof AppExpedicaoRoute
+  AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppFinanceiroRoute: typeof AppFinanceiroRoute
   AppOsRoute: typeof AppOsRoute
   AppTecnicosRoute: typeof AppTecnicosRoute
@@ -298,6 +358,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppClinicasRoute: AppClinicasRoute,
   AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppVisaoRoute: AppVisaoRoute,
+  AppExpedicaoRoute: AppExpedicaoRoute,
+  AppAnalyticsRoute: AppAnalyticsRoute,
   AppFinanceiroRoute: AppFinanceiroRoute,
   AppOsRoute: AppOsRoute,
   AppTecnicosRoute: AppTecnicosRoute,
