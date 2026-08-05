@@ -2,7 +2,9 @@ import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
-  LayoutGrid,
+  ClipboardList,
+  Wallet,
+  Users,
   FilePlus2,
   CalendarDays,
   Building2,
@@ -27,8 +29,12 @@ const navCalendario = [
   { to: "/calendario", label: "Calendário", icon: CalendarDays },
 ] as const;
 
+// Laboratório: Ordens e Financeiro logo após o Painel.
 const navLab = [
-  { to: "/gestao", label: "Gestão", icon: LayoutGrid },
+  { to: "/os", label: "Ordens", icon: ClipboardList },
+  { to: "/financeiro", label: "Financeiro", icon: Wallet },
+  { to: "/tecnicos", label: "Técnicos", icon: Users },
+  { to: "/calendario", label: "Calendário", icon: CalendarDays },
   { to: "/clinicas", label: "Clínicas", icon: Building2 },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;
@@ -51,7 +57,7 @@ export function AppLayout({
 
   const itens =
     role === "laboratorio"
-      ? [...navPainel, ...navCalendario, ...navLab]
+      ? [...navPainel, ...navLab]
       : [...navPainel, ...navClinica, ...navCalendario];
 
   const sair = async () => {
