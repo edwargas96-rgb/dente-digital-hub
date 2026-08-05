@@ -26,6 +26,7 @@ import {
   proximoStatus,
   formatarMoeda,
   URGENCIAS,
+  LAB_TO_ORDER_STATUS,
 } from "@/lib/gestao";
 import {
   type OS,
@@ -112,7 +113,10 @@ function OrdensPage() {
       const prox = proximoStatus(o.lab_status);
       if (!prox) continue;
       if (prox === "Concluída" && !o.tecnico_id) continue;
-      await supabase.from("orders").update({ lab_status: prox }).eq("id", o.id);
+      await supabase
+        .from("orders")
+        .update({ lab_status: prox, status: LAB_TO_ORDER_STATUS[prox] as never })
+        .eq("id", o.id);
       await registrarEvento(o.id, prox, "Avanço em lote");
     }
     toast.success("Status avançado");
@@ -309,7 +313,10 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
 
   const mudarStatus = async (novo: LabStatus, comentario: string) => {
     setSalvando(true);
-    const patch: Record<string, unknown> = { lab_status: novo };
+    const patch: Record<string, unknown> = {
+      lab_status: novo,
+      status: LAB_TO_ORDER_STATUS[novo],
+    };
     if (novo === "Entregue") patch.entregue_em = new Date().toISOString();
     await supabase.from("orders").update(patch).eq("id", os.id);
     await registrarEvento(os.id, novo, comentario);
