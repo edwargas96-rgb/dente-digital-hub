@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
+  LayoutGrid,
   FilePlus2,
   CalendarDays,
   Building2,
@@ -27,6 +28,7 @@ const navCalendario = [
 ] as const;
 
 const navLab = [
+  { to: "/gestao", label: "Gestão", icon: LayoutGrid },
   { to: "/clinicas", label: "Clínicas", icon: Building2 },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;
