@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "LAB PIGATTO — Portal de ordens de serviço" },
       {
         property: "og:description",
-        content: "Abertura e acompanhamento de ordens de prótese dentária.",
+        content: "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária.",
       },
     ],
   }),
