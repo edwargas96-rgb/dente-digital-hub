@@ -78,12 +78,15 @@ function LoginPigatto() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="relative hidden flex-col justify-between bg-sidebar p-12 lg:flex">
-        <div>
-          <div className="font-display text-2xl font-bold text-sidebar-accent-foreground">
-            LAB <span className="text-sidebar-primary">PIGATTO</span>
-          </div>
-          <div className="mt-2 text-xs tracking-[0.18em] text-sidebar-foreground/55 uppercase">
-            Área interna do laboratório
+        <div className="flex items-center gap-3">
+          <img src="/logo.svg" alt="" className="size-11 shrink-0" />
+          <div>
+            <div className="font-display text-2xl font-bold text-sidebar-accent-foreground">
+              LAB <span className="text-sidebar-primary">PIGATTO</span>
+            </div>
+            <div className="mt-2 text-xs tracking-[0.18em] text-sidebar-foreground/55 uppercase">
+              Área interna do laboratório
+            </div>
           </div>
         </div>
         <div className="max-w-md">
@@ -102,12 +105,15 @@ function LoginPigatto() {
 
       <div className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm">
-          <div className="mb-8 lg:hidden">
-            <div className="font-display text-xl font-bold">
-              LAB <span className="text-primary">PIGATTO</span>
-            </div>
-            <div className="mt-1 text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
-              Área interna
+          <div className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <img src="/logo.svg" alt="" className="size-9 shrink-0" />
+            <div>
+              <div className="font-display text-xl font-bold">
+                LAB <span className="text-primary">PIGATTO</span>
+              </div>
+              <div className="mt-1 text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
+                Área interna
+              </div>
             </div>
           </div>
 

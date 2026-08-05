@@ -74,11 +74,11 @@ function VisaoGeral() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={receitaPorMes}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                   <XAxis dataKey="mes" tickLine={false} axisLine={false} fontSize={12} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} width={48} />
                   <RTooltip formatter={(v: number) => formatarMoeda(v)} />
-                  <Bar dataKey="receita" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="receita" fill="var(--primary)" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
