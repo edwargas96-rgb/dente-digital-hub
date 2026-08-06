@@ -30,8 +30,6 @@ import {
 import {
   type OS,
   useOrdens,
-  useTecnicos,
-  useServicos,
   StatusSelo,
   Kpi,
   prazoChip,
@@ -57,14 +55,12 @@ function OrdensPage() {
 
   const qc = useQueryClient();
   const { data: ordens = [], isLoading } = useOrdens();
-  const { data: tecnicos = [] } = useTecnicos();
 
   const [filtro, setFiltro] = useState<LabStatus | "Todas">("Todas");
   const [busca, setBusca] = useState("");
   const [sel, setSel] = useState<Set<string>>(new Set());
   const [abrir, setAbrir] = useState<OS | null>(null);
   const [novaAberta, setNovaAberta] = useState(false);
-  const [tecnicoLote, setTecnicoLote] = useState("");
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["gestao-ordens"] });
 
@@ -110,15 +106,6 @@ function OrdensPage() {
     }
     toast.success("Marcadas como entregue");
     setSel(new Set());
-    invalidate();
-  };
-
-  const atribuirLote = async () => {
-    if (!tecnicoLote) return;
-    await supabase.from("orders").update({ tecnico_id: tecnicoLote }).in("id", [...sel]);
-    toast.success("Técnico atribuído");
-    setSel(new Set());
-    setTecnicoLote("");
     invalidate();
   };
 
@@ -173,23 +160,6 @@ function OrdensPage() {
             <Button size="sm" variant="secondary" onClick={avancarLote}>
               Marcar como entregue
             </Button>
-            <div className="flex items-center gap-2">
-              <Select value={tecnicoLote} onValueChange={setTecnicoLote}>
-                <SelectTrigger className="h-9 w-44">
-                  <SelectValue placeholder="Atribuir técnico" />
-                </SelectTrigger>
-                <SelectContent>
-                  {tecnicos.map((t) => (
-                    <SelectItem key={t.id} value={t.id}>
-                      {t.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button size="sm" variant="secondary" onClick={atribuirLote} disabled={!tecnicoLote}>
-                Aplicar
-              </Button>
-            </div>
             <button
               onClick={() => setSel(new Set())}
               className="ml-auto text-sm text-muted-foreground hover:text-foreground"
@@ -212,7 +182,6 @@ function OrdensPage() {
                   <th className="px-3 py-3">Nº</th>
                   <th className="px-3 py-3">Paciente / Clínica</th>
                   <th className="px-3 py-3">Trabalho</th>
-                  <th className="px-3 py-3">Técnico</th>
                   <th className="px-3 py-3">Status</th>
                   <th className="px-3 py-3">Prazo</th>
                 </tr>
@@ -242,7 +211,6 @@ function OrdensPage() {
                         </button>
                       </td>
                       <td className="px-3 py-3">{o.item ?? "—"}</td>
-                      <td className="px-3 py-3">{o.tecnicos?.nome ?? "—"}</td>
                       <td className="px-3 py-3">
                         <StatusSelo status={o.lab_status} />
                       </td>
@@ -265,8 +233,6 @@ function OrdensPage() {
 // ------------------------------------------------------------ Detalhe O.S.
 function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onChange: () => void }) {
   const qc = useQueryClient();
-  const { data: tecnicos = [] } = useTecnicos();
-  const [tecnicoId, setTecnicoId] = useState(os.tecnico_id ?? "");
   const [resposta, setResposta] = useState(os.resposta_laboratorio ?? "");
   const [salvando, setSalvando] = useState(false);
 
@@ -318,14 +284,11 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
     setSalvando(true);
     await supabase
       .from("orders")
-      .update({
-        tecnico_id: tecnicoId || null,
-        resposta_laboratorio: resposta.trim() || null,
-      })
+      .update({ resposta_laboratorio: resposta.trim() || null })
       .eq("id", os.id);
     setSalvando(false);
     onChange();
-    toast.success("Produção salva");
+    toast.success("Observação salva");
   };
 
   const toggleEtapa = async (id: string, concluida: boolean) => {
@@ -343,7 +306,7 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
   const imprimirFicha = () => {
     const w = window.open("", "_blank", "width=780,height=900");
     if (!w) return;
-    w.document.write(fichaHtml(os, tecnicos.find((t) => t.id === tecnicoId)?.nome));
+    w.document.write(fichaHtml(os));
     w.document.close();
     w.focus();
     w.print();
@@ -389,21 +352,6 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
           <section className="space-y-3">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase">Produção</h3>
             <div className="space-y-1.5">
-              <Label>Técnico responsável</Label>
-              <Select value={tecnicoId} onValueChange={setTecnicoId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {tecnicos.map((t) => (
-                    <SelectItem key={t.id} value={t.id}>
-                      {t.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
               <Label>Resposta / observação ao dentista</Label>
               <Textarea
                 rows={3}
@@ -413,7 +361,7 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
               />
             </div>
             <Button size="sm" onClick={salvarProducao} disabled={salvando}>
-              {salvando && <Loader2 className="size-4 animate-spin" />} Salvar produção
+              {salvando && <Loader2 className="size-4 animate-spin" />} Salvar observação
             </Button>
 
             <div className="pt-2">
@@ -477,7 +425,17 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
 // ------------------------------------------------------------ Nova O.S.
 function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const { userId } = useAuth();
-  const { data: servicos = [] } = useServicos();
+  const { data: tiposTrabalho = [] } = useQuery({
+    queryKey: ["nova-item-types"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("item_types")
+        .select("id, nome, ativo")
+        .eq("ativo", true)
+        .order("nome");
+      return (data ?? []) as { id: string; nome: string }[];
+    },
+  });
   const { data: clinicas = [] } = useQuery({
     queryKey: ["gestao-clinicas"],
     queryFn: async () => {
@@ -496,7 +454,7 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
     dentista: "",
     convenio: "",
     urgencia: "Normal",
-    servico: "",
+    tipo_trabalho: "",
     dente: "",
     cor: "",
     data_entrega: "",
@@ -512,7 +470,7 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
       return;
     }
     setSalvando(true);
-    const servico = servicos.find((s) => s.id === f.servico);
+    const tipo = tiposTrabalho.find((t) => t.id === f.tipo_trabalho);
     const elementos = f.dente
       .split(/[,\s]+/)
       .map((n) => parseInt(n, 10))
@@ -524,7 +482,7 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
         created_by: userId!,
         paciente: f.paciente.trim(),
         dentista: f.dentista.trim() || null,
-        item: servico?.nome ?? null,
+        item: tipo?.nome ?? null,
         elementos,
         cor: f.cor || null,
         convenio: f.convenio.trim() || null,
@@ -607,15 +565,15 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
             <Input value={f.convenio} onChange={(e) => set("convenio", e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Serviço</Label>
-            <Select value={f.servico} onValueChange={(v) => set("servico", v)}>
+            <Label>Trabalho</Label>
+            <Select value={f.tipo_trabalho} onValueChange={(v) => set("tipo_trabalho", v)}>
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o serviço" />
+                <SelectValue placeholder="Selecione o trabalho" />
               </SelectTrigger>
               <SelectContent>
-                {servicos.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.nome}
+                {tiposTrabalho.map((t) => (
+                  <SelectItem key={t.id} value={t.id}>
+                    {t.nome}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -688,7 +646,7 @@ function fichaBase(titulo: string, os: OS, linhas: string[]): string {
   </body></html>`;
 }
 
-function fichaHtml(os: OS, tecnico?: string): string {
+function fichaHtml(os: OS): string {
   return fichaBase("Ficha de Ordem de Serviço", os, [
     `<b>Paciente</b><span>${os.paciente}</span>`,
     `<b>Clínica</b><span>${os.clinics?.nome ?? "—"}</span>`,
@@ -696,7 +654,6 @@ function fichaHtml(os: OS, tecnico?: string): string {
     `<b>Trabalho</b><span>${os.item ?? "—"}</span>`,
     `<b>Elementos</b><span>${(os.elementos ?? []).join(", ") || "—"}</span>`,
     `<b>Cor</b><span>${os.cor ?? "—"}</span>`,
-    `<b>Técnico</b><span>${tecnico ?? "—"}</span>`,
     `<b>Entrega</b><span>${formatarData(os.data_entrega)}</span>`,
     `<b>Observações</b><span>${os.observacoes ?? "—"}</span>`,
   ]);

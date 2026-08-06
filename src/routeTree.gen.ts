@@ -21,7 +21,6 @@ import { Route as AppVisaoRouteImport } from './routes/_app.visao'
 import { Route as AppExpedicaoRouteImport } from './routes/_app.expedicao'
 import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
 import { Route as AppOsRouteImport } from './routes/_app.os'
-import { Route as AppTecnicosRouteImport } from './routes/_app.tecnicos'
 import { Route as AppNovaOrdemRouteImport } from './routes/_app.nova-ordem'
 import { Route as AppOrdensIdRouteImport } from './routes/_app.ordens.$id'
 
@@ -84,11 +83,6 @@ const AppOsRoute = AppOsRouteImport.update({
   path: '/os',
   getParentRoute: () => AppRoute,
 } as any)
-const AppTecnicosRoute = AppTecnicosRouteImport.update({
-  id: '/tecnicos',
-  path: '/tecnicos',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppNovaOrdemRoute = AppNovaOrdemRouteImport.update({
   id: '/nova-ordem',
   path: '/nova-ordem',
@@ -112,7 +106,6 @@ export interface FileRoutesByFullPath {
   '/expedicao': typeof AppExpedicaoRoute
   '/analytics': typeof AppAnalyticsRoute
   '/os': typeof AppOsRoute
-  '/tecnicos': typeof AppTecnicosRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
   '/ordens/$id': typeof AppOrdensIdRoute
 }
@@ -128,7 +121,6 @@ export interface FileRoutesByTo {
   '/expedicao': typeof AppExpedicaoRoute
   '/analytics': typeof AppAnalyticsRoute
   '/os': typeof AppOsRoute
-  '/tecnicos': typeof AppTecnicosRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
   '/ordens/$id': typeof AppOrdensIdRoute
 }
@@ -146,7 +138,6 @@ export interface FileRoutesById {
   '/_app/expedicao': typeof AppExpedicaoRoute
   '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/os': typeof AppOsRoute
-  '/_app/tecnicos': typeof AppTecnicosRoute
   '/_app/nova-ordem': typeof AppNovaOrdemRoute
   '/_app/ordens/$id': typeof AppOrdensIdRoute
 }
@@ -164,7 +155,6 @@ export interface FileRouteTypes {
     | '/expedicao'
     | '/analytics'
     | '/os'
-    | '/tecnicos'
     | '/nova-ordem'
     | '/ordens/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -180,7 +170,6 @@ export interface FileRouteTypes {
     | '/expedicao'
     | '/analytics'
     | '/os'
-    | '/tecnicos'
     | '/nova-ordem'
     | '/ordens/$id'
   id:
@@ -197,7 +186,6 @@ export interface FileRouteTypes {
     | '/_app/expedicao'
     | '/_app/analytics'
     | '/_app/os'
-    | '/_app/tecnicos'
     | '/_app/nova-ordem'
     | '/_app/ordens/$id'
   fileRoutesById: FileRoutesById
@@ -295,13 +283,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/tecnicos': {
-      id: '/_app/tecnicos'
-      path: '/tecnicos'
-      fullPath: '/tecnicos'
-      preLoaderRoute: typeof AppTecnicosRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/nova-ordem': {
       id: '/_app/nova-ordem'
       path: '/nova-ordem'
@@ -328,7 +309,6 @@ interface AppRouteChildren {
   AppExpedicaoRoute: typeof AppExpedicaoRoute
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppOsRoute: typeof AppOsRoute
-  AppTecnicosRoute: typeof AppTecnicosRoute
   AppNovaOrdemRoute: typeof AppNovaOrdemRoute
   AppOrdensIdRoute: typeof AppOrdensIdRoute
 }
@@ -342,7 +322,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppExpedicaoRoute: AppExpedicaoRoute,
   AppAnalyticsRoute: AppAnalyticsRoute,
   AppOsRoute: AppOsRoute,
-  AppTecnicosRoute: AppTecnicosRoute,
   AppNovaOrdemRoute: AppNovaOrdemRoute,
   AppOrdensIdRoute: AppOrdensIdRoute,
 }
