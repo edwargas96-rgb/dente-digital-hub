@@ -20,7 +20,6 @@ import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppVisaoRouteImport } from './routes/_app.visao'
 import { Route as AppExpedicaoRouteImport } from './routes/_app.expedicao'
 import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
-import { Route as AppFinanceiroRouteImport } from './routes/_app.financeiro'
 import { Route as AppOsRouteImport } from './routes/_app.os'
 import { Route as AppTecnicosRouteImport } from './routes/_app.tecnicos'
 import { Route as AppNovaOrdemRouteImport } from './routes/_app.nova-ordem'
@@ -80,11 +79,6 @@ const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AppRoute,
 } as any)
-const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
-  id: '/financeiro',
-  path: '/financeiro',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppOsRoute = AppOsRouteImport.update({
   id: '/os',
   path: '/os',
@@ -117,7 +111,6 @@ export interface FileRoutesByFullPath {
   '/visao': typeof AppVisaoRoute
   '/expedicao': typeof AppExpedicaoRoute
   '/analytics': typeof AppAnalyticsRoute
-  '/financeiro': typeof AppFinanceiroRoute
   '/os': typeof AppOsRoute
   '/tecnicos': typeof AppTecnicosRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
@@ -134,7 +127,6 @@ export interface FileRoutesByTo {
   '/visao': typeof AppVisaoRoute
   '/expedicao': typeof AppExpedicaoRoute
   '/analytics': typeof AppAnalyticsRoute
-  '/financeiro': typeof AppFinanceiroRoute
   '/os': typeof AppOsRoute
   '/tecnicos': typeof AppTecnicosRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
@@ -153,7 +145,6 @@ export interface FileRoutesById {
   '/_app/visao': typeof AppVisaoRoute
   '/_app/expedicao': typeof AppExpedicaoRoute
   '/_app/analytics': typeof AppAnalyticsRoute
-  '/_app/financeiro': typeof AppFinanceiroRoute
   '/_app/os': typeof AppOsRoute
   '/_app/tecnicos': typeof AppTecnicosRoute
   '/_app/nova-ordem': typeof AppNovaOrdemRoute
@@ -172,7 +163,6 @@ export interface FileRouteTypes {
     | '/visao'
     | '/expedicao'
     | '/analytics'
-    | '/financeiro'
     | '/os'
     | '/tecnicos'
     | '/nova-ordem'
@@ -189,7 +179,6 @@ export interface FileRouteTypes {
     | '/visao'
     | '/expedicao'
     | '/analytics'
-    | '/financeiro'
     | '/os'
     | '/tecnicos'
     | '/nova-ordem'
@@ -207,7 +196,6 @@ export interface FileRouteTypes {
     | '/_app/visao'
     | '/_app/expedicao'
     | '/_app/analytics'
-    | '/_app/financeiro'
     | '/_app/os'
     | '/_app/tecnicos'
     | '/_app/nova-ordem'
@@ -300,13 +288,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAnalyticsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/financeiro': {
-      id: '/_app/financeiro'
-      path: '/financeiro'
-      fullPath: '/financeiro'
-      preLoaderRoute: typeof AppFinanceiroRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/os': {
       id: '/_app/os'
       path: '/os'
@@ -346,7 +327,6 @@ interface AppRouteChildren {
   AppVisaoRoute: typeof AppVisaoRoute
   AppExpedicaoRoute: typeof AppExpedicaoRoute
   AppAnalyticsRoute: typeof AppAnalyticsRoute
-  AppFinanceiroRoute: typeof AppFinanceiroRoute
   AppOsRoute: typeof AppOsRoute
   AppTecnicosRoute: typeof AppTecnicosRoute
   AppNovaOrdemRoute: typeof AppNovaOrdemRoute
@@ -361,7 +341,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppVisaoRoute: AppVisaoRoute,
   AppExpedicaoRoute: AppExpedicaoRoute,
   AppAnalyticsRoute: AppAnalyticsRoute,
-  AppFinanceiroRoute: AppFinanceiroRoute,
   AppOsRoute: AppOsRoute,
   AppTecnicosRoute: AppTecnicosRoute,
   AppNovaOrdemRoute: AppNovaOrdemRoute,
@@ -379,13 +358,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

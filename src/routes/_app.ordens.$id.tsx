@@ -131,6 +131,32 @@ function DetalheOrdem() {
     queryClient.invalidateQueries({ queryKey: ["ordens"] });
   };
 
+  // Dentista confirma o recebimento do trabalho entregue.
+  const marcarRecebida = async () => {
+    setSalvando(true);
+    const { error } = await supabase
+      .from("orders")
+      .update({ status: "Recebida" as never, lab_status: "Recebida" as never })
+      .eq("id", id);
+    if (!error) {
+      await supabase.from("order_events").insert({
+        order_id: id,
+        status: "Recebida" as never,
+        comentario: "Recebida pelo dentista",
+        autor: nomeCompleto || email || "Clínica",
+      });
+    }
+    setSalvando(false);
+    if (error) {
+      toast.error("Não foi possível confirmar o recebimento.");
+      return;
+    }
+    toast.success("Marcada como recebida");
+    queryClient.invalidateQueries({ queryKey: ["ordem", id] });
+    queryClient.invalidateQueries({ queryKey: ["ordem-eventos", id] });
+    queryClient.invalidateQueries({ queryKey: ["ordens"] });
+  };
+
   if (isLoading) {
     return (
       <AppLayout titulo="Ordem de serviço">
@@ -266,6 +292,20 @@ function DetalheOrdem() {
         </div>
 
         <div className="space-y-5">
+          {!isLab && ordem.status !== "Recebida" && (
+            <section className="rounded-xl border border-primary/30 bg-primary-soft/40 p-5 shadow-[var(--shadow-card)]">
+              <h2 className="mb-2 text-sm font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                Recebimento
+              </h2>
+              <p className="mb-3 text-sm text-muted-foreground">
+                Confirme quando receber o trabalho do laboratório.
+              </p>
+              <Button onClick={marcarRecebida} disabled={salvando} className="w-full">
+                {salvando ? "Salvando…" : "Marcar como recebida"}
+              </Button>
+            </section>
+          )}
+
           {isLab && (
             <section className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
               <h2 className="mb-4 text-sm font-semibold tracking-[0.08em] text-muted-foreground uppercase">
