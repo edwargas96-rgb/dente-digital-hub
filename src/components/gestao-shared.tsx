@@ -1,5 +1,5 @@
 // Peças compartilhadas entre as telas de gestão do laboratório
-// (Ordens, Financeiro, Técnicos), agora expostas na barra lateral.
+// (Ordens, Visão geral, etc.), expostas na barra lateral.
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -20,18 +20,12 @@ export type OS = {
   lab_status: LabStatus;
   urgencia: string | null;
   convenio: string | null;
-  tecnico_id: string | null;
-  valor: number | null;
   resposta_laboratorio: string | null;
   laboratorio_destino: string | null;
   entregue_em: string | null;
   clinic_id: string;
   clinics: { nome: string } | null;
-  tecnicos: { nome: string } | null;
 };
-
-export type Tecnico = { id: string; nome: string; especialidade: string | null; ativo: boolean };
-export type Servico = { id: string; nome: string; valor: number; ativo: boolean };
 
 export function useOrdens() {
   return useQuery({
@@ -40,39 +34,11 @@ export function useOrdens() {
       const { data, error } = await supabase
         .from("orders")
         .select(
-          "id, numero, paciente, dentista, item, elementos, cor, data_entrega, observacoes, created_at, lab_status, urgencia, convenio, tecnico_id, valor, resposta_laboratorio, laboratorio_destino, entregue_em, clinic_id, clinics(nome), tecnicos(nome)",
+          "id, numero, paciente, dentista, item, elementos, cor, data_entrega, observacoes, created_at, lab_status, urgencia, convenio, resposta_laboratorio, laboratorio_destino, entregue_em, clinic_id, clinics(nome)",
         )
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as unknown as OS[];
-    },
-  });
-}
-
-export function useTecnicos() {
-  return useQuery({
-    queryKey: ["tecnicos"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tecnicos")
-        .select("id, nome, especialidade, ativo")
-        .order("nome");
-      if (error) throw error;
-      return (data ?? []) as Tecnico[];
-    },
-  });
-}
-
-export function useServicos() {
-  return useQuery({
-    queryKey: ["servicos"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("servicos")
-        .select("id, nome, valor, ativo")
-        .order("nome");
-      if (error) throw error;
-      return (data ?? []) as Servico[];
     },
   });
 }

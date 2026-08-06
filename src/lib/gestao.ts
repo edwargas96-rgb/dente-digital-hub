@@ -29,10 +29,6 @@ export function rotuloAvanco(atual: LabStatus): string | null {
 
 export const URGENCIAS = ["Normal", "Urgente", "Prioridade"] as const;
 
-export function formatarMoeda(valor: number | null | undefined): string {
-  return (valor ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
 /** Rótulos dos últimos N meses, ex.: ["mar", "abr", ...] com chave AAAA-MM. */
 export function ultimosMeses(n: number): { chave: string; rotulo: string }[] {
   const out: { chave: string; rotulo: string }[] = [];
