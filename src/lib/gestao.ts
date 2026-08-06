@@ -1,73 +1,37 @@
 // Helpers da área de GESTÃO do laboratório.
 
-export const LAB_STATUS = [
-  "Pendente",
-  "Aceita",
-  "Em Produção",
-  "Concluída",
-  "Entregue",
-  "Recusada",
-] as const;
+// Fluxo simplificado: a O.S. está "Recebida" ou "Entregue".
+export const LAB_STATUS = ["Recebida", "Entregue"] as const;
 
 export type LabStatus = (typeof LAB_STATUS)[number];
 
 // Cores dos selos de status (classes Tailwind).
 export const LAB_STATUS_STYLE: Record<LabStatus, string> = {
-  Pendente: "bg-amber-100 text-amber-800 border-amber-200",
-  Aceita: "bg-sky-100 text-sky-800 border-sky-200",
-  "Em Produção": "bg-violet-100 text-violet-800 border-violet-200",
-  Concluída: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  Entregue: "bg-slate-200 text-slate-700 border-slate-300",
-  Recusada: "bg-rose-100 text-rose-800 border-rose-200",
+  Recebida: "bg-sky-100 text-sky-800 border-sky-200",
+  Entregue: "bg-emerald-100 text-emerald-800 border-emerald-200",
 };
 
-// Próximo status "de avanço" no fluxo (para ação em lote e botões).
+// Próximo status "de avanço" no fluxo.
 export function proximoStatus(atual: LabStatus): LabStatus | null {
-  switch (atual) {
-    case "Pendente":
-      return "Aceita";
-    case "Aceita":
-      return "Em Produção";
-    case "Em Produção":
-      return "Concluída";
-    case "Concluída":
-      return "Entregue";
-    default:
-      return null;
-  }
+  return atual === "Recebida" ? "Entregue" : null;
 }
 
 // Mapeia o status de gestão do laboratório para o status que a clínica vê
 // (enum order_status), mantendo os dois lados sincronizados.
 export const LAB_TO_ORDER_STATUS: Record<LabStatus, string> = {
-  Pendente: "Recebida",
-  Aceita: "Em análise",
-  "Em Produção": "Em produção",
-  Concluída: "Pronta",
+  Recebida: "Recebida",
   Entregue: "Enviada/Entregue",
-  Recusada: "Recebida",
 };
 
 export function rotuloAvanco(atual: LabStatus): string | null {
-  switch (atual) {
-    case "Pendente":
-      return "Aceitar";
-    case "Aceita":
-      return "Iniciar produção";
-    case "Em Produção":
-      return "Concluir";
-    case "Concluída":
-      return "Marcar entregue";
-    default:
-      return null;
-  }
+  return atual === "Recebida" ? "Marcar entregue" : null;
 }
+
+export const URGENCIAS = ["Normal", "Urgente", "Prioridade"] as const;
 
 export function formatarMoeda(valor: number | null | undefined): string {
   return (valor ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
-
-export const URGENCIAS = ["Normal", "Urgente", "Prioridade"] as const;
 
 /** Rótulos dos últimos N meses, ex.: ["mar", "abr", ...] com chave AAAA-MM. */
 export function ultimosMeses(n: number): { chave: string; rotulo: string }[] {

@@ -11,14 +11,15 @@ import {
 } from "recharts";
 import { useAuth } from "@/lib/auth";
 import { AppLayout } from "@/components/AppLayout";
-import { formatarMoeda, ultimosMeses } from "@/lib/gestao";
+import { ultimosMeses } from "@/lib/gestao";
+import { diasRestantes } from "@/lib/ordens";
 import { useOrdens, Kpi } from "@/components/gestao-shared";
 
 export const Route = createFileRoute("/_app/visao")({
   head: () => ({
     meta: [
       { title: "Visão geral — LAB PIGATTO" },
-      { name: "description", content: "Indicadores e receita do laboratório." },
+      { name: "description", content: "Indicadores das ordens de serviço do laboratório." },
     ],
   }),
   component: VisaoGeral,
@@ -34,58 +35,57 @@ function VisaoGeral() {
   const { data: ordens = [] } = useOrdens();
   const meses = ultimosMeses(6);
 
-  const receitaPorMes = meses.map((m) => ({
+  const osPorMes = meses.map((m) => ({
     mes: m.rotulo,
-    receita: ordens
-      .filter((o) => (o.entregue_em ?? o.created_at).slice(0, 7) === m.chave && o.valor)
-      .reduce((s, o) => s + (o.valor ?? 0), 0),
+    os: ordens.filter((o) => o.created_at.slice(0, 7) === m.chave).length,
   }));
 
-  const faturamentoMes = receitaPorMes[receitaPorMes.length - 1]?.receita ?? 0;
-  const pendentes = ordens.filter((o) => o.lab_status === "Pendente").length;
-  const emProducao = ordens.filter((o) => o.lab_status === "Em Produção").length;
-  const concluidas = ordens.filter((o) => ["Concluída", "Entregue"].includes(o.lab_status)).length;
+  const recebidas = ordens.filter((o) => o.lab_status === "Recebida").length;
+  const entregues = ordens.filter((o) => o.lab_status === "Entregue").length;
+  const atrasadas = ordens.filter(
+    (o) => o.lab_status === "Recebida" && diasRestantes(o.data_entrega) < 0,
+  ).length;
 
   const porClinica = useMemo(() => {
-    const map = new Map<string, { nome: string; qtd: number; valor: number }>();
+    const map = new Map<string, number>();
     for (const o of ordens) {
       const nome = o.clinics?.nome ?? "—";
-      const cur = map.get(nome) ?? { nome, qtd: 0, valor: 0 };
-      cur.qtd += 1;
-      cur.valor += o.valor ?? 0;
-      map.set(nome, cur);
+      map.set(nome, (map.get(nome) ?? 0) + 1);
     }
-    return [...map.values()].sort((a, b) => b.valor - a.valor).slice(0, 5);
+    return [...map.entries()]
+      .map(([nome, qtd]) => ({ nome, qtd }))
+      .sort((a, b) => b.qtd - a.qtd)
+      .slice(0, 5);
   }, [ordens]);
 
   return (
-    <AppLayout titulo="Visão geral" descricao="Indicadores e receita do laboratório">
+    <AppLayout titulo="Visão geral" descricao="Indicadores das ordens de serviço">
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Kpi label="Faturamento do mês" valor={formatarMoeda(faturamentoMes)} />
-          <Kpi label="Pendentes" valor={String(pendentes)} hint="aguardando aceite" />
-          <Kpi label="Em produção" valor={String(emProducao)} />
-          <Kpi label="Concluídas" valor={String(concluidas)} />
+          <Kpi label="Total de O.S." valor={String(ordens.length)} />
+          <Kpi label="Recebidas" valor={String(recebidas)} hint="em andamento" />
+          <Kpi label="Entregues" valor={String(entregues)} />
+          <Kpi label="Atrasadas" valor={String(atrasadas)} />
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
           <div className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
-            <h3 className="mb-4 text-sm font-semibold">Receita (6 meses)</h3>
+            <h3 className="mb-4 text-sm font-semibold">Ordens por mês (6 meses)</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={receitaPorMes}>
+                <BarChart data={osPorMes}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                   <XAxis dataKey="mes" tickLine={false} axisLine={false} fontSize={12} />
-                  <YAxis tickLine={false} axisLine={false} fontSize={12} width={48} />
-                  <RTooltip formatter={(v: number) => formatarMoeda(v)} />
-                  <Bar dataKey="receita" fill="var(--primary)" radius={[6, 6, 0, 0]} />
+                  <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} allowDecimals={false} />
+                  <RTooltip />
+                  <Bar dataKey="os" name="O.S." fill="var(--primary)" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           <div className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
-            <h3 className="mb-4 text-sm font-semibold">Maiores clínicas</h3>
+            <h3 className="mb-4 text-sm font-semibold">Clínicas mais ativas</h3>
             {porClinica.length === 0 ? (
               <p className="text-sm text-muted-foreground">Sem dados ainda.</p>
             ) : (
@@ -95,13 +95,8 @@ function VisaoGeral() {
                     <span className="numeric flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold">
                       {i + 1}
                     </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-medium">{c.nome}</div>
-                      <div className="numeric text-xs text-muted-foreground">{c.qtd} O.S.</div>
-                    </div>
-                    <span className="numeric text-sm font-semibold text-primary">
-                      {formatarMoeda(c.valor)}
-                    </span>
+                    <div className="min-w-0 flex-1 truncate text-sm font-medium">{c.nome}</div>
+                    <span className="numeric text-sm font-semibold text-primary">{c.qtd} O.S.</span>
                   </li>
                 ))}
               </ol>

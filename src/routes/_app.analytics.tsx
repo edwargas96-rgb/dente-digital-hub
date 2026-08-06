@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import { useAuth } from "@/lib/auth";
 import { AppLayout } from "@/components/AppLayout";
-import { formatarMoeda, ultimosMeses, LAB_STATUS } from "@/lib/gestao";
+import { ultimosMeses, LAB_STATUS } from "@/lib/gestao";
 import { useOrdens } from "@/components/gestao-shared";
 
 export const Route = createFileRoute("/_app/analytics")({
@@ -35,9 +35,7 @@ function Analytics() {
   const meses = ultimosMeses(6);
   const trend = meses.map((m) => ({
     mes: m.rotulo,
-    receita: ordens
-      .filter((o) => (o.entregue_em ?? o.created_at).slice(0, 7) === m.chave)
-      .reduce((s, o) => s + (o.valor ?? 0), 0),
+    os: ordens.filter((o) => o.created_at.slice(0, 7) === m.chave).length,
   }));
 
   const porStatus = LAB_STATUS.map((s) => ({
@@ -49,17 +47,18 @@ function Analytics() {
     <AppLayout titulo="Analytics" descricao="Tendências e distribuição">
       <div className="space-y-4">
         <div className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
-          <h3 className="mb-4 text-sm font-semibold">Tendência de receita</h3>
+          <h3 className="mb-4 text-sm font-semibold">Ordens recebidas por mês</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trend}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                 <XAxis dataKey="mes" tickLine={false} axisLine={false} fontSize={12} />
-                <YAxis tickLine={false} axisLine={false} fontSize={12} width={48} />
-                <RTooltip formatter={(v: number) => formatarMoeda(v)} />
+                <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} allowDecimals={false} />
+                <RTooltip />
                 <Line
                   type="monotone"
-                  dataKey="receita"
+                  dataKey="os"
+                  name="O.S."
                   stroke="var(--primary)"
                   strokeWidth={2}
                   dot={false}
@@ -68,7 +67,7 @@ function Analytics() {
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3">
           {porStatus.map((s) => (
             <div
               key={s.status}

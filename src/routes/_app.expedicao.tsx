@@ -50,13 +50,13 @@ function Expedicao() {
   }, [loading, role, navigate]);
 
   const { data: ordens = [] } = useOrdens();
-  const aExpedir = ordens.filter((o) => o.lab_status === "Concluída");
+  const aEntregar = ordens.filter((o) => o.lab_status === "Recebida");
   const entregues = ordens.filter((o) => o.lab_status === "Entregue");
 
   return (
-    <AppLayout titulo="Expedição" descricao="Trabalhos prontos e entregas">
+    <AppLayout titulo="Expedição" descricao="Trabalhos a entregar e entregas realizadas">
       <div className="grid gap-4 lg:grid-cols-2">
-        <Bloco titulo="A expedir" lista={aExpedir} />
+        <Bloco titulo="A entregar" lista={aEntregar} />
         <Bloco titulo="Entregues" lista={entregues} />
       </div>
     </AppLayout>

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, Printer, Loader2, X, Check } from "lucide-react";
+import { Search, Plus, Printer, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -19,12 +19,11 @@ import {
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { formatarData, formatarDataHora } from "@/lib/ordens";
+import { formatarData, formatarDataHora, diasRestantes } from "@/lib/ordens";
 import {
   LAB_STATUS,
   type LabStatus,
   proximoStatus,
-  formatarMoeda,
   URGENCIAS,
   LAB_TO_ORDER_STATUS,
 } from "@/lib/gestao";
@@ -80,24 +79,11 @@ function OrdensPage() {
     });
   }, [ordens, filtro, busca]);
 
-  const sla = (() => {
-    const entregues = ordens.filter((o) => o.lab_status === "Entregue");
-    if (entregues.length === 0) return "—";
-    const noPrazo = entregues.filter(
-      (o) => !o.entregue_em || o.entregue_em.slice(0, 10) <= o.data_entrega.slice(0, 10),
-    ).length;
-    return `${Math.round((noPrazo / entregues.length) * 100)}%`;
-  })();
-  const gargalo = (() => {
-    const cont = new Map<LabStatus, number>();
-    for (const o of ordens)
-      if (!["Entregue", "Recusada"].includes(o.lab_status))
-        cont.set(o.lab_status, (cont.get(o.lab_status) ?? 0) + 1);
-    const top = [...cont.entries()].sort((a, b) => b[1] - a[1])[0];
-    return top ? top[0] : "—";
-  })();
-  const emProducao = ordens.filter((o) => o.lab_status === "Em Produção").length;
-  const concluidas = ordens.filter((o) => o.lab_status === "Concluída").length;
+  const recebidas = ordens.filter((o) => o.lab_status === "Recebida").length;
+  const entregues = ordens.filter((o) => o.lab_status === "Entregue").length;
+  const atrasadas = ordens.filter(
+    (o) => o.lab_status === "Recebida" && diasRestantes(o.data_entrega) < 0,
+  ).length;
 
   const toggle = (id: string) =>
     setSel((s) => {
@@ -112,14 +98,17 @@ function OrdensPage() {
     for (const o of alvos) {
       const prox = proximoStatus(o.lab_status);
       if (!prox) continue;
-      if (prox === "Concluída" && !o.tecnico_id) continue;
       await supabase
         .from("orders")
-        .update({ lab_status: prox, status: LAB_TO_ORDER_STATUS[prox] as never })
+        .update({
+          lab_status: prox,
+          status: LAB_TO_ORDER_STATUS[prox] as never,
+          entregue_em: new Date().toISOString(),
+        })
         .eq("id", o.id);
-      await registrarEvento(o.id, prox, "Avanço em lote");
+      await registrarEvento(o.id, prox, "Marcada como entregue em lote");
     }
-    toast.success("Status avançado");
+    toast.success("Marcadas como entregue");
     setSel(new Set());
     invalidate();
   };
@@ -145,10 +134,10 @@ function OrdensPage() {
     >
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Kpi label="SLA de entrega" valor={sla} hint="entregues no prazo" />
-          <Kpi label="Gargalo atual" valor={String(gargalo)} />
-          <Kpi label="Em produção" valor={String(emProducao)} />
-          <Kpi label="Concluídas" valor={String(concluidas)} />
+          <Kpi label="Total" valor={String(ordens.length)} />
+          <Kpi label="Recebidas" valor={String(recebidas)} hint="em andamento" />
+          <Kpi label="Entregues" valor={String(entregues)} />
+          <Kpi label="Atrasadas" valor={String(atrasadas)} />
         </div>
 
         <div className="relative max-w-sm">
@@ -182,7 +171,7 @@ function OrdensPage() {
           <div className="flex flex-wrap items-center gap-3 rounded-xl border border-primary/30 bg-primary-soft/40 px-4 py-3">
             <span className="numeric text-sm font-medium">{sel.size} selecionada(s)</span>
             <Button size="sm" variant="secondary" onClick={avancarLote}>
-              Avançar status
+              Marcar como entregue
             </Button>
             <div className="flex items-center gap-2">
               <Select value={tecnicoLote} onValueChange={setTecnicoLote}>
@@ -278,10 +267,8 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
   const qc = useQueryClient();
   const { data: tecnicos = [] } = useTecnicos();
   const [tecnicoId, setTecnicoId] = useState(os.tecnico_id ?? "");
-  const [valor, setValor] = useState(os.valor != null ? String(os.valor) : "");
   const [resposta, setResposta] = useState(os.resposta_laboratorio ?? "");
   const [salvando, setSalvando] = useState(false);
-  const [entregaAberta, setEntregaAberta] = useState(false);
 
   const { data: eventos = [] } = useQuery({
     queryKey: ["os-eventos", os.id],
@@ -324,7 +311,7 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
     qc.invalidateQueries({ queryKey: ["os-eventos", os.id] });
     onChange();
     toast.success(`O.S. ${novo}`);
-    if (novo !== "Entregue") onClose();
+    onClose();
   };
 
   const salvarProducao = async () => {
@@ -333,7 +320,6 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
       .from("orders")
       .update({
         tecnico_id: tecnicoId || null,
-        valor: valor ? Number(valor) : null,
         resposta_laboratorio: resposta.trim() || null,
       })
       .eq("id", os.id);
@@ -363,50 +349,16 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
     w.print();
   };
 
-  const acao = (() => {
-    switch (os.lab_status) {
-      case "Pendente":
-        return (
-          <div className="flex gap-2">
-            <Button size="sm" onClick={() => mudarStatus("Aceita", "O.S. aceita")}>
-              <Check className="size-4" /> Aceitar
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => mudarStatus("Recusada", "O.S. recusada")}
-            >
-              <X className="size-4" /> Recusar
-            </Button>
-          </div>
-        );
-      case "Aceita":
-        return (
-          <Button size="sm" onClick={() => mudarStatus("Em Produção", "Produção iniciada")}>
-            Iniciar produção
-          </Button>
-        );
-      case "Em Produção":
-        return (
-          <Button
-            size="sm"
-            disabled={!tecnicoId}
-            title={!tecnicoId ? "Atribua um técnico antes de concluir" : undefined}
-            onClick={() => mudarStatus("Concluída", "Produção concluída")}
-          >
-            Concluir O.S.
-          </Button>
-        );
-      case "Concluída":
-        return (
-          <Button size="sm" onClick={() => setEntregaAberta(true)}>
-            Marcar como entregue
-          </Button>
-        );
-      default:
-        return null;
-    }
-  })();
+  const acao =
+    os.lab_status === "Recebida" ? (
+      <Button
+        size="sm"
+        disabled={salvando}
+        onClick={() => mudarStatus("Entregue", "Entregue ao dentista")}
+      >
+        Marcar como entregue
+      </Button>
+    ) : null;
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
@@ -450,17 +402,6 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Valor do trabalho (R$)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
-                placeholder="0,00"
-                className="numeric"
-              />
             </div>
             <div className="space-y-1.5">
               <Label>Resposta / observação ao dentista</Label>
@@ -528,52 +469,6 @@ function DetalheOS({ os, onClose, onChange }: { os: OS; onClose: () => void; onC
             )}
           </section>
         </div>
-
-        {entregaAberta && (
-          <ModalEntrega
-            os={os}
-            onClose={() => setEntregaAberta(false)}
-            onEntregar={async (imprimir) => {
-              if (imprimir) imprimirComprovante(os);
-              await mudarStatus("Entregue", "Entregue ao dentista");
-              setEntregaAberta(false);
-            }}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function ModalEntrega({
-  os,
-  onClose,
-  onEntregar,
-}: {
-  os: OS;
-  onClose: () => void;
-  onEntregar: (imprimir: boolean) => void;
-}) {
-  return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>Entregar {os.numero}</DialogTitle>
-        </DialogHeader>
-        <p className="text-sm text-muted-foreground">
-          Imprima a nota do serviço antes de concluir a entrega.
-        </p>
-        <div className="mt-4 flex flex-col gap-2">
-          <Button variant="secondary" onClick={() => imprimirNota(os)}>
-            <Printer className="size-4" /> Imprimir nota
-          </Button>
-          <Button onClick={() => onEntregar(true)}>
-            <Printer className="size-4" /> Imprimir comprovante e entregar
-          </Button>
-          <Button variant="outline" onClick={() => onEntregar(false)}>
-            Entregar sem imprimir
-          </Button>
-        </div>
       </DialogContent>
     </Dialog>
   );
@@ -630,7 +525,6 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
         paciente: f.paciente.trim(),
         dentista: f.dentista.trim() || null,
         item: servico?.nome ?? null,
-        valor: servico?.valor ?? null,
         elementos,
         cor: f.cor || null,
         convenio: f.convenio.trim() || null,
@@ -638,7 +532,8 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
         laboratorio_destino: f.laboratorio_destino.trim() || null,
         data_entrega: f.data_entrega,
         observacoes: f.observacoes.trim() || null,
-        lab_status: "Pendente",
+        lab_status: "Recebida",
+        status: "Recebida",
       })
       .select("id")
       .single();
@@ -647,7 +542,7 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
       toast.error("Não foi possível criar a O.S.", { description: error?.message });
       return;
     }
-    await registrarEvento(data.id, "Pendente", "O.S. criada pelo laboratório");
+    await registrarEvento(data.id, "Recebida", "O.S. recebida");
     setSalvando(false);
     toast.success("O.S. criada");
     onSaved();
@@ -715,12 +610,12 @@ function NovaOS({ onClose, onSaved }: { onClose: () => void; onSaved: () => void
             <Label>Serviço</Label>
             <Select value={f.servico} onValueChange={(v) => set("servico", v)}>
               <SelectTrigger>
-                <SelectValue placeholder="Tabela de valores" />
+                <SelectValue placeholder="Selecione o serviço" />
               </SelectTrigger>
               <SelectContent>
                 {servicos.map((s) => (
                   <SelectItem key={s.id} value={s.id}>
-                    {s.nome} — {formatarMoeda(s.valor)}
+                    {s.nome}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -807,39 +702,3 @@ function fichaHtml(os: OS, tecnico?: string): string {
   ]);
 }
 
-function imprimirNota(os: OS) {
-  const w = window.open("", "_blank", "width=780,height=900");
-  if (!w) return;
-  w.document.write(
-    fichaBase("Nota de serviço", os, [
-      `<b>Cliente</b><span>${os.clinics?.nome ?? "—"}</span>`,
-      `<b>Paciente</b><span>${os.paciente}</span>`,
-      `<b>Serviço</b><span>${os.item ?? "—"}</span>`,
-      `<b>Elementos</b><span>${(os.elementos ?? []).join(", ") || "—"}</span>`,
-      `<b>Convênio</b><span>${os.convenio ?? "—"}</span>`,
-      `<b>Valor</b><span class="tit">${formatarMoeda(os.valor)}</span>`,
-      `<b>Data</b><span>${new Date().toLocaleDateString("pt-BR")}</span>`,
-    ]),
-  );
-  w.document.close();
-  w.focus();
-  w.print();
-}
-
-function imprimirComprovante(os: OS) {
-  const w = window.open("", "_blank", "width=780,height=900");
-  if (!w) return;
-  w.document.write(
-    fichaBase("Comprovante de Entrega", os, [
-      `<b>Paciente</b><span>${os.paciente}</span>`,
-      `<b>Clínica</b><span>${os.clinics?.nome ?? "—"}</span>`,
-      `<b>Trabalho</b><span>${os.item ?? "—"}</span>`,
-      `<b>Valor</b><span>${formatarMoeda(os.valor)}</span>`,
-      `<b>Entregue em</b><span>${new Date().toLocaleDateString("pt-BR")}</span>`,
-      `<b>Recebido por</b><span>__________________________</span>`,
-    ]),
-  );
-  w.document.close();
-  w.focus();
-  w.print();
-}
