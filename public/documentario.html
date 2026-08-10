@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flávio Bolsonaro: Além do sobrenome</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#000;--panel:#0a0a0a;--panel-2:#141414;--border:#1f1f1f;
+    --text:#fff;--text-2:#a3a3a3;--text-3:#666;
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;background:var(--bg)}
+  .brand{font-size:.95rem;font-weight:600;letter-spacing:.01em}
+  .brand span{color:var(--text-3);font-weight:400;margin-left:6px}
+  .top-actions{display:flex;gap:14px;align-items:center;color:var(--text-2)}
+  #logout-btn{background:transparent;border:1px solid var(--border);color:var(--text-2);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.82rem;transition:all .15s ease;display:none}
+  #logout-btn:hover{border-color:var(--text);color:var(--text)}
+  .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#333,#111);border:1px solid var(--border);display:grid;place-items:center;font-size:.72rem;color:var(--text-2);font-weight:600}
+
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:0;min-height:calc(100vh - 65px)}
+  @media (max-width:960px){.layout{grid-template-columns:1fr}}
+  main{padding:28px 32px 60px}
+  @media (max-width:640px){main{padding:20px 16px 40px}}
+
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--border);overflow:hidden}
+  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .video-locked{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--text-3);gap:10px}
+  .video-locked .lock{font-size:2rem;opacity:.5}
+
+  .lesson-info{padding:26px 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+  .lesson-meta .module-label{font-size:.72rem;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;margin-bottom:10px;font-weight:600}
+  .lesson-meta h1{font-size:1.6rem;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+  .lesson-meta p{color:var(--text-2);font-size:.95rem;margin-top:10px;max-width:60ch;line-height:1.55}
+
+  aside{border-left:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column}
+  .side-head{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;border-bottom:1px solid var(--border)}
+  .side-head h2{font-size:1rem;font-weight:600;letter-spacing:.01em}
+  .module-block{border-bottom:1px solid var(--border)}
+  .module-header{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;user-select:none}
+  .module-header .name{font-size:.95rem;font-weight:500}
+  .module-header .right{display:flex;align-items:center;gap:12px;color:var(--text-3);font-size:.82rem}
+  .lesson-list{list-style:none;padding:4px 0 10px}
+  .lesson{display:flex;align-items:center;gap:12px;padding:12px 22px;border-left:2px solid var(--text);background:var(--panel-2)}
+  .lesson-check{width:20px;height:20px;border:1.5px solid var(--text);background:var(--text);border-radius:4px;flex-shrink:0;display:grid;place-items:center}
+  .lesson-check::after{content:"";width:6px;height:10px;border-right:2px solid #000;border-bottom:2px solid #000;transform:rotate(45deg) translate(-1px,-1px)}
+  .lesson-title{font-size:.9rem;color:var(--text);flex:1}
+  .lesson-title small{display:block;color:var(--text-3);font-size:.78rem;margin-top:2px}
+  @media (max-width:960px){aside{border-left:none;border-top:1px solid var(--border)}}
+
+  /* ---------- LOGIN OVERLAY ---------- */
+  .gate{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.92);backdrop-filter:blur(6px);display:none;place-items:center;padding:20px}
+  .gate.show{display:grid}
+  .gate-card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:34px 30px;text-align:center}
+  .gate-card h2{font-size:1.3rem;font-weight:600;margin-bottom:8px}
+  .gate-card p{color:var(--text-2);font-size:.9rem;line-height:1.55;margin-bottom:22px}
+  .gate-card input{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:13px 15px;border-radius:10px;font-size:.95rem;margin-bottom:12px;outline:none}
+  .gate-card input:focus{border-color:var(--text-2)}
+  .gate-card button.primary{width:100%;background:var(--text);color:#000;border:none;padding:13px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:opacity .15s ease}
+  .gate-card button.primary:hover{opacity:.85}
+  .gate-card button.primary:disabled{opacity:.5;cursor:default}
+  .gate-msg{font-size:.85rem;margin-top:16px;line-height:1.5;min-height:1em}
+  .gate-msg.err{color:#ff6b6b}
+  .gate-msg.ok{color:#51cf66}
+  .gate-foot{margin-top:20px;font-size:.8rem;color:var(--text-3)}
+  .gate-foot a{color:var(--text-2)}
+  .buy-btn{display:inline-block;margin-top:14px;background:var(--text);color:#000;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:.9rem}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">Flávio Bolsonaro <span>· Além do sobrenome</span></div>
+  <div class="top-actions">
+    <button id="logout-btn">Sair</button>
+    <div class="avatar" aria-hidden="true">FB</div>
+  </div>
+</header>
+
+<div class="layout">
+  <main>
+    <div class="video-wrap" id="video-wrap">
+      <div class="video-locked" id="video-locked">
+        <div class="lock">🔒</div>
+        <div>Faça login para assistir ao documentário.</div>
+      </div>
+    </div>
+
+    <div class="lesson-info">
+      <div class="lesson-meta">
+        <div class="module-label">Módulo · Documentário</div>
+        <h1>Flávio Bolsonaro: Além do sobrenome</h1>
+        <p>Um retrato em profundidade da trajetória política e pessoal de Flávio Bolsonaro — bastidores, decisões e o peso de carregar um sobrenome que divide o país.</p>
+      </div>
+    </div>
+  </main>
+
+  <aside>
+    <div class="side-head"><h2>Aulas</h2></div>
+    <div class="module-block">
+      <div class="module-header">
+        <div class="name">Documentário</div>
+        <div class="right"><span>1/1</span></div>
+      </div>
+      <ul class="lesson-list">
+        <li class="lesson">
+          <div class="lesson-check"></div>
+          <div class="lesson-title">Documentário<small>28 min</small></div>
+        </li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<!-- LOGIN / ACESSO -->
+<div class="gate" id="gate">
+  <div class="gate-card" id="gate-card">
+    <h2 id="gate-title">Área do comprador</h2>
+    <p id="gate-sub">Digite o e-mail que você usou na compra. Enviaremos um link de acesso para ele.</p>
+    <form id="gate-form">
+      <input id="gate-email" type="email" placeholder="seu@email.com" autocomplete="email" required />
+      <button class="primary" id="gate-submit" type="submit">Receber link de acesso</button>
+    </form>
+    <div class="gate-msg" id="gate-msg"></div>
+    <div class="gate-foot">
+      Ainda não comprou? <a id="gate-buy" href="#" target="_blank" rel="noopener">Comprar o documentário</a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+/* =================== CONFIGURAÇÃO =================== */
+const SUPABASE_URL = "https://mogorljqeklpsoknoiia.supabase.co";
+const SUPABASE_KEY = "sb_publishable_kqIchqC9AZFPF-KJhI3XkQ_CO3BWywn";
+
+// >>> COLE AQUI o ID do vídeo do YouTube (modo "não listado").
+// Ex.: se a URL é https://youtu.be/AbCdEf12345  ->  YOUTUBE_ID = "AbCdEf12345"
+const YOUTUBE_ID = "";
+
+// >>> COLE AQUI o link de checkout da Cakto (para o botão "Comprar").
+const CHECKOUT_URL = "";
+/* =================================================== */
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+});
+
+const gate = document.getElementById("gate");
+const gateForm = document.getElementById("gate-form");
+const gateEmail = document.getElementById("gate-email");
+const gateSubmit = document.getElementById("gate-submit");
+const gateMsg = document.getElementById("gate-msg");
+const gateTitle = document.getElementById("gate-title");
+const gateSub = document.getElementById("gate-sub");
+const gateBuy = document.getElementById("gate-buy");
+const logoutBtn = document.getElementById("logout-btn");
+const videoWrap = document.getElementById("video-wrap");
+const videoLocked = document.getElementById("video-locked");
+
+if (CHECKOUT_URL) gateBuy.href = CHECKOUT_URL;
+
+function showGate(show){ gate.classList.toggle("show", show); }
+function setMsg(text, type){ gateMsg.textContent = text || ""; gateMsg.className = "gate-msg" + (type ? " " + type : ""); }
+
+function mostrarVideo(){
+  showGate(false);
+  logoutBtn.style.display = "inline-block";
+  if (YOUTUBE_ID){
+    videoWrap.innerHTML =
+      '<iframe src="https://www.youtube-nocookie.com/embed/' + YOUTUBE_ID +
+      '?rel=0&modestbranding=1" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
+  } else {
+    videoLocked.innerHTML = '<div class="lock">🎬</div><div>Acesso liberado! O vídeo aparece aqui assim que o link do YouTube for configurado.</div>';
+  }
+}
+
+function semAcesso(email){
+  gateTitle.textContent = "Compra não encontrada";
+  gateSub.innerHTML = "Não encontramos uma compra ativa para <b>" + email +
+    "</b>.<br>Confira se usou o mesmo e-mail da compra." +
+    (CHECKOUT_URL ? '<br><a class="buy-btn" href="' + CHECKOUT_URL + '" target="_blank" rel="noopener">Comprar o documentário</a>' : "");
+  gateForm.style.display = "none";
+  document.querySelector(".gate-foot").style.display = "none";
+  setMsg("");
+  const sair = document.createElement("button");
+  sair.className = "primary"; sair.textContent = "Usar outro e-mail";
+  sair.style.marginTop = "8px";
+  sair.onclick = async () => { await supabase.auth.signOut(); location.reload(); };
+  document.getElementById("gate-card").appendChild(sair);
+  showGate(true);
+}
+
+async function checarAcesso(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session){ showGate(true); return; }
+
+  const email = session.user.email;
+  const { data, error } = await supabase
+    .from("documentario_acessos")
+    .select("status")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error){ setMsg("Erro ao verificar acesso. Tente novamente.", "err"); showGate(true); return; }
+  if (data && data.status === "ativo"){ mostrarVideo(); }
+  else { semAcesso(email); }
+}
+
+gateForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = gateEmail.value.trim().toLowerCase();
+  if (!email) return;
+  gateSubmit.disabled = true;
+  setMsg("Enviando...", "");
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      shouldCreateUser: false,               // só compradores (criados pelo webhook) recebem o link
+      emailRedirectTo: window.location.origin + window.location.pathname,
+    },
+  });
+  gateSubmit.disabled = false;
+  if (error){
+    // usuário inexistente = e-mail que não comprou
+    if (/signup|not.*allow|user.*not.*found|otp_disabled/i.test(error.message)){
+      setMsg("Não encontramos esse e-mail entre as compras. Use o mesmo e-mail da compra na Cakto.", "err");
+    } else {
+      setMsg(error.message, "err");
+    }
+    return;
+  }
+  setMsg("Pronto! Enviamos um link de acesso para o seu e-mail. Abra e clique para entrar. (Verifique também o spam.)", "ok");
+});
+
+logoutBtn.addEventListener("click", async () => { await supabase.auth.signOut(); location.reload(); });
+
+supabase.auth.onAuthStateChange((event) => {
+  if (event === "SIGNED_IN") checarAcesso();
+});
+
+checarAcesso();
+</script>
+</body>
+</html>
