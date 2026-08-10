@@ -60,11 +60,13 @@
     overflow:hidden;
   }
   .video-wrap video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
+  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   .video-placeholder{
     position:absolute;inset:0;display:grid;place-items:center;
     color:var(--text-3);font-size:.9rem;pointer-events:none;
-    text-align:center;padding:20px;
+    text-align:center;padding:20px;line-height:1.6;
   }
+  .video-placeholder code{color:var(--text);background:var(--panel-2);padding:2px 6px;border-radius:4px;font-size:.82rem}
 
   .lesson-info{
     padding:26px 0 0;
@@ -178,13 +180,28 @@
 
   <!-- MAIN -->
   <main>
-    <div class="video-wrap">
-      <video controls poster="" preload="metadata">
-        <!-- Troque o src abaixo pelo link do seu vídeo (mp4 hospedado, Bunny, Vimeo direct, etc.) -->
-        <source src="" type="video/mp4">
-        Seu navegador não suporta reprodução de vídeo.
-      </video>
-      <div class="video-placeholder">Adicione o link do vídeo no atributo <b style="color:var(--text)">src</b> da tag &lt;source&gt;.</div>
+    <div class="video-wrap" id="video-wrap">
+      <!--
+        ===================== PANDA VIDEO =====================
+        COMO ATIVAR SEU VÍDEO:
+        1. Suba o documentário no Panda Video (pandavideo.com.br).
+        2. No Panda, clique em "Compartilhar" > "Embed" e copie o código <iframe> gerado.
+        3. Cole o <iframe> do Panda AQUI, no lugar da div .video-placeholder abaixo.
+           (O CSS já deixa o iframe ocupando 100% do player automaticamente.)
+
+        Exemplo do que o Panda te dá (troque pelo SEU):
+        <iframe src="https://player-vz-XXXX.tv.pandavideo.com.br/embed/?v=SEU-VIDEO-ID"
+                allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
+                allowfullscreen></iframe>
+
+        DICA: ative a marca d'água com e-mail/CPF do comprador nas configurações do vídeo
+        no painel do Panda — é o que protege contra pirataria.
+        =======================================================
+      -->
+      <div class="video-placeholder">
+        Cole aqui o <code>&lt;iframe&gt;</code> do <b style="color:var(--text)">Panda Video</b>.<br>
+        Abra o arquivo e siga as instruções no comentário acima desta linha.
+      </div>
     </div>
 
     <div class="lesson-info">
