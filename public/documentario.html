@@ -233,7 +233,7 @@ gateForm.addEventListener("submit", async (e) => {
     }
     return;
   }
-  setMsg("Pronto! Enviamos um link de acesso para o seu e-mail. Abra e clique para entrar. (Verifique também o spam.)", "ok");
+  setMsg("Pronto! Enviamos um e-mail com o seu link de acesso (o assunto chega em inglês: \"Your sign-in link\"). Abra e clique em \"Sign in\" para entrar. Verifique também a caixa de spam/promoções.", "ok");
 });
 
 logoutBtn.addEventListener("click", async () => { await supabase.auth.signOut(); location.reload(); });
