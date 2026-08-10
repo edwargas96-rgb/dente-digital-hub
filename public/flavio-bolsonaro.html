@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flávio Bolsonaro: Além do sobrenome</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#000;
+    --panel:#0a0a0a;
+    --panel-2:#141414;
+    --border:#1f1f1f;
+    --text:#fff;
+    --text-2:#a3a3a3;
+    --text-3:#666;
+    --accent:#fff;
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+
+  /* -------- TOP BAR -------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:20;background:var(--bg);
+  }
+  .brand{font-size:.95rem;font-weight:600;letter-spacing:.01em}
+  .brand span{color:var(--text-3);font-weight:400;margin-left:6px}
+  .top-actions{display:flex;gap:14px;align-items:center;color:var(--text-2)}
+  .top-actions button{
+    background:transparent;border:1px solid var(--border);color:var(--text-2);
+    width:34px;height:34px;border-radius:50%;cursor:pointer;
+    display:grid;place-items:center;transition:all .15s ease;
+  }
+  .top-actions button:hover{border-color:var(--text);color:var(--text)}
+  .avatar{
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg,#333,#111);
+    border:1px solid var(--border);
+    display:grid;place-items:center;font-size:.72rem;color:var(--text-2);font-weight:600;
+  }
+
+  /* -------- LAYOUT -------- */
+  .layout{
+    display:grid;grid-template-columns:1fr 360px;gap:0;
+    min-height:calc(100vh - 65px);
+  }
+  @media (max-width:960px){
+    .layout{grid-template-columns:1fr}
+  }
+
+  /* -------- MAIN -------- */
+  main{padding:28px 32px 60px}
+  @media (max-width:640px){ main{padding:20px 16px 40px} }
+
+  .video-wrap{
+    position:relative;width:100%;
+    aspect-ratio:16/9;background:#000;
+    border:1px solid var(--border);
+    overflow:hidden;
+  }
+  .video-wrap video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
+  .video-placeholder{
+    position:absolute;inset:0;display:grid;place-items:center;
+    color:var(--text-3);font-size:.9rem;pointer-events:none;
+    text-align:center;padding:20px;
+  }
+
+  .lesson-info{
+    padding:26px 0 0;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:24px;
+    flex-wrap:wrap;
+  }
+  .lesson-meta .module-label{
+    font-size:.72rem;letter-spacing:.14em;color:var(--text-3);
+    text-transform:uppercase;margin-bottom:10px;font-weight:600;
+  }
+  .lesson-meta h1{
+    font-size:1.6rem;font-weight:600;letter-spacing:-.01em;line-height:1.2;
+  }
+  .lesson-meta p{color:var(--text-2);font-size:.95rem;margin-top:10px;max-width:60ch;line-height:1.55}
+
+  .rating{display:flex;gap:2px;padding-top:6px}
+  .rating button{
+    background:transparent;border:none;color:var(--text-3);cursor:pointer;
+    font-size:1.4rem;line-height:1;padding:2px;transition:color .15s ease;
+  }
+  .rating button:hover,.rating button:hover ~ button{color:var(--text-3)}
+  .rating:hover button{color:var(--text)}
+  .rating button:hover ~ button{color:var(--text-3) !important}
+  .rating button.active{color:var(--text)}
+
+  /* -------- SIDEBAR -------- */
+  aside{
+    border-left:1px solid var(--border);
+    background:var(--panel);
+    display:flex;flex-direction:column;
+  }
+  .side-head{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:20px 22px;border-bottom:1px solid var(--border);
+  }
+  .side-head h2{font-size:1rem;font-weight:600;letter-spacing:.01em}
+  .side-close{
+    background:transparent;border:none;color:var(--text-2);cursor:pointer;
+    font-size:1.2rem;line-height:1;padding:4px;
+  }
+  .side-close:hover{color:var(--text)}
+
+  .module-block{border-bottom:1px solid var(--border)}
+  .module-header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:16px 22px;cursor:pointer;user-select:none;
+    transition:background .15s ease;
+  }
+  .module-header:hover{background:var(--panel-2)}
+  .module-header .name{font-size:.95rem;font-weight:500}
+  .module-header .right{
+    display:flex;align-items:center;gap:12px;color:var(--text-3);font-size:.82rem;
+  }
+  .module-header .chev{
+    display:inline-block;transition:transform .2s ease;font-size:.72rem;color:var(--text-2);
+  }
+  .module-block.collapsed .chev{transform:rotate(-90deg)}
+  .module-block.collapsed .lesson-list{display:none}
+
+  .lesson-list{list-style:none;padding:4px 0 10px}
+  .lesson{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 22px;cursor:pointer;
+    transition:background .15s ease;
+    border-left:2px solid transparent;
+  }
+  .lesson:hover{background:var(--panel-2)}
+  .lesson.active{background:var(--panel-2);border-left-color:var(--text)}
+
+  .lesson-check{
+    width:20px;height:20px;border:1.5px solid var(--text-3);
+    border-radius:4px;flex-shrink:0;
+    display:grid;place-items:center;
+    transition:all .15s ease;
+  }
+  .lesson-check.done{background:var(--text);border-color:var(--text)}
+  .lesson-check.done::after{
+    content:"";width:6px;height:10px;
+    border-right:2px solid #000;border-bottom:2px solid #000;
+    transform:rotate(45deg) translate(-1px,-1px);
+  }
+  .lesson-title{font-size:.9rem;color:var(--text);flex:1}
+  .lesson-title small{display:block;color:var(--text-3);font-size:.78rem;margin-top:2px}
+
+  /* focus states */
+  button:focus-visible,.lesson:focus-visible,.module-header:focus-visible{
+    outline:2px solid var(--text);outline-offset:2px;
+  }
+
+  /* mobile: sidebar becomes a block below */
+  @media (max-width:960px){
+    aside{border-left:none;border-top:1px solid var(--border)}
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="brand">Flávio Bolsonaro <span>· Além do sobrenome</span></div>
+  <div class="top-actions">
+    <button aria-label="Buscar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    </button>
+    <div class="avatar" aria-hidden="true">FB</div>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- MAIN -->
+  <main>
+    <div class="video-wrap">
+      <video controls poster="" preload="metadata">
+        <!-- Troque o src abaixo pelo link do seu vídeo (mp4 hospedado, Bunny, Vimeo direct, etc.) -->
+        <source src="" type="video/mp4">
+        Seu navegador não suporta reprodução de vídeo.
+      </video>
+      <div class="video-placeholder">Adicione o link do vídeo no atributo <b style="color:var(--text)">src</b> da tag &lt;source&gt;.</div>
+    </div>
+
+    <div class="lesson-info">
+      <div class="lesson-meta">
+        <div class="module-label">Módulo · Documentário</div>
+        <h1 id="current-title">Flávio Bolsonaro: Além do sobrenome</h1>
+        <p id="current-desc">Um retrato em profundidade da trajetória política e pessoal de Flávio Bolsonaro — bastidores, decisões e o peso de carregar um sobrenome que divide o país.</p>
+      </div>
+
+      <div class="rating" role="radiogroup" aria-label="Avalie esta aula">
+        <button data-star="1" aria-label="1 estrela">★</button>
+        <button data-star="2" aria-label="2 estrelas">★</button>
+        <button data-star="3" aria-label="3 estrelas">★</button>
+        <button data-star="4" aria-label="4 estrelas">★</button>
+        <button data-star="5" aria-label="5 estrelas">★</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="side-head">
+      <h2>Aulas</h2>
+      <button class="side-close" aria-label="Fechar">✕</button>
+    </div>
+
+    <div class="module-block">
+      <div class="module-header" role="button" tabindex="0">
+        <div class="name">Documentário</div>
+        <div class="right">
+          <span>1/1</span>
+          <span class="chev">▾</span>
+        </div>
+      </div>
+      <ul class="lesson-list">
+        <li class="lesson active" tabindex="0" data-title="Flávio Bolsonaro: Além do sobrenome" data-desc="Um retrato em profundidade da trajetória política e pessoal de Flávio Bolsonaro — bastidores, decisões e o peso de carregar um sobrenome que divide o país.">
+          <div class="lesson-check done" role="checkbox" aria-checked="true"></div>
+          <div class="lesson-title">
+            Documentário
+            <small>28 min</small>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  // toggle module collapse
+  document.querySelectorAll('.module-header').forEach(h=>{
+    const toggle = () => h.parentElement.classList.toggle('collapsed');
+    h.addEventListener('click', toggle);
+    h.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
+  });
+
+  // toggle checkbox on lesson (independent from selecting the lesson)
+  document.querySelectorAll('.lesson-check').forEach(c=>{
+    c.addEventListener('click', e=>{
+      e.stopPropagation();
+      c.classList.toggle('done');
+      c.setAttribute('aria-checked', c.classList.contains('done'));
+    });
+  });
+
+  // click lesson → set active + swap title/desc
+  document.querySelectorAll('.lesson').forEach(li=>{
+    const select = () => {
+      document.querySelectorAll('.lesson').forEach(x=>x.classList.remove('active'));
+      li.classList.add('active');
+      const t = li.dataset.title, d = li.dataset.desc;
+      if(t) document.getElementById('current-title').textContent = t;
+      if(d) document.getElementById('current-desc').textContent = d;
+      // scroll video into view on mobile
+      if(window.innerWidth < 960) document.querySelector('.video-wrap').scrollIntoView({behavior:'smooth', block:'start'});
+    };
+    li.addEventListener('click', select);
+    li.addEventListener('keydown', e => { if(e.key==='Enter'){ select(); }});
+  });
+
+  // simple star rating
+  const stars = document.querySelectorAll('.rating button');
+  let rating = 0;
+  stars.forEach((s, i)=>{
+    s.addEventListener('click', ()=>{
+      rating = i+1;
+      stars.forEach((x, j)=> x.classList.toggle('active', j < rating));
+    });
+  });
+
+  // close sidebar (visual only — collapses on click)
+  document.querySelector('.side-close').addEventListener('click', ()=>{
+    const aside = document.querySelector('aside');
+    aside.style.display = 'none';
+    document.querySelector('.layout').style.gridTemplateColumns = '1fr';
+  });
+</script>
+</body>
+</html>
