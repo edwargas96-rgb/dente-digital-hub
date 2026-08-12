@@ -173,6 +173,33 @@
   footer .flagstripe{margin-bottom:24px}
   footer p{max-width:70ch;margin:8px auto}
   footer a{color:#a9c2af}
+
+  /* ===== QUIZ ===== */
+  .quiz-wrap{max-width:620px;margin:40px auto 0}
+  .quiz-card{background:var(--white);border:2px solid var(--amarelo);border-radius:20px;padding:30px 26px;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative;overflow:hidden}
+  .quiz-bar{height:9px;background:#e9efe6;border-radius:99px;overflow:hidden;margin-bottom:10px}
+  .quiz-bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--verde),var(--amarelo));transition:width .4s ease}
+  .quiz-meta{display:flex;justify-content:space-between;font-size:.82rem;font-weight:800;color:var(--muted);margin-bottom:18px}
+  .quiz-meta .pts{color:var(--verde)}
+  .quiz-q{font-family:'Anton';font-size:clamp(1.3rem,4vw,1.6rem);line-height:1.12;margin-bottom:20px;color:var(--ink);text-transform:none}
+  .quiz-opts{display:grid;gap:10px}
+  .quiz-opt{text-align:left;background:var(--paper);border:2px solid #e3e8df;border-radius:12px;padding:14px 16px;font-size:1rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s ease;font-family:'Inter',sans-serif}
+  .quiz-opt:hover:not(:disabled){border-color:var(--verde);transform:translateY(-1px)}
+  .quiz-opt.correct{background:#e6f7ec;border-color:var(--verde);color:var(--verde-esc)}
+  .quiz-opt.wrong{background:#fdecec;border-color:#e05252;color:#b83232}
+  .quiz-opt:disabled{cursor:default}
+  .quiz-feedback{text-align:center;font-weight:800;margin-top:16px;min-height:1.3em;font-size:1.05rem}
+  .quiz-feedback.ok{color:var(--verde)}
+  .quiz-feedback.no{color:#b83232}
+  .quiz-streak{text-align:center;font-size:.85rem;color:var(--amarelo-esc);font-weight:800;min-height:1.1em}
+  .quiz-result{text-align:center}
+  .quiz-result .score{font-family:'Anton';font-size:3.6rem;color:var(--verde);line-height:1}
+  .quiz-result h3{font-size:1.7rem;color:var(--ink);margin:6px 0 8px}
+  .quiz-result .rmsg{color:var(--muted);margin:0 auto 18px;max-width:44ch}
+  .quiz-reward{background:linear-gradient(180deg,#fff9e0,#fff);border:2px dashed var(--verde);border-radius:14px;padding:18px 16px;margin:0 0 22px;color:var(--ink)}
+  .quiz-reward b{color:var(--verde-esc)}
+  .confetti{position:absolute;top:-24px;font-size:1.3rem;will-change:transform;animation:qfall linear forwards;pointer-events:none;z-index:2}
+  @keyframes qfall{to{transform:translateY(480px) rotate(540deg);opacity:0}}
 </style>
 </head>
 <body>
@@ -258,6 +285,25 @@
       <div class="quote"><div class="stars">★★★★★</div><p>"Conteúdo de verdade, sem a manipulação de sempre. Recomendo para todo brasileiro que gosta de política."</p><div class="who"><div class="ava">AS</div><div><b>Ana S.</b><small>São Paulo</small></div></div></div>
       <div class="quote"><div class="stars">★★★★★</div><p>"Comprei, recebi o acesso na hora e assisti no meu celular. Simples e direto. Nota 10."</p><div class="who"><div class="ava">RC</div><div><b>Ricardo C.</b><small>Paraná</small></div></div></div>
       <div class="quote"><div class="stars">★★★★★</div><p>"Vale muito a pena. Aprendi coisas que a TV nunca mostrou. Já indiquei para os amigos do grupo."</p><div class="who"><div class="ava">MF</div><div><b>Marcos F.</b><small>Rio de Janeiro</small></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-tag">Desafio patriota</div>
+    <h2 class="sec-title" style="color:#fff">Você é <span class="y">raiz</span> mesmo?</h2>
+    <p class="lead" style="color:#bfe0c8">Responda o quiz relâmpago e prove que é patriota de verdade. No final tem uma recompensa. 🇧🇷</p>
+    <div class="quiz-wrap">
+      <div class="quiz-card" id="quiz-card">
+        <div class="quiz-bar"><i id="quiz-fill"></i></div>
+        <div class="quiz-meta"><span id="quiz-count">Pergunta 1</span><span class="pts" id="quiz-pts">0 pts</span></div>
+        <div class="quiz-q" id="quiz-q"></div>
+        <div class="quiz-opts" id="quiz-opts"></div>
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+        <div class="quiz-streak" id="quiz-streak"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -389,6 +435,103 @@
   })();
 
   document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+
+<script>
+(function(){
+  var QUIZ=[
+    {q:"Quais são as cores da bandeira do Brasil?",o:["Verde, amarelo, azul e branco","Vermelho, branco e azul","Preto e vermelho","Só verde e amarelo"],c:0},
+    {q:"O que está escrito na nossa bandeira?",o:["Ordem e Progresso","Independência ou Morte","Deus é por nós","Pátria Amada Brasil"],c:0},
+    {q:"Em que ano o Brasil se tornou uma República?",o:["1889","1822","1964","2018"],c:0},
+    {q:"O tripé de valores do brasileiro conservador é...",o:["Deus, Pátria e Família","Estado, Imposto e Mídia","Não existe","Prefiro não dizer"],c:0},
+    {q:"“Brasil acima de tudo, Deus acima de...”",o:["Todos","Ninguém","Alguns","—"],c:0},
+    {q:"Independência ou...?",o:["Morte!","Rendição","Recuo","Silêncio"],c:0},
+    {q:"Você defende a liberdade de expressão, SEM censura?",o:["Com certeza! 🔥","Não","Tanto faz","Só às vezes"],c:0},
+    {q:"Pronto pra ver a verdade que a grande mídia esconde?",o:["SIM! Bora assistir 🇧🇷","Não","Talvez","Prefiro ficar na bolha"],c:0}
+  ];
+  var i=0,pts=0,streak=0,best=0,answered=false;
+  var card=document.getElementById('quiz-card');
+  var elFill=document.getElementById('quiz-fill');
+  var elCount=document.getElementById('quiz-count');
+  var elPts=document.getElementById('quiz-pts');
+  var elQ=document.getElementById('quiz-q');
+  var elOpts=document.getElementById('quiz-opts');
+  var elFb=document.getElementById('quiz-feedback');
+  var elStreak=document.getElementById('quiz-streak');
+
+  function render(){
+    answered=false;
+    var item=QUIZ[i];
+    elFill.style.width=((i)/QUIZ.length*100)+'%';
+    elCount.textContent='Pergunta '+(i+1)+'/'+QUIZ.length;
+    elPts.textContent=pts+' pts';
+    elQ.textContent=item.q;
+    elFb.textContent=''; elFb.className='quiz-feedback';
+    elStreak.textContent= streak>1 ? ('Sequência '+streak+' 🔥') : '';
+    elOpts.innerHTML='';
+    item.o.forEach(function(txt,idx){
+      var b=document.createElement('button');
+      b.className='quiz-opt'; b.type='button'; b.textContent=txt;
+      b.onclick=function(){answer(idx,b);};
+      elOpts.appendChild(b);
+    });
+  }
+
+  function answer(idx,btn){
+    if(answered) return; answered=true;
+    var item=QUIZ[i];
+    var btns=elOpts.querySelectorAll('.quiz-opt');
+    btns.forEach(function(b){b.disabled=true;});
+    if(idx===item.c){
+      btn.classList.add('correct');
+      pts+=10; streak++; if(streak>best)best=streak;
+      elFb.textContent='Resposta certa! +10 🔥'; elFb.className='quiz-feedback ok';
+    } else {
+      btn.classList.add('wrong');
+      btns[item.c].classList.add('correct');
+      streak=0;
+      elFb.textContent='Quase! A certa está em verde.'; elFb.className='quiz-feedback no';
+    }
+    elPts.textContent=pts+' pts';
+    elStreak.textContent= streak>1 ? ('Sequência '+streak+' 🔥') : '';
+    elFill.style.width=((i+1)/QUIZ.length*100)+'%';
+    setTimeout(function(){ i++; if(i<QUIZ.length){render();} else {result();} }, 850);
+  }
+
+  function confete(){
+    var em=['🇧🇷','⭐','🎉','💚','💛','🔥'];
+    for(var k=0;k<34;k++){
+      (function(k){
+        var s=document.createElement('span');
+        s.className='confetti'; s.textContent=em[k%em.length];
+        s.style.left=(Math.random()*100)+'%';
+        s.style.animationDuration=(1.6+Math.random()*1.8)+'s';
+        s.style.animationDelay=(Math.random()*0.5)+'s';
+        card.appendChild(s);
+        setTimeout(function(){s.remove();},4200);
+      })(k);
+    }
+  }
+
+  function result(){
+    elFill.style.width='100%';
+    var total=QUIZ.length*10;
+    var titulo, msg;
+    if(pts>=total){ titulo='PATRIOTA RAIZ! 🇧🇷'; msg='Você gabaritou! Ninguém te engana. O Brasil precisa de gente como você.'; }
+    else if(pts>=total*0.7){ titulo='Muito bom, patriota!'; msg='Você manja do assunto — mas ainda tem verdade que a mídia esconde de você.'; }
+    else { titulo='Tá quase!'; msg='Bora se aprofundar de verdade. Tem muita coisa que te contaram errado.'; }
+    card.innerHTML='<div class="quiz-result">'+
+      '<div class="score">'+pts+'/'+total+'</div>'+
+      '<h3>'+titulo+'</h3>'+
+      '<p class="rmsg">'+msg+'</p>'+
+      '<div class="quiz-reward">🎁 <b>Recompensa desbloqueada:</b> você garantiu o preço de lançamento — <b>R$ 19,90</b> com o cupom <b>SEMCENSURA</b> já aplicado.</div>'+
+      '<a href="#comprar" class="cta gold big" style="width:100%">Resgatar meu acesso ▸</a>'+
+      '</div>';
+    confete();
+  }
+
+  render();
+})();
 </script>
 </body>
 </html>
