@@ -224,7 +224,7 @@
     </div>
 
     <div style="margin-top:30px">
-      <a href="#comprar" class="cta big">Quero assistir agora ▸</a>
+      <a href="#quiz" class="cta big">Liberar meu acesso ▸</a>
       <div class="cta-note">
         <span>Compra 100% segura</span>
         <span>Acesso vitalício</span>
@@ -256,7 +256,7 @@
       <div class="bullet"><span class="ck"></span><div><b>Depoimentos e imagens</b> que ajudam a entender o Brasil dos últimos anos por dentro.</div></div>
     </div>
     <div style="text-align:center;margin-top:34px">
-      <a href="#comprar" class="cta gold">Garantir meu acesso ▸</a>
+      <a href="#quiz" class="cta gold">Fazer o teste patriota ▸</a>
     </div>
   </div>
 </section>
@@ -290,11 +290,11 @@
 </section>
 
 <!-- QUIZ -->
-<section class="band">
+<section class="band" id="quiz">
   <div class="wrap">
-    <div class="sec-tag">Desafio patriota</div>
-    <h2 class="sec-title" style="color:#fff">Você é <span class="y">raiz</span> mesmo?</h2>
-    <p class="lead" style="color:#bfe0c8">Responda o quiz relâmpago e prove que é patriota de verdade. No final tem uma recompensa. 🇧🇷</p>
+    <div class="sec-tag">Acesso exclusivo</div>
+    <h2 class="sec-title" style="color:#fff">Este documentário é <span class="y">só para patriotas</span></h2>
+    <p class="lead" style="color:#bfe0c8">Responda o teste e prove que você é de verdade. Só quem completa <b style="color:#fff">libera o acesso</b> ao documentário. 🇧🇷</p>
     <div class="quiz-wrap">
       <div class="quiz-card" id="quiz-card">
         <div class="quiz-bar"><i id="quiz-fill"></i></div>
@@ -308,8 +308,8 @@
   </div>
 </section>
 
-<!-- OFERTA -->
-<section id="comprar">
+<!-- OFERTA (revelada após o quiz) -->
+<section id="comprar" style="display:none">
   <div class="wrap">
     <div class="sec-tag">Oferta de lançamento</div>
     <h2 class="sec-title">Garanta o seu <span class="g">acesso</span> agora</h2>
@@ -351,8 +351,8 @@
   </div>
 </section>
 
-<!-- GARANTIA -->
-<section class="band" style="padding-top:0">
+<!-- GARANTIA (revelada após o quiz) -->
+<section class="band" id="garantia" style="padding-top:0;display:none">
   <div class="wrap">
     <div class="guarantee">
       <div class="seal"><div><span class="big">7</span><br>DIAS</div></div>
@@ -379,8 +379,8 @@
   </div>
 </section>
 
-<!-- CTA FINAL -->
-<section class="final">
+<!-- CTA FINAL (revelada após o quiz) -->
+<section class="final" id="final-cta" style="display:none">
   <div class="wrap narrow">
     <h2>Não deixe contarem <span class="y">essa história por você</span></h2>
     <p>Assista ao documentário que mostra o Brasil por dentro. Acesso imediato, vitalício e com garantia de 7 dias.</p>
@@ -440,14 +440,16 @@
 <script>
 (function(){
   var QUIZ=[
-    {q:"Quais são as cores da bandeira do Brasil?",o:["Verde, amarelo, azul e branco","Vermelho, branco e azul","Preto e vermelho","Só verde e amarelo"],c:0},
-    {q:"O que está escrito na nossa bandeira?",o:["Ordem e Progresso","Independência ou Morte","Deus é por nós","Pátria Amada Brasil"],c:0},
-    {q:"Em que ano o Brasil se tornou uma República?",o:["1889","1822","1964","2018"],c:0},
-    {q:"O tripé de valores do brasileiro conservador é...",o:["Deus, Pátria e Família","Estado, Imposto e Mídia","Não existe","Prefiro não dizer"],c:0},
+    {q:"Complete o lema: “Deus, Pátria, Família e ___”",o:["Liberdade","Igualdade","Revolução","Estado"],c:0},
     {q:"“Brasil acima de tudo, Deus acima de...”",o:["Todos","Ninguém","Alguns","—"],c:0},
-    {q:"Independência ou...?",o:["Morte!","Rendição","Recuo","Silêncio"],c:0},
-    {q:"Você defende a liberdade de expressão, SEM censura?",o:["Com certeza! 🔥","Não","Tanto faz","Só às vezes"],c:0},
-    {q:"Pronto pra ver a verdade que a grande mídia esconde?",o:["SIM! Bora assistir 🇧🇷","Não","Talvez","Prefiro ficar na bolha"],c:0}
+    {q:"Em que data o patriota vai às ruas de verde e amarelo?",o:["7 de Setembro","1º de Maio","20 de Novembro","1º de Abril"],c:0},
+    {q:"Quem é o patrono do Exército Brasileiro?",o:["Duque de Caxias","Tiradentes","Rui Barbosa","Dom Pedro II"],c:0},
+    {q:"O cidadão de bem tem o direito de se defender?",o:["Com certeza!","Não","Só o Estado pode","Sei lá"],c:0},
+    {q:"O que o conservador quer para a economia?",o:["Menos Estado, mais liberdade","Mais imposto","Tudo estatizado","Controle total"],c:0},
+    {q:"Você defende os valores cristãos e a família tradicional?",o:["Sim, com orgulho 🙏","Não","Tanto faz","Prefiro não dizer"],c:0},
+    {q:"Contra a censura e a favor da liberdade de expressão?",o:["Sempre! 🔥","Não","Depende","Só às vezes"],c:0},
+    {q:"O que representa o verde e amarelo pra você?",o:["Amor pela Pátria 🇧🇷","Só uma cor","Nada","Não sei"],c:0},
+    {q:"Pronto pra ver a verdade que a esquerda e a mídia escondem?",o:["SIM! Bora assistir 🇧🇷","Não","Talvez","Prefiro ficar na bolha"],c:0}
   ];
   var i=0,pts=0,streak=0,best=0,answered=false;
   var card=document.getElementById('quiz-card');
@@ -515,16 +517,17 @@
 
   function result(){
     elFill.style.width='100%';
+    ['comprar','garantia','final-cta'].forEach(function(id){var el=document.getElementById(id); if(el) el.style.display='';});
     var total=QUIZ.length*10;
     var titulo, msg;
-    if(pts>=total){ titulo='PATRIOTA RAIZ! 🇧🇷'; msg='Você gabaritou! Ninguém te engana. O Brasil precisa de gente como você.'; }
-    else if(pts>=total*0.7){ titulo='Muito bom, patriota!'; msg='Você manja do assunto — mas ainda tem verdade que a mídia esconde de você.'; }
-    else { titulo='Tá quase!'; msg='Bora se aprofundar de verdade. Tem muita coisa que te contaram errado.'; }
+    if(pts>=total){ titulo='PATRIOTA RAIZ! 🇧🇷'; msg='Você gabaritou! Acesso 100% liberado. O Brasil precisa de gente como você.'; }
+    else if(pts>=total*0.6){ titulo='Aprovado, patriota! ✅'; msg='Você provou que é dos nossos. Seu acesso ao documentário está liberado.'; }
+    else { titulo='Bem-vindo, patriota!'; msg='Você chegou até o fim — e é isso que importa. Seu acesso está liberado.'; }
     card.innerHTML='<div class="quiz-result">'+
       '<div class="score">'+pts+'/'+total+'</div>'+
       '<h3>'+titulo+'</h3>'+
       '<p class="rmsg">'+msg+'</p>'+
-      '<div class="quiz-reward">🎁 <b>Recompensa desbloqueada:</b> você garantiu o preço de lançamento — <b>R$ 19,90</b> com o cupom <b>SEMCENSURA</b> já aplicado.</div>'+
+      '<div class="quiz-reward">🔓 <b>Acesso liberado!</b> Você garantiu o preço de lançamento — <b>R$ 19,90</b> com o cupom <b>SEMCENSURA</b> já aplicado.</div>'+
       '<a href="#comprar" class="cta gold big" style="width:100%">Resgatar meu acesso ▸</a>'+
       '</div>';
     confete();
