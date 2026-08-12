@@ -252,7 +252,7 @@
       <div class="bullet"><span class="ck"></span><div><b>A trajetória completa</b> — do início da vida pública até se tornar uma das figuras mais influentes da política brasileira.</div></div>
       <div class="bullet"><span class="ck"></span><div><b>Os bastidores</b> das decisões, dos embates no Congresso e das articulações que o noticiário nunca mostrou.</div></div>
       <div class="bullet"><span class="ck"></span><div><b>O lado humano</b> — a família, a lealdade ao pai e o peso de viver sob os holofotes o tempo todo.</div></div>
-      <div class="bullet"><span class="ck"></span><div><b>A verdade sobre as polêmicas</b> — os dois lados da história, para você formar a sua própria opinião.</div></div>
+      <div class="bullet"><span class="ck"></span><div><b>A verdade sobre as polêmicas</b> — o outro lado que a esquerda e a grande mídia sempre esconderam de você.</div></div>
       <div class="bullet"><span class="ck"></span><div><b>Depoimentos e imagens</b> que ajudam a entender o Brasil dos últimos anos por dentro.</div></div>
     </div>
     <div style="text-align:center;margin-top:34px">
@@ -281,7 +281,7 @@
     <h2 class="sec-title" style="color:#fff">O que o <span class="y">povo</span> está dizendo</h2>
     <!-- ⚠️ TROQUE por depoimentos REAIS de compradores antes de divulgar -->
     <div class="quotes">
-      <div class="quote"><div class="stars">★★★★★</div><p>"Finalmente um material que mostra os dois lados. Assisti com a família toda, valeu cada centavo."</p><div class="who"><div class="ava">JM</div><div><b>João M.</b><small>Minas Gerais</small></div></div></div>
+      <div class="quote"><div class="stars">★★★★★</div><p>"Finalmente um material que conta a verdade sem a manipulação da imprensa. Assisti com a família toda, valeu cada centavo."</p><div class="who"><div class="ava">JM</div><div><b>João M.</b><small>Minas Gerais</small></div></div></div>
       <div class="quote"><div class="stars">★★★★★</div><p>"Conteúdo de verdade, sem a manipulação de sempre. Recomendo para todo brasileiro que gosta de política."</p><div class="who"><div class="ava">AS</div><div><b>Ana S.</b><small>São Paulo</small></div></div></div>
       <div class="quote"><div class="stars">★★★★★</div><p>"Comprei, recebi o acesso na hora e assisti no meu celular. Simples e direto. Nota 10."</p><div class="who"><div class="ava">RC</div><div><b>Ricardo C.</b><small>Paraná</small></div></div></div>
       <div class="quote"><div class="stars">★★★★★</div><p>"Vale muito a pena. Aprendi coisas que a TV nunca mostrou. Já indiquei para os amigos do grupo."</p><div class="who"><div class="ava">MF</div><div><b>Marcos F.</b><small>Rio de Janeiro</small></div></div></div>
@@ -394,7 +394,7 @@
 <footer>
   <div class="flagstripe"></div>
   <p><b style="color:#cfe3d4">Além do Sobrenome</b> — Documentário</p>
-  <p>Este produto não faz parte, não é afiliado e não representa nenhuma rede social ou plataforma de pagamento. Conteúdo de caráter jornalístico e informativo. As opiniões apresentadas não constituem fato consumado; o objetivo é informar e permitir que o espectador forme sua própria opinião.</p>
+  <p>Este produto não faz parte, não é afiliado e não representa nenhuma rede social ou plataforma de pagamento. Conteúdo de caráter jornalístico e opinativo, protegido pela liberdade de expressão.</p>
   <p>© <span id="year"></span> Todos os direitos reservados.</p>
 </footer>
 
@@ -440,16 +440,11 @@
 <script>
 (function(){
   var QUIZ=[
-    {q:"Complete o lema: “Deus, Pátria, Família e ___”",o:["Liberdade","Igualdade","Revolução","Estado"],c:0},
-    {q:"“Brasil acima de tudo, Deus acima de...”",o:["Todos","Ninguém","Alguns","—"],c:0},
-    {q:"Em que data o patriota vai às ruas de verde e amarelo?",o:["7 de Setembro","1º de Maio","20 de Novembro","1º de Abril"],c:0},
-    {q:"Quem é o patrono do Exército Brasileiro?",o:["Duque de Caxias","Tiradentes","Rui Barbosa","Dom Pedro II"],c:0},
-    {q:"O cidadão de bem tem o direito de se defender?",o:["Com certeza!","Não","Só o Estado pode","Sei lá"],c:0},
-    {q:"O que o conservador quer para a economia?",o:["Menos Estado, mais liberdade","Mais imposto","Tudo estatizado","Controle total"],c:0},
-    {q:"Você defende os valores cristãos e a família tradicional?",o:["Sim, com orgulho 🙏","Não","Tanto faz","Prefiro não dizer"],c:0},
-    {q:"Contra a censura e a favor da liberdade de expressão?",o:["Sempre! 🔥","Não","Depende","Só às vezes"],c:0},
-    {q:"O que representa o verde e amarelo pra você?",o:["Amor pela Pátria 🇧🇷","Só uma cor","Nada","Não sei"],c:0},
-    {q:"Pronto pra ver a verdade que a esquerda e a mídia escondem?",o:["SIM! Bora assistir 🇧🇷","Não","Talvez","Prefiro ficar na bolha"],c:0}
+    {q:"Complete o lema: “Deus, Pátria, Família e ___”",o:["Igualdade","Revolução","Liberdade","Estado"],c:2},
+    {q:"“Brasil acima de tudo, Deus acima de...”",o:["Ninguém","Todos","Alguns","—"],c:1},
+    {q:"Quem é o patrono do Exército Brasileiro?",o:["Tiradentes","Rui Barbosa","Dom Pedro II","Duque de Caxias"],c:3},
+    {q:"O que o conservador quer para a economia?",o:["Mais imposto","Menos Estado, mais liberdade","Tudo estatizado","Controle total"],c:1},
+    {q:"Pronto pra ver a verdade que a esquerda e a mídia escondem?",o:["Não","Talvez","SIM! Bora assistir 🇧🇷","Prefiro ficar na bolha"],c:2}
   ];
   var i=0,pts=0,streak=0,best=0,answered=false;
   var card=document.getElementById('quiz-card');
