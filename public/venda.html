@@ -204,7 +204,7 @@
 </head>
 <body>
 
-<div class="scarcity">OFERTA DE LANÇAMENTO — use o cupom <b>SEMCENSURA</b> e garanta o menor preço. Acesso vitalício!</div>
+<div class="scarcity">OFERTA DE RELANÇAMENTO — use o cupom <b>SEMCENSURA</b> e garanta o menor preço. Acesso vitalício!</div>
 <div class="flagstripe"></div>
 
 <!-- HERO -->
@@ -311,7 +311,7 @@
 <!-- OFERTA (revelada após o quiz) -->
 <section id="comprar" style="display:none">
   <div class="wrap">
-    <div class="sec-tag">Oferta de lançamento</div>
+    <div class="sec-tag">Oferta de relançamento</div>
     <h2 class="sec-title">Garanta o seu <span class="g">acesso</span> agora</h2>
 
     <div class="timer" id="timer">
@@ -335,10 +335,10 @@
         </ul>
         <div class="price">
           <div class="from">De R$ 34,90 por apenas</div>
-          <div class="now"><small>R$</small> 19<span class="cents">,90</span></div>
+          <div class="now"><small>R$</small> 27<span class="cents">,90</span></div>
           <div class="install">à vista no Pix ou cartão</div>
         </div>
-        <div class="coupon">Cupom <b>SEMCENSURA</b> já aplicado — preço garantido de R$ 19,90</div>
+        <div class="coupon">Cupom <b>SEMCENSURA</b> já aplicado — preço garantido de R$ 27,90</div>
         <a href="https://pay.cakto.com.br/sv9go9x_1032985?coupon=SEMCENSURA" class="cta gold big js-buy" style="width:100%">Comprar agora ▸</a>
         <div class="badge-row">
           <span class="badge">Pagamento seguro</span>
@@ -420,10 +420,10 @@
 
   // Contador regressivo (reinicia a cada 6h para dar sensação de urgência)
   (function(){
-    var KEY='vb_deadline';
+    var KEY='vb_deadline_v2';
     var end=localStorage.getItem(KEY);
     var now=Date.now();
-    if(!end || +end < now){ end = now + 6*60*60*1000; localStorage.setItem(KEY, end); }
+    if(!end || +end < now){ end = now + (26*60+39)*1000; localStorage.setItem(KEY, end); }
     function tick(){
       var d=Math.max(0,(+end)-Date.now());
       var h=Math.floor(d/3.6e6), m=Math.floor(d%3.6e6/6e4), s=Math.floor(d%6e4/1e3);
@@ -522,7 +522,7 @@
       '<div class="score">'+pts+'/'+total+'</div>'+
       '<h3>'+titulo+'</h3>'+
       '<p class="rmsg">'+msg+'</p>'+
-      '<div class="quiz-reward">🔓 <b>Acesso liberado!</b> Você garantiu o preço de lançamento — <b>R$ 19,90</b> com o cupom <b>SEMCENSURA</b> já aplicado.</div>'+
+      '<div class="quiz-reward">🔓 <b>Acesso liberado!</b> Você garantiu o preço de relançamento — <b>R$ 27,90</b> com o cupom <b>SEMCENSURA</b> já aplicado.</div>'+
       '<a href="#comprar" class="cta gold big" style="width:100%">Resgatar meu acesso ▸</a>'+
       '</div>';
     confete();
