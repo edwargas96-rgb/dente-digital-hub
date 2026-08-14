@@ -118,6 +118,8 @@
   .quote.shot{padding:14px;margin:0}
   .quote.shot .stars{display:block;text-align:center;margin-bottom:10px}
   .quote.shot img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid #e3e8df}
+  .social-count{text-align:center;color:#eafff0;font-weight:600;margin-top:14px;font-size:1.05rem}
+  .social-count b{color:var(--amarelo);font-family:'Anton';font-weight:400;font-size:1.35rem;vertical-align:-1px}
 
   /* oferta */
   .offer{max-width:560px;margin:44px auto 0;background:var(--white);border-radius:22px;overflow:hidden;
@@ -129,6 +131,16 @@
   .includes{display:grid;gap:12px;margin-bottom:22px}
   .includes li{list-style:none;display:flex;gap:10px;align-items:flex-start}
   .includes li::before{content:"✓";color:var(--verde);font-weight:900;font-size:1.05rem;line-height:1.4}
+  .includes.small{margin:2px 0 18px}
+  .includes.small li{font-size:.92rem;color:var(--muted)}
+  .vstack{display:grid;gap:0;margin-bottom:20px;border:1px solid #e7ece3;border-radius:12px;overflow:hidden}
+  .vitem{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;font-size:.96rem;border-bottom:1px solid #eef2ea;background:var(--white)}
+  .vitem:last-child{border-bottom:0}
+  .vitem span{color:var(--ink)}
+  .vitem b{color:var(--muted);font-weight:700;white-space:nowrap}
+  .vitem.total{background:rgba(0,145,63,.06);font-weight:800}
+  .vitem.total span{color:var(--verde-esc)}
+  .vitem.total b{color:var(--verde-esc);font-family:'Anton';font-weight:400;font-size:1.15rem}
   .price{text-align:center;margin:6px 0 20px}
   .price .from{color:var(--muted);text-decoration:line-through;font-size:1.05rem}
   .price .now{font-family:'Anton';font-size:3.4rem;color:var(--ink);line-height:1}
@@ -258,12 +270,13 @@
   <div class="wrap">
     <div class="sec-tag">O que você vai descobrir</div>
     <h2 class="sec-title" style="color:#fff">Tudo o que a <span class="y">mídia escondeu</span> de você</h2>
+    <!-- Bullets reescritos como LOOPS ABERTOS de curiosidade. Eduardo: troque cada [placeholder] pelo fato REAL do roteiro. -->
     <div class="bullets">
-      <div class="bullet"><span class="ck"></span><div><b>A trajetória completa</b> — do início da vida pública até se tornar uma das figuras mais influentes da política brasileira.</div></div>
-      <div class="bullet"><span class="ck"></span><div><b>Os bastidores</b> das decisões, dos embates no Congresso e das articulações que o noticiário nunca mostrou.</div></div>
-      <div class="bullet"><span class="ck"></span><div><b>O lado humano</b> — a família, a lealdade ao pai e o peso de viver sob os holofotes o tempo todo.</div></div>
-      <div class="bullet"><span class="ck"></span><div><b>A verdade sobre as polêmicas</b> — o outro lado que a esquerda e a grande mídia sempre esconderam de você.</div></div>
-      <div class="bullet"><span class="ck"></span><div><b>Depoimentos e imagens</b> que ajudam a entender o Brasil dos últimos anos por dentro.</div></div>
+      <div class="bullet"><span class="ck"></span><div>Por que <b>[DECISÃO/EVENTO ESPECÍFICO — cap. 1]</b> quase mudou <b>[CONSEQUÊNCIA — o que estava em jogo]</b> — e por que quase ninguém soube disso.</div></div>
+      <div class="bullet"><span class="ck"></span><div>O episódio que <b>[PESSOA/INSTITUIÇÃO]</b> nunca quis comentar — e o que os documentos mostram sobre <b>[TEMA DO CAPÍTULO 2]</b>.</div></div>
+      <div class="bullet"><span class="ck"></span><div>O bastidor de <b>[NEGOCIAÇÃO/ARTICULAÇÃO ESPECÍFICA]</b> que o noticiário cortou — e a conversa que decidiu <b>[RESULTADO]</b>.</div></div>
+      <div class="bullet"><span class="ck"></span><div>A verdade sobre <b>[POLÊMICA ESPECÍFICA]</b>: o que realmente aconteceu em <b>[MOMENTO/DATA]</b>, contado por quem estava lá.</div></div>
+      <div class="bullet"><span class="ck"></span><div>O detalhe pessoal de <b>[EVENTO DO CAPÍTULO 4]</b> que explica <b>[DECISÃO IMPORTANTE]</b> — e que muda como você enxerga toda a história.</div></div>
     </div>
     <div style="text-align:center;margin-top:34px">
       <a href="#quiz" class="cta gold">Fazer o teste patriota ▸</a>
@@ -276,24 +289,44 @@
   <div class="wrap">
     <div class="sec-tag">Um retrato do Brasil</div>
     <h2 class="sec-title">Muito mais que um <span class="g">documentário</span></h2>
+    <!-- Stats reescritos como BENEFÍCIOS (removido o "17min" em destaque, que derrubava o valor percebido) -->
     <div class="stats">
-      <div class="stat"><div class="n">17min</div><div class="l">de conteúdo direto ao ponto</div></div>
-      <div class="stat"><div class="n">100%</div><div class="l">online, assista quando quiser</div></div>
-      <div class="stat"><div class="n">0</div><div class="l">mensalidades — pague uma vez só</div></div>
+      <div class="stat"><div class="n">Direto</div><div class="l">ao ponto, sem enrolação — cada minuto entrega informação</div></div>
+      <div class="stat"><div class="n">Vitalício</div><div class="l">assista quando e quantas vezes quiser, para sempre</div></div>
+      <div class="stat"><div class="n">1x</div><div class="l">pagamento único, sem mensalidade e sem pegadinha</div></div>
     </div>
   </div>
 </section>
 
 <!-- DEPOIMENTOS (SUBSTITUA pelos reais) -->
+<!-- AUTORIDADE / COMO FOI APURADO — responde "por que confiar nessa versão?". Eduardo: preencha os placeholders com dados REAIS. -->
+<section>
+  <div class="wrap narrow">
+    <div class="sec-tag">Por que confiar nessa versão</div>
+    <h2 class="sec-title">Quem está <span class="g">por trás</span> — e como foi apurado</h2>
+    <p class="lead">[CREDENCIAIS — confirmar com Eduardo: quem produziu/dirigiu, formação ou experiência e tempo de apuração. Ex.: "Produzido por [NOME], [PROFISSÃO/EXPERIÊNCIA], após [X] meses de apuração."]</p>
+    <div class="bullets">
+      <div class="bullet"><span class="ck"></span><div><b>Baseado em fontes e documentos</b> — [TIPO DE FONTE: registros, entrevistas, imagens de arquivo — confirmar com Eduardo].</div></div>
+      <div class="bullet"><span class="ck"></span><div><b>[NÚMERO] entrevistas/depoimentos</b> com [QUEM: testemunhas, pessoas próximas, especialistas — confirmar].</div></div>
+      <div class="bullet"><span class="ck"></span><div><b>[TEMPO] de apuração</b> — cada afirmação com origem verificável, sem achismo.</div></div>
+    </div>
+  </div>
+</section>
+
 <section class="band">
   <div class="wrap">
     <div class="sec-tag">Quem já assistiu</div>
     <h2 class="sec-title" style="color:#fff">O que o <span class="y">povo</span> está dizendo</h2>
+    <!-- PROVA SOCIAL — Eduardo: troque [NÚMERO] por um valor REAL e defensável (nº de compradores/assinantes). -->
+    <p class="social-count"><b>+[NÚMERO]</b> pessoas já assistiram</p>
     <div class="quotes">
       <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/L6LZkTVQ/Whats-App-Image-2026-08-14-at-17-34-06.jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
       <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/9FZqPpBx/Whats-App-Image-2026-08-14-at-17-34-06-(1).jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
       <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/Y2JWmVQd/Whats-App-Image-2026-08-14-at-17-34-06-(2).jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
       <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/ZKpyPcLg/Whats-App-Image-2026-08-14-at-17-34-07.jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
+      <!-- Depoimentos com NOME (placeholders) — Eduardo: use depoimentos REAIS com autorização. Pode apagar se não tiver. -->
+      <div class="quote"><div class="stars">★★★★★</div><p>"[DEPOIMENTO COM NOME — confirmar com Eduardo]"</p><div class="who"><div class="ava">[..]</div><div><b>[NOME DO CLIENTE]</b><small>[CIDADE, UF]</small></div></div></div>
+      <div class="quote"><div class="stars">★★★★★</div><p>"[DEPOIMENTO COM NOME — confirmar com Eduardo]"</p><div class="who"><div class="ava">[..]</div><div><b>[NOME DO CLIENTE]</b><small>[CIDADE, UF]</small></div></div></div>
     </div>
   </div>
 </section>
@@ -335,15 +368,31 @@
         <h3>Documentário Completo</h3>
       </div>
       <div class="offer-body">
-        <ul class="includes">
-          <li>Documentário "Além do Sobrenome" na íntegra</li>
-          <li>Acesso vitalício — assista quantas vezes quiser</li>
+        <!--
+          VALUE STACK (empilhamento de valor) — ancora o R$27,90 contra um valor total bem maior.
+          Eduardo: defina bônus REAIS (serão entregues ao comprador) e coloque um valor individual para cada.
+          Ideias fáceis de produzir:
+            - Dossiê em PDF com fontes/linha do tempo/documentos citados no doc
+            - Trechos/cenas extras ou entrevistas que ficaram de fora do corte final
+            - Grupo/comunidade de membros (Telegram/WhatsApp) com conteúdo e avisos
+          Some os valores individuais e coloque o resultado em [VALOR TOTAL] (tanto aqui quanto no "De R$ ...").
+        -->
+        <div class="vstack">
+          <div class="vitem"><span>Documentário "Além do Sobrenome" completo + acesso vitalício</span><b>R$ [VALOR DOC]</b></div>
+          <div class="vitem"><span>[BÔNUS 1 — confirmar com Eduardo]</span><b>R$ [VALOR B1]</b></div>
+          <div class="vitem"><span>[BÔNUS 2 — confirmar com Eduardo]</span><b>R$ [VALOR B2]</b></div>
+          <div class="vitem"><span>[BÔNUS 3 — confirmar com Eduardo]</span><b>R$ [VALOR B3]</b></div>
+          <div class="vitem total"><span>Valor total</span><b>R$ [VALOR TOTAL]</b></div>
+        </div>
+
+        <ul class="includes small">
           <li>Assista no celular, tablet ou computador</li>
           <li>Área de membros exclusiva e protegida por login</li>
           <li>Acesso liberado na hora, logo após a compra</li>
         </ul>
+
         <div class="price">
-          <div class="from">De R$ 34,90 por apenas</div>
+          <div class="from">De R$ [VALOR TOTAL] por apenas</div>
           <div class="now"><small>R$</small> 27<span class="cents">,90</span></div>
           <div class="install">à vista no Pix ou cartão</div>
         </div>
