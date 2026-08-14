@@ -223,6 +223,10 @@
       </div>
     </div>
 
+    <div id="trailer-cta" style="display:none;margin-top:22px">
+      <a href="#quiz" class="cta gold big js-trailer-cta">Quero assistir o documentário ▸</a>
+    </div>
+
     <div style="margin-top:30px">
       <a href="#quiz" class="cta big">Liberar meu acesso ▸</a>
       <div class="cta-note">
@@ -403,7 +407,7 @@
   // Cole aqui o link de checkout da Cakto:
   var CHECKOUT_URL = "https://pay.cakto.com.br/sv9go9x_1032985?coupon=SEMCENSURA";
   // Cole aqui o ID do vídeo do YouTube (não listado) da CHAMADA/trailer, se quiser vídeo no topo:
-  var TRAILER_YOUTUBE_ID = "";
+  var TRAILER_YOUTUBE_ID = "bmaMY3JsDZM";
   /* ========================== */
 
   // Aplica o link de compra em todos os botões
@@ -411,11 +415,26 @@
     if (CHECKOUT_URL) a.setAttribute('href', CHECKOUT_URL);
   });
 
-  // Trailer no topo (opcional)
+  // Trailer no topo — usa a API do YouTube para detectar o fim do vídeo
   if (TRAILER_YOUTUBE_ID){
-    document.getElementById('vsl').innerHTML =
-      '<iframe src="https://www.youtube-nocookie.com/embed/' + TRAILER_YOUTUBE_ID +
-      '?rel=0&modestbranding=1" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
+    document.getElementById('vsl').innerHTML = '<div id="ytplayer"></div>';
+    var _tag=document.createElement('script');
+    _tag.src="https://www.youtube.com/iframe_api";
+    document.head.appendChild(_tag);
+    window.onYouTubeIframeAPIReady=function(){
+      new YT.Player('ytplayer',{
+        videoId: TRAILER_YOUTUBE_ID,
+        playerVars:{rel:0,modestbranding:1,playsinline:1},
+        events:{
+          'onStateChange':function(e){
+            if(e.data===YT.PlayerState.ENDED){
+              var c=document.getElementById('trailer-cta');
+              if(c) c.style.display='';
+            }
+          }
+        }
+      });
+    };
   }
 
   // Contador regressivo (reinicia a cada 6h para dar sensação de urgência)
