@@ -56,6 +56,10 @@
     background:radial-gradient(600px 300px at 50% 30%,rgba(0,145,63,.35),#000);padding:20px}
   .vsl-placeholder .play{width:78px;height:78px;border-radius:50%;background:var(--amarelo);display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5)}
   .vsl-placeholder .play::after{content:"";border-left:22px solid #111;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px}
+  .vsl-lock{position:absolute;inset:0;z-index:5;display:none;place-items:center;text-align:center;padding:24px;
+    background:rgba(1,35,14,.45);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    animation:lockin .4s ease}
+  @keyframes lockin{from{opacity:0}to{opacity:1}}
 
   /* CTA button */
   .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;
@@ -221,10 +225,9 @@
           <div>Assista à chamada do documentário</div>
         </div>
       </div>
-    </div>
-
-    <div id="trailer-cta" style="display:none;margin-top:22px">
-      <a href="#quiz" class="cta gold big js-trailer-cta">Quero assistir o documentário ▸</a>
+      <div class="vsl-lock" id="vsl-lock">
+        <a href="#quiz" class="cta gold big js-trailer-cta">Quero assistir o documentário ▸</a>
+      </div>
     </div>
 
     <div style="margin-top:30px">
@@ -415,22 +418,29 @@
     if (CHECKOUT_URL) a.setAttribute('href', CHECKOUT_URL);
   });
 
-  // Trailer no topo — usa a API do YouTube para detectar o fim do vídeo
+  // Trailer no topo — após 10s de reprodução, borra o vídeo e mostra o botão
   if (TRAILER_YOUTUBE_ID){
     document.getElementById('vsl').innerHTML = '<div id="ytplayer"></div>';
     var _tag=document.createElement('script');
     _tag.src="https://www.youtube.com/iframe_api";
     document.head.appendChild(_tag);
+    var _ytPlayer=null, _lockTimer=null, _locked=false;
+    function lockTrailer(){
+      if(_locked) return; _locked=true;
+      try{ if(_ytPlayer && _ytPlayer.pauseVideo) _ytPlayer.pauseVideo(); }catch(_){}
+      var lock=document.getElementById('vsl-lock');
+      if(lock) lock.style.display='grid';
+    }
     window.onYouTubeIframeAPIReady=function(){
-      new YT.Player('ytplayer',{
+      _ytPlayer=new YT.Player('ytplayer',{
         videoId: TRAILER_YOUTUBE_ID,
         playerVars:{rel:0,modestbranding:1,playsinline:1},
         events:{
           'onStateChange':function(e){
-            if(e.data===YT.PlayerState.ENDED){
-              var c=document.getElementById('trailer-cta');
-              if(c) c.style.display='';
+            if(e.data===YT.PlayerState.PLAYING && !_lockTimer && !_locked){
+              _lockTimer=setTimeout(lockTrailer, 10000);
             }
+            if(e.data===YT.PlayerState.ENDED){ lockTrailer(); }
           }
         }
       });
