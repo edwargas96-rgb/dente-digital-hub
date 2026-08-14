@@ -438,7 +438,7 @@
         events:{
           'onStateChange':function(e){
             if(e.data===YT.PlayerState.PLAYING && !_lockTimer && !_locked){
-              _lockTimer=setTimeout(lockTrailer, 10000);
+              _lockTimer=setTimeout(lockTrailer, 18073);
             }
             if(e.data===YT.PlayerState.ENDED){ lockTrailer(); }
           }
