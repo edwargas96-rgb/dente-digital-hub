@@ -204,13 +204,8 @@
   .quiz-opts{display:grid;gap:10px}
   .quiz-opt{text-align:left;background:var(--paper);border:2px solid #e3e8df;border-radius:12px;padding:14px 16px;font-size:1rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s ease;font-family:'Inter',sans-serif}
   .quiz-opt:hover:not(:disabled){border-color:var(--verde);transform:translateY(-1px)}
-  .quiz-opt.correct{background:#e6f7ec;border-color:var(--verde);color:var(--verde-esc)}
-  .quiz-opt.wrong{background:#fdecec;border-color:#e05252;color:#b83232}
+  .quiz-opt.picked{background:#e6f7ec;border-color:var(--verde);color:var(--verde-esc)}
   .quiz-opt:disabled{cursor:default}
-  .quiz-feedback{text-align:center;font-weight:800;margin-top:16px;min-height:1.3em;font-size:1.05rem}
-  .quiz-feedback.ok{color:var(--verde)}
-  .quiz-feedback.no{color:#b83232}
-  .quiz-streak{text-align:center;font-size:.85rem;color:var(--amarelo-esc);font-weight:800;min-height:1.1em}
   .quiz-result{text-align:center}
   .quiz-result .score{font-family:'Anton';font-size:3.6rem;color:var(--verde);line-height:1}
   .quiz-result h3{font-size:1.7rem;color:var(--ink);margin:6px 0 8px}
@@ -341,11 +336,9 @@
     <div class="quiz-wrap">
       <div class="quiz-card" id="quiz-card">
         <div class="quiz-bar"><i id="quiz-fill"></i></div>
-        <div class="quiz-meta"><span id="quiz-count">Pergunta 1</span><span class="pts" id="quiz-pts">0 pts</span></div>
+        <div class="quiz-meta"><span id="quiz-count">Pergunta 1</span><span class="pts" id="quiz-pts">0%</span></div>
         <div class="quiz-q" id="quiz-q"></div>
         <div class="quiz-opts" id="quiz-opts"></div>
-        <div class="quiz-feedback" id="quiz-feedback"></div>
-        <div class="quiz-streak" id="quiz-streak"></div>
       </div>
     </div>
   </div>
@@ -514,25 +507,21 @@
     {q:"Complete: 🇧🇷 \"Deus, Pátria e ____.\"",o:["Família","Política","Poder","Governo"],c:0},
     {q:"🏆 A pergunta final: Qual é o nome do documentário?",o:["O Brasil de Amanhã","Uma Nova História","Muito Além do Sobrenome","A Voz do Rio"],c:2}
   ];
-  var i=0,pts=0,streak=0,best=0,answered=false;
+  var i=0,pts=0,answered=false;
   var card=document.getElementById('quiz-card');
   var elFill=document.getElementById('quiz-fill');
   var elCount=document.getElementById('quiz-count');
   var elPts=document.getElementById('quiz-pts');
   var elQ=document.getElementById('quiz-q');
   var elOpts=document.getElementById('quiz-opts');
-  var elFb=document.getElementById('quiz-feedback');
-  var elStreak=document.getElementById('quiz-streak');
 
   function render(){
     answered=false;
     var item=QUIZ[i];
     elFill.style.width=((i)/QUIZ.length*100)+'%';
     elCount.textContent='Pergunta '+(i+1)+'/'+QUIZ.length;
-    elPts.textContent=pts+' pts';
+    elPts.textContent=Math.round(i/QUIZ.length*100)+'%';
     elQ.textContent=item.q;
-    elFb.textContent=''; elFb.className='quiz-feedback';
-    elStreak.textContent= streak>1 ? ('Sequência '+streak+' 🔥') : '';
     elOpts.innerHTML='';
     item.o.forEach(function(txt,idx){
       var b=document.createElement('button');
@@ -544,23 +533,12 @@
 
   function answer(idx,btn){
     if(answered) return; answered=true;
-    var item=QUIZ[i];
     var btns=elOpts.querySelectorAll('.quiz-opt');
     btns.forEach(function(b){b.disabled=true;});
-    if(idx===item.c){
-      btn.classList.add('correct');
-      pts+=10; streak++; if(streak>best)best=streak;
-      elFb.textContent='Resposta certa! +10 🔥'; elFb.className='quiz-feedback ok';
-    } else {
-      btn.classList.add('wrong');
-      btns[item.c].classList.add('correct');
-      streak=0;
-      elFb.textContent='Quase! A certa está em verde.'; elFb.className='quiz-feedback no';
-    }
-    elPts.textContent=pts+' pts';
-    elStreak.textContent= streak>1 ? ('Sequência '+streak+' 🔥') : '';
+    btn.classList.add('picked');
+    pts+=10;
     elFill.style.width=((i+1)/QUIZ.length*100)+'%';
-    setTimeout(function(){ i++; if(i<QUIZ.length){render();} else {result();} }, 850);
+    setTimeout(function(){ i++; if(i<QUIZ.length){render();} else {result();} }, 450);
   }
 
   function confete(){
