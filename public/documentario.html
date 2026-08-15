@@ -25,10 +25,28 @@
   main{padding:28px 32px 60px}
   @media (max-width:640px){main{padding:20px 16px 40px}}
 
+  /* ---------- ABAS ---------- */
+  .tabs{display:flex;gap:4px;margin-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tab{background:transparent;border:0;color:var(--text-2);padding:12px 16px;font-size:.92rem;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s ease}
+  .tab:hover{color:var(--text)}
+  .tab.active{color:var(--text);border-bottom-color:var(--text)}
+  .panel{display:none}
+  .panel.active{display:block}
+
   .video-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--border);overflow:hidden}
   .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   .video-locked{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--text-3);gap:10px}
   .video-locked .lock{font-size:2rem;opacity:.5}
+
+  /* ---------- EBOOK ---------- */
+  .ebook-wrap{position:relative;width:100%;height:76vh;min-height:520px;background:#111;border:1px solid var(--border);overflow:hidden}
+  .ebook-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .ebook-locked{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--text-3);gap:10px}
+  .ebook-locked .lock{font-size:2rem;opacity:.5}
+  .ebook-actions{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
+  .ebook-actions a{display:inline-block;background:var(--text);color:#000;text-decoration:none;padding:11px 18px;border-radius:10px;font-weight:600;font-size:.9rem}
+  .ebook-actions a.secondary{background:transparent;border:1px solid var(--border);color:var(--text-2)}
+  .ebook-actions a.secondary:hover{border-color:var(--text);color:var(--text)}
 
   .lesson-info{padding:26px 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
   .lesson-meta .module-label{font-size:.72rem;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;margin-bottom:10px;font-weight:600}
@@ -43,9 +61,12 @@
   .module-header .name{font-size:.95rem;font-weight:500}
   .module-header .right{display:flex;align-items:center;gap:12px;color:var(--text-3);font-size:.82rem}
   .lesson-list{list-style:none;padding:4px 0 10px}
-  .lesson{display:flex;align-items:center;gap:12px;padding:12px 22px;border-left:2px solid var(--text);background:var(--panel-2)}
-  .lesson-check{width:20px;height:20px;border:1.5px solid var(--text);background:var(--text);border-radius:4px;flex-shrink:0;display:grid;place-items:center}
-  .lesson-check::after{content:"";width:6px;height:10px;border-right:2px solid #000;border-bottom:2px solid #000;transform:rotate(45deg) translate(-1px,-1px)}
+  .lesson{display:flex;align-items:center;gap:12px;padding:12px 22px;border-left:2px solid transparent;cursor:pointer;transition:background .15s ease}
+  .lesson:hover{background:var(--panel-2)}
+  .lesson.active{border-left-color:var(--text);background:var(--panel-2)}
+  .lesson-check{width:20px;height:20px;border:1.5px solid var(--text-3);border-radius:4px;flex-shrink:0;display:grid;place-items:center;transition:all .15s ease}
+  .lesson.active .lesson-check{border-color:var(--text);background:var(--text)}
+  .lesson.active .lesson-check::after{content:"";width:6px;height:10px;border-right:2px solid #000;border-bottom:2px solid #000;transform:rotate(45deg) translate(-1px,-1px)}
   .lesson-title{font-size:.9rem;color:var(--text);flex:1}
   .lesson-title small{display:block;color:var(--text-3);font-size:.78rem;margin-top:2px}
   @media (max-width:960px){aside{border-left:none;border-top:1px solid var(--border)}}
@@ -81,33 +102,66 @@
 
 <div class="layout">
   <main>
-    <div class="video-wrap" id="video-wrap">
-      <div class="video-locked" id="video-locked">
-        <div class="lock">🔒</div>
-        <div>Faça login para assistir ao documentário.</div>
+    <!-- ABAS: Documentário / Ebook -->
+    <div class="tabs" id="tabs">
+      <button class="tab active" type="button" data-panel="panel-video">Documentário</button>
+      <button class="tab" type="button" data-panel="panel-ebook">Ebook Biográfico Flávio Bolsonaro</button>
+    </div>
+
+    <!-- PAINEL: VÍDEO -->
+    <div class="panel active" id="panel-video">
+      <div class="video-wrap" id="video-wrap">
+        <div class="video-locked" id="video-locked">
+          <div class="lock">🔒</div>
+          <div>Faça login para assistir ao documentário.</div>
+        </div>
+      </div>
+      <div class="lesson-info">
+        <div class="lesson-meta">
+          <div class="module-label">Módulo · Documentário</div>
+          <h1>Além do Sobrenome</h1>
+          <p>Um retrato em profundidade de uma trajetória política e pessoal — bastidores, decisões e o peso de carregar um sobrenome que divide o país.</p>
+        </div>
       </div>
     </div>
 
-    <div class="lesson-info">
-      <div class="lesson-meta">
-        <div class="module-label">Módulo · Documentário</div>
-        <h1>Além do Sobrenome</h1>
-        <p>Um retrato em profundidade de uma trajetória política e pessoal — bastidores, decisões e o peso de carregar um sobrenome que divide o país.</p>
+    <!-- PAINEL: EBOOK -->
+    <div class="panel" id="panel-ebook">
+      <div class="ebook-wrap" id="ebook-wrap">
+        <div class="ebook-locked" id="ebook-locked">
+          <div class="lock">🔒</div>
+          <div>Faça login para acessar o ebook.</div>
+        </div>
+      </div>
+      <div class="ebook-actions" id="ebook-actions" style="display:none">
+        <a id="ebook-open" href="#" target="_blank" rel="noopener">Abrir em nova aba</a>
+        <a id="ebook-download" class="secondary" href="#" target="_blank" rel="noopener">Baixar PDF</a>
+      </div>
+      <div class="lesson-info">
+        <div class="lesson-meta">
+          <div class="module-label">Bônus · Ebook</div>
+          <h1>Ebook Biográfico Flávio Bolsonaro</h1>
+          <p>A biografia completa em PDF — leia online ou baixe para ler quando e onde quiser.</p>
+        </div>
       </div>
     </div>
   </main>
 
   <aside>
-    <div class="side-head"><h2>Aulas</h2></div>
+    <div class="side-head"><h2>Conteúdo</h2></div>
     <div class="module-block">
       <div class="module-header">
         <div class="name">Documentário</div>
-        <div class="right"><span>1/1</span></div>
+        <div class="right"><span>2 itens</span></div>
       </div>
       <ul class="lesson-list">
-        <li class="lesson">
+        <li class="lesson active" data-panel="panel-video">
           <div class="lesson-check"></div>
-          <div class="lesson-title">Documentário<small>17 min</small></div>
+          <div class="lesson-title">Documentário<small>17 min · vídeo</small></div>
+        </li>
+        <li class="lesson" data-panel="panel-ebook">
+          <div class="lesson-check"></div>
+          <div class="lesson-title">Ebook Biográfico Flávio Bolsonaro<small>Bônus · PDF</small></div>
         </li>
       </ul>
     </div>
@@ -138,8 +192,11 @@ const SUPABASE_URL = "https://mogorljqeklpsoknoiia.supabase.co";
 const SUPABASE_KEY = "sb_publishable_kqIchqC9AZFPF-KJhI3XkQ_CO3BWywn";
 
 // >>> COLE AQUI o ID do vídeo do YouTube (modo "não listado").
-// Ex.: se a URL é https://youtu.be/AbCdEf12345  ->  YOUTUBE_ID = "AbCdEf12345"
 const YOUTUBE_ID = "9B5oLFHjDPs";
+
+// >>> COLE AQUI o link do PDF do ebook (Google Drive, etc.). Deixe "" enquanto não tiver.
+// Dica Google Drive: pegue o ID do link e use https://drive.google.com/file/d/ID/preview
+const EBOOK_URL = "";
 
 // >>> COLE AQUI o link de checkout da Cakto (para o botão "Comprar").
 const CHECKOUT_URL = "https://pay.cakto.com.br/sv9go9x_1032985";
@@ -160,21 +217,47 @@ const gateBuy = document.getElementById("gate-buy");
 const logoutBtn = document.getElementById("logout-btn");
 const videoWrap = document.getElementById("video-wrap");
 const videoLocked = document.getElementById("video-locked");
+const ebookWrap = document.getElementById("ebook-wrap");
+const ebookActions = document.getElementById("ebook-actions");
+const ebookOpen = document.getElementById("ebook-open");
+const ebookDownload = document.getElementById("ebook-download");
 
 if (CHECKOUT_URL) gateBuy.href = CHECKOUT_URL;
+
+/* ---------- ABAS ---------- */
+function switchPanel(panelId){
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === panelId));
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.panel === panelId));
+  document.querySelectorAll(".lesson").forEach(l => l.classList.toggle("active", l.dataset.panel === panelId));
+}
+document.querySelectorAll(".tab, .lesson").forEach(el => {
+  el.addEventListener("click", () => switchPanel(el.dataset.panel));
+});
 
 function showGate(show){ gate.classList.toggle("show", show); }
 function setMsg(text, type){ gateMsg.textContent = text || ""; gateMsg.className = "gate-msg" + (type ? " " + type : ""); }
 
-function mostrarVideo(){
+function liberarAcesso(){
   showGate(false);
   logoutBtn.style.display = "inline-block";
+
+  // Vídeo
   if (YOUTUBE_ID){
     videoWrap.innerHTML =
       '<iframe src="https://www.youtube-nocookie.com/embed/' + YOUTUBE_ID +
       '?rel=0&modestbranding=1" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
   } else {
     videoLocked.innerHTML = '<div class="lock">🎬</div><div>Acesso liberado! O vídeo aparece aqui assim que o link do YouTube for configurado.</div>';
+  }
+
+  // Ebook
+  if (EBOOK_URL){
+    ebookWrap.innerHTML = '<iframe src="' + EBOOK_URL + '" allow="autoplay"></iframe>';
+    ebookActions.style.display = "flex";
+    ebookOpen.href = EBOOK_URL;
+    ebookDownload.href = EBOOK_URL;
+  } else {
+    ebookWrap.innerHTML = '<div class="ebook-locked"><div class="lock">📖</div><div>Acesso liberado! O ebook aparece aqui assim que o arquivo for configurado.</div></div>';
   }
 }
 
@@ -206,7 +289,7 @@ async function checarAcesso(){
     .maybeSingle();
 
   if (error){ setMsg("Erro ao verificar acesso. Tente novamente.", "err"); showGate(true); return; }
-  if (data && data.status === "ativo"){ mostrarVideo(); }
+  if (data && data.status === "ativo"){ liberarAcesso(); }
   else { semAcesso(email); }
 }
 
@@ -219,13 +302,12 @@ gateForm.addEventListener("submit", async (e) => {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      shouldCreateUser: false,               // só compradores (criados pelo webhook) recebem o link
+      shouldCreateUser: false,
       emailRedirectTo: window.location.origin + window.location.pathname,
     },
   });
   gateSubmit.disabled = false;
   if (error){
-    // usuário inexistente = e-mail que não comprou
     if (/signup|not.*allow|user.*not.*found|otp_disabled/i.test(error.message)){
       setMsg("Não encontramos esse e-mail entre as compras. Use o mesmo e-mail da compra na Cakto.", "err");
     } else {
