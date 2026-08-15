@@ -498,16 +498,16 @@
 <script>
 (function(){
   var QUIZ=[
-    {q:"Complete: 🇧🇷 \"Brasil acima de tudo, Deus acima de ____.\"",o:["Tudo","Todos","Nós","Brasil"],c:0},
-    {q:"Qual destas palavras combina com o espírito do documentário?",o:["Mentira","Verdade","Desistência","Silêncio"],c:1},
-    {q:"Qual é o lema escrito na bandeira do Brasil?",o:["Paz e Liberdade","Ordem e Progresso","Deus e Pátria","União e Força"],c:1},
-    {q:"Flávio Bolsonaro é senador por qual estado?",o:["São Paulo","Minas Gerais","Rio de Janeiro","Paraná"],c:2},
-    {q:"O governo que promete \"picanha e cervejinha\", deve:",o:["Ficar mais 4 anos enganando o povo brasileiro","Perder no primeiro turno","Ter mais uma chance","Ter mais apoio"],c:1},
-    {q:"Qual destes temas aparece na trajetória política apresentada no documentário?",o:["Segurança pública","Fórmula 1","Cinema","Astronomia"],c:0},
-    {q:"Complete: 🇧🇷 \"Deus, Pátria e ____.\"",o:["Família","Política","Poder","Governo"],c:0},
-    {q:"🏆 A pergunta final: Qual é o nome do documentário?",o:["O Brasil de Amanhã","Uma Nova História","Muito Além do Sobrenome","A Voz do Rio"],c:2}
+    {q:"Complete: 🇧🇷 \"Brasil acima de tudo, Deus acima de ____.\"",o:["Tudo","Todos","Nós","Brasil"]},
+    {q:"Qual destas palavras combina com o espírito do documentário?",o:["Mentira","Verdade","Desistência","Silêncio"]},
+    {q:"Qual é o lema escrito na bandeira do Brasil?",o:["Paz e Liberdade","Ordem e Progresso","Deus e Pátria","União e Força"]},
+    {q:"Flávio Bolsonaro é senador por qual estado?",o:["São Paulo","Minas Gerais","Rio de Janeiro","Paraná"]},
+    {q:"O governo que promete \"picanha e cervejinha\", deve:",o:["Ficar mais 4 anos enganando o povo brasileiro","Perder no primeiro turno","Ter mais uma chance","Ter mais apoio"]},
+    {q:"Qual destes temas aparece na trajetória política apresentada no documentário?",o:["Segurança pública","Fórmula 1","Cinema","Astronomia"]},
+    {q:"Complete: 🇧🇷 \"Deus, Pátria e ____.\"",o:["Família","Política","Poder","Governo"]},
+    {q:"🏆 A pergunta final: Qual é o nome do documentário?",o:["O Brasil de Amanhã","Uma Nova História","Muito Além do Sobrenome","A Voz do Rio"]}
   ];
-  var i=0,pts=0,answered=false;
+  var i=0,answered=false;
   var card=document.getElementById('quiz-card');
   var elFill=document.getElementById('quiz-fill');
   var elCount=document.getElementById('quiz-count');
@@ -536,8 +536,8 @@
     var btns=elOpts.querySelectorAll('.quiz-opt');
     btns.forEach(function(b){b.disabled=true;});
     btn.classList.add('picked');
-    pts+=10;
     elFill.style.width=((i+1)/QUIZ.length*100)+'%';
+    elPts.textContent=Math.round((i+1)/QUIZ.length*100)+'%';
     setTimeout(function(){ i++; if(i<QUIZ.length){render();} else {result();} }, 450);
   }
 
@@ -559,15 +559,10 @@
   function result(){
     elFill.style.width='100%';
     ['comprar','final-cta'].forEach(function(id){var el=document.getElementById(id); if(el) el.style.display='';});
-    var total=QUIZ.length*10;
-    var titulo, msg;
-    if(pts>=total){ titulo='PATRIOTA RAIZ! 🇧🇷'; msg='Você gabaritou! Acesso 100% liberado. O Brasil precisa de gente como você.'; }
-    else if(pts>=total*0.6){ titulo='Aprovado, patriota! ✅'; msg='Você provou que é dos nossos. Seu acesso ao documentário está liberado.'; }
-    else { titulo='Bem-vindo, patriota!'; msg='Você chegou até o fim — e é isso que importa. Seu acesso está liberado.'; }
     card.innerHTML='<div class="quiz-result">'+
       '<div class="score">100%</div>'+
-      '<h3>'+titulo+'</h3>'+
-      '<p class="rmsg">'+msg+'</p>'+
+      '<h3>PATRIOTA RAIZ! 🇧🇷</h3>'+
+      '<p class="rmsg">Você gabaritou! Acesso 100% liberado. O Brasil precisa de gente como você.</p>'+
       '<div class="quiz-reward">🔓 <b>Acesso liberado!</b> Você garantiu o preço de relançamento — <b>R$ 27,90</b> com o cupom <b>SEMCENSURA</b> já aplicado.</div>'+
       '<a href="#comprar" class="cta gold big" style="width:100%">Resgatar meu acesso ▸</a>'+
       '</div>';
