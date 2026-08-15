@@ -318,12 +318,10 @@
     <div class="sec-tag">Quem já assistiu</div>
     <h2 class="sec-title" style="color:#fff">O que o <span class="y">povo</span> está dizendo</h2>
     <!-- PROVA SOCIAL — Eduardo: troque [NÚMERO] por um valor REAL e defensável (nº de compradores/assinantes). -->
-    <p class="social-count"><b>+[NÚMERO]</b> pessoas já assistiram</p>
+    <p class="social-count"><b>+159</b> pessoas já assistiram</p>
     <div class="quotes">
       <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/L6LZkTVQ/Whats-App-Image-2026-08-14-at-17-34-06.jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
-      <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/9FZqPpBx/Whats-App-Image-2026-08-14-at-17-34-06-(1).jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
       <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/Y2JWmVQd/Whats-App-Image-2026-08-14-at-17-34-06-(2).jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
-      <figure class="quote shot"><div class="stars">★★★★★</div><img src="https://i.postimg.cc/ZKpyPcLg/Whats-App-Image-2026-08-14-at-17-34-07.jpg" alt="Depoimento de cliente no WhatsApp" loading="lazy"></figure>
       <!-- Depoimentos com NOME (placeholders) — Eduardo: use depoimentos REAIS com autorização. Pode apagar se não tiver. -->
       <div class="quote"><div class="stars">★★★★★</div><p>"[DEPOIMENTO COM NOME — confirmar com Eduardo]"</p><div class="who"><div class="ava">[..]</div><div><b>[NOME DO CLIENTE]</b><small>[CIDADE, UF]</small></div></div></div>
       <div class="quote"><div class="stars">★★★★★</div><p>"[DEPOIMENTO COM NOME — confirmar com Eduardo]"</p><div class="who"><div class="ava">[..]</div><div><b>[NOME DO CLIENTE]</b><small>[CIDADE, UF]</small></div></div></div>
@@ -378,11 +376,9 @@
           Some os valores individuais e coloque o resultado em [VALOR TOTAL] (tanto aqui quanto no "De R$ ...").
         -->
         <div class="vstack">
-          <div class="vitem"><span>Documentário "Além do Sobrenome" completo + acesso vitalício</span><b>R$ [VALOR DOC]</b></div>
-          <div class="vitem"><span>[BÔNUS 1 — confirmar com Eduardo]</span><b>R$ [VALOR B1]</b></div>
-          <div class="vitem"><span>[BÔNUS 2 — confirmar com Eduardo]</span><b>R$ [VALOR B2]</b></div>
-          <div class="vitem"><span>[BÔNUS 3 — confirmar com Eduardo]</span><b>R$ [VALOR B3]</b></div>
-          <div class="vitem total"><span>Valor total</span><b>R$ [VALOR TOTAL]</b></div>
+          <div class="vitem"><span>Documentário "Além do Sobrenome" completo + acesso vitalício</span><b>R$ 35</b></div>
+          <div class="vitem"><span>BÔNUS — Ebook Biográfico Flávio Bolsonaro</span><b>R$ 15</b></div>
+          <div class="vitem total"><span>Valor total</span><b>R$ 50</b></div>
         </div>
 
         <ul class="includes small">
@@ -392,7 +388,7 @@
         </ul>
 
         <div class="price">
-          <div class="from">De R$ [VALOR TOTAL] por apenas</div>
+          <div class="from">De R$ 50 por apenas</div>
           <div class="now"><small>R$</small> 27<span class="cents">,90</span></div>
           <div class="install">à vista no Pix ou cartão</div>
         </div>
@@ -404,19 +400,6 @@
           <span class="badge">Garantia 7 dias</span>
         </div>
         <p class="pay">Pagamento processado com segurança pela Cakto.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GARANTIA (revelada após o quiz) -->
-<section class="band" id="garantia" style="padding-top:0;display:none">
-  <div class="wrap">
-    <div class="guarantee">
-      <div class="seal"><div><span class="big">7</span><br>DIAS</div></div>
-      <div class="gtext">
-        <h3>Garantia incondicional de 7 dias</h3>
-        <p>Assista sem risco. Se por qualquer motivo você não gostar, é só pedir o reembolso em até 7 dias e devolvemos 100% do seu dinheiro. O risco é todo nosso.</p>
       </div>
     </div>
   </div>
@@ -592,7 +575,7 @@
 
   function result(){
     elFill.style.width='100%';
-    ['comprar','garantia','final-cta'].forEach(function(id){var el=document.getElementById(id); if(el) el.style.display='';});
+    ['comprar','final-cta'].forEach(function(id){var el=document.getElementById(id); if(el) el.style.display='';});
     var total=QUIZ.length*10;
     var titulo, msg;
     if(pts>=total){ titulo='PATRIOTA RAIZ! 🇧🇷'; msg='Você gabaritou! Acesso 100% liberado. O Brasil precisa de gente como você.'; }
