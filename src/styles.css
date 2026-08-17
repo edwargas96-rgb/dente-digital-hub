@@ -18,6 +18,7 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
   --color-background: var(--background);
@@ -181,4 +182,39 @@
 @utility numeric {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+}
+
+/*
+ * FOTO PATRIOTA — landing page (rota /patriota).
+ * Paleta escopada em .fp-scope para não interferir no design system clínico.
+ * Verde/amarelo/azul da bandeira, mobile-first, coluna única.
+ */
+.fp-scope {
+  --primary: #0a7d3c;
+  --primary-foreground: #ffffff;
+  --accent: #e8b713;
+  --accent-foreground: #123324;
+  --card: #ffffff;
+  --card-foreground: #0f1e16;
+  --foreground: #0f1e16;
+  --muted: #f2f5ee;
+  --muted-foreground: #7a897f;
+  --border: #e4e8dd;
+  --color-navy: #122b6b;
+  font-family: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
+.fp-tricolor {
+  background: linear-gradient(90deg, #0a7d3c 0 34%, #e8b713 34% 67%, #122b6b 67% 100%);
+}
+
+@keyframes fpUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

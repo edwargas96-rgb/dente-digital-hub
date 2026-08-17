@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="450" height="600" viewBox="0 0 450 600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a7d3c"/>
+      <stop offset="0.55" stop-color="#0f5232"/>
+      <stop offset="1" stop-color="#122b6b"/>
+    </linearGradient>
+  </defs>
+  <rect width="450" height="600" fill="url(#g)"/>
+  <circle cx="225" cy="230" r="86" fill="#e8b713" opacity="0.92"/>
+  <circle cx="225" cy="205" r="46" fill="#f7f4ea"/>
+  <path d="M139 360c0-52 39-86 86-86s86 34 86 86v40H139z" fill="#f7f4ea"/>
+  <text x="225" y="500" font-family="Archivo, Arial, sans-serif" font-size="30" font-weight="800" fill="#ffffff" text-anchor="middle">Evento</text>
+  <text x="225" y="536" font-family="Arial, sans-serif" font-size="17" fill="#e8f4ea" text-anchor="middle">Imagem ilustrativa</text>
+</svg>
