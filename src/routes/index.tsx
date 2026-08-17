@@ -22,11 +22,19 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+// Domínios que devem abrir a landing do ZeroUm na raiz (em vez do portal LAB PIGATTO).
+const FUNIL_HOSTS = ["minhafotocomozeroum.nobilex.com.br"];
+
 function Index() {
   const { loading, session } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Roteamento por domínio: no domínio do funil, a raiz vai direto para a landing.
+    if (typeof window !== "undefined" && FUNIL_HOSTS.includes(window.location.hostname)) {
+      navigate({ to: "/patriota", replace: true });
+      return;
+    }
     if (loading) return;
     navigate({ to: session ? "/dashboard" : "/login", replace: true });
   }, [loading, session, navigate]);
