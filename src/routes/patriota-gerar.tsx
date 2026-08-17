@@ -13,7 +13,7 @@ import {
   Upload,
 } from "lucide-react";
 
-export const Route = createFileRoute("/patriota/gerar")({
+export const Route = createFileRoute("/patriota-gerar")({
   ssr: false,
   head: () => ({
     meta: [
