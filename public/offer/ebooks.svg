@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
+  <rect width="200" height="150" fill="#EDEFE8"/>
+  <g>
+    <rect x="26" y="24" width="66" height="102" rx="4" fill="#122b6b"/>
+    <rect x="34" y="34" width="50" height="30" rx="2" fill="#0a7d3c"/>
+    <text x="59" y="86" font-family="Archivo, Arial" font-size="9" font-weight="800" fill="#e8b713" text-anchor="middle">O LEGADO</text>
+    <text x="59" y="98" font-family="Archivo, Arial" font-size="9" font-weight="800" fill="#e8b713" text-anchor="middle">DO CAPITÃO</text>
+  </g>
+  <g>
+    <rect x="104" y="24" width="66" height="102" rx="4" fill="#0f5232"/>
+    <text x="137" y="60" font-family="Archivo, Arial" font-size="20" fill="#e8b713" text-anchor="middle">✝</text>
+    <text x="137" y="86" font-family="Archivo, Arial" font-size="9" font-weight="800" fill="#ffffff" text-anchor="middle">Deus, Pátria</text>
+    <text x="137" y="98" font-family="Archivo, Arial" font-size="9" font-weight="800" fill="#ffffff" text-anchor="middle">e Família</text>
+  </g>
+</svg>
