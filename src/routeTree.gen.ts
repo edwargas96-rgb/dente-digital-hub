@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PigattoRouteImport } from './routes/pigatto'
 import { Route as PatriotaRouteImport } from './routes/patriota'
+import { Route as PatriotaGerarRouteImport } from './routes/patriota.gerar'
 import { Route as AppCalendarioRouteImport } from './routes/_app.calendario'
 import { Route as AppClinicasRouteImport } from './routes/_app.clinicas'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app.configuracoes'
@@ -47,6 +48,11 @@ const PigattoRoute = PigattoRouteImport.update({
 const PatriotaRoute = PatriotaRouteImport.update({
   id: '/patriota',
   path: '/patriota',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatriotaGerarRoute = PatriotaGerarRouteImport.update({
+  id: '/patriota/gerar',
+  path: '/patriota/gerar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppCalendarioRoute = AppCalendarioRouteImport.update({
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/pigatto': typeof PigattoRoute
   '/patriota': typeof PatriotaRoute
+  '/patriota/gerar': typeof PatriotaGerarRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/pigatto': typeof PigattoRoute
   '/patriota': typeof PatriotaRoute
+  '/patriota/gerar': typeof PatriotaGerarRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/pigatto': typeof PigattoRoute
   '/patriota': typeof PatriotaRoute
+  '/patriota/gerar': typeof PatriotaGerarRoute
   '/_app/calendario': typeof AppCalendarioRoute
   '/_app/clinicas': typeof AppClinicasRoute
   '/_app/configuracoes': typeof AppConfiguracoesRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pigatto'
     | '/patriota'
+    | '/patriota/gerar'
     | '/calendario'
     | '/clinicas'
     | '/configuracoes'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pigatto'
     | '/patriota'
+    | '/patriota/gerar'
     | '/calendario'
     | '/clinicas'
     | '/configuracoes'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pigatto'
     | '/patriota'
+    | '/patriota/gerar'
     | '/_app/calendario'
     | '/_app/clinicas'
     | '/_app/configuracoes'
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PigattoRoute: typeof PigattoRoute
   PatriotaRoute: typeof PatriotaRoute
+  PatriotaGerarRoute: typeof PatriotaGerarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/patriota'
       fullPath: '/patriota'
       preLoaderRoute: typeof PatriotaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patriota/gerar': {
+      id: '/patriota/gerar'
+      path: '/patriota/gerar'
+      fullPath: '/patriota/gerar'
+      preLoaderRoute: typeof PatriotaGerarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/calendario': {
@@ -354,6 +374,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PigattoRoute: PigattoRoute,
   PatriotaRoute: PatriotaRoute,
+  PatriotaGerarRoute: PatriotaGerarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

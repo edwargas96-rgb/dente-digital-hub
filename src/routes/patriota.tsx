@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Shield, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/patriota")({
@@ -139,13 +139,13 @@ function Patriota() {
               </div>
             </div>
 
-            <button
-              type="button"
+            <Link
+              to="/patriota/gerar"
               className="mt-[18px] flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F]"
             >
               Quero minha foto com o Capitão
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
-            </button>
+            </Link>
 
             <div className="mt-[18px] flex flex-wrap justify-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E4E8DD] bg-[#F2F5EE] px-[11px] py-[7px] text-[12px] font-semibold text-[#41533F]">
@@ -283,26 +283,26 @@ function Patriota() {
             <h2 className="font-heading text-[22px] font-extrabold leading-[1.15] tracking-[-0.01em] text-white">
               Pronto para criar sua imagem com nosso capitão?
             </h2>
-            <button
-              type="button"
+            <Link
+              to="/patriota/gerar"
               className="mt-[18px] inline-flex min-h-[52px] items-center gap-2 rounded-[14px] bg-accent px-[22px] font-heading text-[16px] font-extrabold text-accent-foreground shadow-[0_10px_24px_rgba(0,0,0,.28)] transition-transform active:scale-[.985]"
             >
               Quero minha foto com o Capitão
               <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.6} />
-            </button>
+            </Link>
             <p className="mt-3 text-[11.5px] text-[#9FC7AC]">Imagem fictícia gerada por inteligência artificial.</p>
           </section>
 
           {/* CTA FIXO INFERIOR */}
           <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-[40] flex justify-center">
             <div className="pointer-events-auto w-full max-w-[468px] bg-gradient-to-t from-white via-white/95 to-transparent px-4 pt-6 pb-3">
-              <button
-                type="button"
+              <Link
+                to="/patriota/gerar"
                 className="flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-lg bg-primary px-5 font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] transition-[filter,transform] duration-150 hover:brightness-[.94] active:scale-[.985]"
               >
                 <span>Gerar minha foto agora</span>
                 <ArrowRight className="h-[18px] w-[18px] shrink-0" strokeWidth={2.4} />
-              </button>
+              </Link>
             </div>
           </div>
         </div>
