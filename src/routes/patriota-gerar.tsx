@@ -36,7 +36,7 @@ function brl(cents: number) {
 type Opt = { title: string; desc?: string; icon?: "camera" | "landmark" | "flag" | "heart" };
 
 const CENARIO: Opt[] = [
-  { title: "Selfie com o Capitão", desc: "Uma foto casual, como se fosse um registro rápido para postar.", icon: "camera" },
+  { title: "Selfie com o ZeroUm", desc: "Uma foto casual, como se fosse um registro rápido para postar.", icon: "camera" },
   { title: "Encontro em Brasília", desc: "Um visual institucional, com clima de visita especial.", icon: "landmark" },
   { title: "Evento patriota", desc: "Clima de evento com bandeiras do Brasil ao fundo.", icon: "flag" },
   { title: "Encontro popular", desc: "Uma imagem calorosa, de fã encontrando seu grande ídolo.", icon: "heart" },
@@ -52,7 +52,7 @@ const T_SEBASTIAO: Testimonial = {
   img: "/testimonials/sebastiao.svg",
   name: "Sebastiao Ramos",
   quote:
-    "Nunca tive a chance de tirar uma foto com o Capitão pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
+    "Nunca tive a chance de tirar uma foto com o ZeroUm pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
 };
 
 const T_GERALDO: Testimonial = {
@@ -364,7 +364,7 @@ function Funil() {
           {/* PASSO 6 — Checkout / oferta */}
           {step === 6 && (
             <Card>
-              <Titulo>Para liberar a sua foto com o capitão</Titulo>
+              <Titulo>Para liberar a sua foto com o ZeroUm</Titulo>
               <Sub>É esta mesma imagem que você recebe, sem a marca d'água — não geramos de novo.</Sub>
 
               {/* Oferta principal */}
@@ -379,7 +379,7 @@ function Funil() {
                   R$&nbsp;19,90 <span className="text-[16px] font-bold text-[#5A4A15]">no Pix</span>
                 </p>
                 <p className="mt-2.5 text-[13.5px] leading-[1.5] text-[#6B5A1E]">
-                  Esse valor cobre só o nosso trabalho e fortalece o nosso lado, em apoio ao nosso Capitão 🇧🇷
+                  Esse valor cobre só o nosso trabalho e fortalece o nosso lado, em apoio ao nosso ZeroUm 🇧🇷
                 </p>
                 <div className="mt-3 flex items-start gap-2 rounded-xl border border-[#EAD9A0] bg-white/70 px-3 py-2.5">
                   <span className="text-[18px] leading-none" aria-hidden="true">

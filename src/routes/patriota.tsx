@@ -37,8 +37,8 @@ const EXAMPLES = [
   },
   {
     src: "/examples/patriota/example-real-02.svg",
-    alt: "Exemplo 2: Encontro com o Capitão",
-    title: "Exemplo 2: Encontro com o Capitão",
+    alt: "Exemplo 2: Encontro com o ZeroUm",
+    title: "Exemplo 2: Encontro com o ZeroUm",
   },
   {
     src: "/examples/patriota/example-real-03.svg",
@@ -55,21 +55,21 @@ const TESTIMONIALS = [
     name: "Valdeci Oliveira",
     handle: "@valdeci.patriota",
     quote:
-      "Fiz todos meus amigos patriotas usarem foto de perfil com o Capitão. Ficou tão real que o pessoal do grupo nem acreditou!",
+      "Fiz todos meus amigos patriotas usarem foto de perfil com o ZeroUm. Ficou tão real que o pessoal do grupo nem acreditou!",
   },
   {
     img: "/testimonials/terezinha.svg",
     name: "Terezinha Souza",
     handle: "@dona.terezinha",
     quote:
-      "Botei minha foto com o Capitão no WhatsApp e o grupo da família inteiro quis fazer a sua também. Ficou muito real!",
+      "Botei minha foto com o ZeroUm no WhatsApp e o grupo da família inteiro quis fazer a sua também. Ficou muito real!",
   },
   {
     img: "/testimonials/sebastiao.svg",
     name: "Sebastiao Ramos",
     handle: "@sebastiao.brasil",
     quote:
-      "Nunca tive a chance de tirar uma foto com o Capitão pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
+      "Nunca tive a chance de tirar uma foto com o ZeroUm pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
   },
   {
     img: "/testimonials/geraldo.svg",
@@ -104,7 +104,7 @@ function Patriota() {
           {/* HERO */}
           <section className="px-5 pb-[26px] pt-6">
             <h1 className="mt-4 font-heading text-[30px] font-extrabold leading-[1.05] tracking-[-0.02em] text-foreground">
-              Mostre pra todo mundo de que lado você está: faça sua foto com o nosso capitão e fortaleça o nosso lado 🇧🇷
+              Mostre pra todo mundo de que lado você está: faça sua foto com o nosso ZeroUm e fortaleça o nosso lado 🇧🇷
             </h1>
             <p className="mt-3 text-[14.5px] leading-[1.5] text-[#53645A]">
               Você manda uma foto sua, a gente monta tudo pra você e em poucos minutos ela fica pronta 📸
