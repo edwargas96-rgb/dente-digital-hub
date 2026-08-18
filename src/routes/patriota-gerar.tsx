@@ -429,7 +429,7 @@ function Funil() {
           {step === 7 && (
             <Card>
               <Titulo>Para liberar a sua foto com o {alvo}</Titulo>
-              <Sub>É esta mesma imagem que você recebe, sem a marca d'água — não geramos de novo.</Sub>
+              <Sub>É esta mesma imagem que você recebe — em alta qualidade, com o selo de imagem fictícia gerada por IA.</Sub>
 
               {/* Oferta principal */}
               <div
@@ -521,7 +521,7 @@ function Funil() {
                 href={CAKTO_URL[alvo]}
                 className="mt-5 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[15px] bg-primary px-4 text-center font-heading text-[16.5px] font-bold text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] transition-colors hover:bg-[#08652F]"
               >
-                Liberar sem marca d'água por {brl(total)}
+                Comprar minha foto por {brl(total)}
               </a>
               <p className="mt-3 text-center text-[11.5px] leading-[1.5] text-[#7A897F]">
                 Você vai para o checkout seguro (Cakto) — sua foto libera assim que o pagamento confirmar.

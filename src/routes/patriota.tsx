@@ -56,14 +56,14 @@ const TESTIMONIALS = [
     name: "Valdeci Oliveira",
     handle: "@valdeci.patriota",
     quote:
-      "Fiz todos meus amigos patriotas usarem foto de perfil com o ZeroUm. Ficou tão real que o pessoal do grupo nem acreditou!",
+      "Fiz todos meus amigos patriotas usarem foto de perfil com o ZeroUm. Ficou incrível, o grupo todo quis a sua também!",
   },
   {
     img: "/testimonials/terezinha.svg",
     name: "Terezinha Souza",
     handle: "@dona.terezinha",
     quote:
-      "Botei minha foto com o ZeroUm no WhatsApp e o grupo da família inteiro quis fazer a sua também. Ficou muito real!",
+      "Botei minha foto com o ZeroUm no WhatsApp e o grupo da família inteiro quis fazer a sua também. Ficou linda!",
   },
   {
     img: "/testimonials/sebastiao.svg",
@@ -120,10 +120,8 @@ function HeroCarousel() {
             }
           />
         ))}
-        <span className="absolute bottom-[9px] left-[9px] z-10 rounded-[7px] bg-[rgba(9,20,14,.74)] px-2 py-[5px] font-heading text-[9px] font-bold tracking-[0.07em] text-white">
-          EXEMPLO GERADO POR IA
-        </span>
-        <div className="absolute bottom-[11px] right-[10px] z-10 flex gap-1.5">
+        {/* Dots */}
+        <div className="absolute right-[10px] top-[10px] z-10 flex gap-1.5">
           {HERO_SLIDES.map((_, idx) => (
             <button
               key={idx}
@@ -131,10 +129,14 @@ function HeroCarousel() {
               aria-label={`Ver foto ${idx + 1}`}
               onClick={() => setI(idx)}
               className={
-                "h-[7px] rounded-full transition-all " + (idx === i ? "w-[16px] bg-white" : "w-[7px] bg-white/50")
+                "h-[7px] rounded-full transition-all " + (idx === i ? "w-[16px] bg-white" : "w-[7px] bg-white/60")
               }
             />
           ))}
+        </div>
+        {/* Selo permanente de imagem fictícia */}
+        <div className="absolute inset-x-0 bottom-0 z-10 bg-[rgba(9,20,14,.72)] py-[6px] text-center font-heading text-[10px] font-bold tracking-[0.10em] text-white">
+          IMAGEM FICTÍCIA • GERADA POR IA
         </div>
       </div>
       <div className="absolute -top-2 right-0.5 grid h-[38px] w-[38px] place-items-center rounded-[11px] bg-[color:var(--color-navy)] shadow-[0_8px_18px_rgba(18,43,107,.3)] [transform:rotate(6deg)]">
@@ -222,9 +224,9 @@ function Patriota() {
                 <div key={ex.title} className="w-[180px] shrink-0 snap-start">
                   <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-[#E4E8DD] bg-[#EDEFE8] shadow-[0_8px_20px_rgba(9,26,18,.09)]">
                     <img alt={ex.alt} src={ex.src} className="absolute inset-0 h-full w-full object-cover" />
-                    <span className="absolute left-2 top-2 rounded-md bg-[rgba(9,20,14,.74)] px-[7px] py-1 font-heading text-[8.5px] font-bold tracking-[0.06em] text-white">
-                      EXEMPLO GERADO POR IA
-                    </span>
+                    <div className="absolute inset-x-0 bottom-0 bg-[rgba(9,20,14,.72)] py-[5px] text-center font-heading text-[8.5px] font-bold tracking-[0.08em] text-white">
+                      IMAGEM FICTÍCIA • GERADA POR IA
+                    </div>
                   </div>
                   <p className="mx-0.5 mt-2 text-[12.5px] font-semibold text-[#0F1E16]">{ex.title}</p>
                   <p className="mx-0.5 mt-px text-[11px] text-[#8A978D]">Imagem fictícia para demonstrar o estilo.</p>
