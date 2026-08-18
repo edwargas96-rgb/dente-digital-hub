@@ -32,7 +32,7 @@ function Star({ size = 13, className }: { size?: number; className?: string }) {
 
 const EXAMPLES = [
   {
-    src: "https://i.imgur.com/9U7Mk2s.jpeg",
+    src: "https://i.imgur.com/K9BZneU.jpeg",
     alt: "Exemplo 1: Selfie patriota",
     title: "Exemplo 1: Selfie patriota",
   },
@@ -91,8 +91,8 @@ const SECURITY = [
 
 // Fotos do carrossel do topo (trocam sozinhas). Troque os src pelas fotos reais.
 const HERO_SLIDES = [
-  { src: "https://i.imgur.com/9U7Mk2s.jpeg", alt: "Selfie com o Capitão" },
-  { src: "/examples/patriota/example-selfie-zeroum.svg", alt: "Selfie com o ZeroUm" },
+  { src: "https://i.imgur.com/K9BZneU.jpeg", alt: "Selfie com o Capitão" },
+  { src: "https://i.imgur.com/nr3BZUR.jpeg", alt: "Selfie com o ZeroUm" },
   { src: "/examples/patriota/example-real-02.svg", alt: "Encontro patriota" },
   { src: "/examples/patriota/example-real-03.svg", alt: "Evento com bandeiras" },
 ];
