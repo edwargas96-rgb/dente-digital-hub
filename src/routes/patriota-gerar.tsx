@@ -24,10 +24,24 @@ export const Route = createFileRoute("/patriota-gerar")({
   component: Funil,
 });
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 const PRECO_BASE = 1990; // centavos
 const PRECO_COMBO = 990;
 const PRECO_EBOOKS = 990;
+
+// Personagem escolhido no passo 1 (gamificação).
+type Figura = "Capitão" | "ZeroUm";
+
+// Checkout na Cakto — troque pelos links reais de cada produto.
+const CAKTO_URL: Record<Figura, string> = {
+  "Capitão": "https://pay.cakto.com.br/SEU-LINK-CAPITAO",
+  ZeroUm: "https://pay.cakto.com.br/SEU-LINK-ZEROUM",
+};
+
+const FIGURAS: { id: Figura; titulo: string; desc: string; emoji: string }[] = [
+  { id: "Capitão", titulo: "Com o Capitão", desc: "O nosso capitão, o mito da direita.", emoji: "🫡" },
+  { id: "ZeroUm", titulo: "Com o ZeroUm", desc: "O 01, o maior aliado da direita no mundo.", emoji: "①" },
+];
 
 function brl(cents: number) {
   return "R$ " + (cents / 100).toFixed(2).replace(".", ",");
@@ -36,7 +50,7 @@ function brl(cents: number) {
 type Opt = { title: string; desc?: string; icon?: "camera" | "landmark" | "flag" | "heart" };
 
 const CENARIO: Opt[] = [
-  { title: "Selfie com o ZeroUm", desc: "Uma foto casual, como se fosse um registro rápido para postar.", icon: "camera" },
+  { title: "Selfie", desc: "Uma foto casual, como se fosse um registro rápido para postar.", icon: "camera" },
   { title: "Encontro em Brasília", desc: "Um visual institucional, com clima de visita especial.", icon: "landmark" },
   { title: "Evento patriota", desc: "Clima de evento com bandeiras do Brasil ao fundo.", icon: "flag" },
   { title: "Encontro popular", desc: "Uma imagem calorosa, de fã encontrando seu grande ídolo.", icon: "heart" },
@@ -52,7 +66,7 @@ const T_SEBASTIAO: Testimonial = {
   img: "/testimonials/sebastiao.svg",
   name: "Sebastiao Ramos",
   quote:
-    "Nunca tive a chance de tirar uma foto com o ZeroUm pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
+    "Nunca tive a chance de tirar uma foto dessas pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
 };
 
 const T_GERALDO: Testimonial = {
@@ -151,6 +165,9 @@ function Funil() {
   const [step, setStep] = useState(1);
   const [generating, setGenerating] = useState(false);
 
+  const [figura, setFigura] = useState<Figura | null>(null);
+  const alvo: Figura = figura ?? "Capitão";
+
   const [cenario, setCenario] = useState(0);
   const [enquadramento, setEnquadramento] = useState(0);
   const [clima, setClima] = useState(0);
@@ -167,6 +184,9 @@ function Funil() {
 
   const total = PRECO_BASE + (addCombo ? PRECO_COMBO : 0) + (addEbooks ? PRECO_EBOOKS : 0);
 
+  // Primeira opção de cenário reflete a figura escolhida.
+  const cenarioOpts: Opt[] = CENARIO.map((o, i) => (i === 0 ? { ...o, title: `Selfie com o ${alvo}` } : o));
+
   function voltar() {
     if (step === 1) {
       navigate({ to: "/patriota" });
@@ -176,12 +196,12 @@ function Funil() {
   }
 
   function avancar() {
-    if (step === 4) {
-      // Geração da imagem antes de coletar os dados.
+    if (step === 5) {
+      // Geração da imagem (após o upload) antes de coletar os dados.
       setGenerating(true);
       window.setTimeout(() => {
         setGenerating(false);
-        setStep(5);
+        setStep(6);
       }, 2600);
       return;
     }
@@ -225,13 +245,57 @@ function Funil() {
             />
           </div>
 
-          {/* PASSO 1 */}
+          {/* PASSO 1 — Escolha da figura */}
           {step === 1 && (
             <Card>
-              <Titulo>Primeiro, escolha o cenário da sua foto</Titulo>
+              <Titulo>Com quem você quer tirar sua foto? 🇧🇷</Titulo>
+              <Sub>Escolha o líder e a IA monta a sua foto do lado dele.</Sub>
+              <div className="mt-4 flex flex-col gap-2.5">
+                {FIGURAS.map((f) => {
+                  const selected = figura === f.id;
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setFigura(f.id)}
+                      className={
+                        "flex w-full items-center gap-3 rounded-2xl border px-[15px] py-[16px] text-left transition-colors " +
+                        (selected
+                          ? "border-primary bg-[#EAF4EC] shadow-[0_6px_18px_rgba(10,125,60,.10)]"
+                          : "border-border bg-card shadow-[0_4px_14px_rgba(9,26,18,.04)]")
+                      }
+                    >
+                      <span className="grid h-[46px] w-[46px] flex-none place-items-center rounded-[13px] bg-[#EEF2EA] text-[24px] leading-none">
+                        {f.emoji}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-heading text-[16px] font-extrabold text-foreground">{f.titulo}</span>
+                        <span className="mt-0.5 block text-[12.5px] leading-[1.4] text-[#7A897F]">{f.desc}</span>
+                      </span>
+                      <span
+                        className={
+                          "grid h-[24px] w-[24px] flex-none place-items-center rounded-full border transition-colors " +
+                          (selected ? "border-primary bg-primary text-white" : "border-[#CFD8CC] bg-transparent")
+                        }
+                        aria-hidden="true"
+                      >
+                        {selected && <Check className="h-[14px] w-[14px]" strokeWidth={3} />}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <Continuar onClick={avancar} disabled={!figura} />
+            </Card>
+          )}
+
+          {/* PASSO 2 — Cenário */}
+          {step === 2 && (
+            <Card>
+              <Titulo>Escolha o cenário da sua foto</Titulo>
               <Sub>{SUBTITULO}</Sub>
               <div className="mt-4 flex flex-col gap-2.5">
-                {CENARIO.map((opt, i) => (
+                {cenarioOpts.map((opt, i) => (
                   <OptionRow key={opt.title} opt={opt} selected={cenario === i} onSelect={() => setCenario(i)} />
                 ))}
               </div>
@@ -239,8 +303,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 2 */}
-          {step === 2 && (
+          {/* PASSO 3 */}
+          {step === 3 && (
             <Card>
               <Titulo>Defina o enquadramento</Titulo>
               <Sub>{SUBTITULO}</Sub>
@@ -254,8 +318,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 3 */}
-          {step === 3 && (
+          {/* PASSO 4 */}
+          {step === 4 && (
             <Card>
               <Titulo>Escolha o clima da imagem</Titulo>
               <Sub>{SUBTITULO}</Sub>
@@ -269,8 +333,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 4 — Upload */}
-          {step === 4 && (
+          {/* PASSO 5 — Upload */}
+          {step === 5 && (
             <Card>
               <Titulo>Agora envie a sua foto 📸</Titulo>
               <Sub>Escolha uma foto sua de frente e com boa luz. É ela que a IA vai usar.</Sub>
@@ -300,8 +364,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 5 — Dados */}
-          {step === 5 && (
+          {/* PASSO 6 — Dados */}
+          {step === 6 && (
             <Card>
               <div className="flex items-start gap-2.5 rounded-[14px] border border-[#EAC94F] bg-[#FFF4CE] px-4 py-3">
                 <span className="text-[20px] leading-none" aria-hidden="true">
@@ -361,10 +425,10 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 6 — Checkout / oferta */}
-          {step === 6 && (
+          {/* PASSO 7 — Checkout / oferta */}
+          {step === 7 && (
             <Card>
-              <Titulo>Para liberar a sua foto com o ZeroUm</Titulo>
+              <Titulo>Para liberar a sua foto com o {alvo}</Titulo>
               <Sub>É esta mesma imagem que você recebe, sem a marca d'água — não geramos de novo.</Sub>
 
               {/* Oferta principal */}
@@ -379,7 +443,7 @@ function Funil() {
                   R$&nbsp;19,90 <span className="text-[16px] font-bold text-[#5A4A15]">no Pix</span>
                 </p>
                 <p className="mt-2.5 text-[13.5px] leading-[1.5] text-[#6B5A1E]">
-                  Esse valor cobre só o nosso trabalho e fortalece o nosso lado, em apoio ao nosso ZeroUm 🇧🇷
+                  Esse valor cobre só o nosso trabalho e fortalece o nosso lado, em apoio ao nosso {alvo} 🇧🇷
                 </p>
                 <div className="mt-3 flex items-start gap-2 rounded-xl border border-[#EAD9A0] bg-white/70 px-3 py-2.5">
                   <span className="text-[18px] leading-none" aria-hidden="true">
@@ -453,14 +517,16 @@ function Funil() {
                 </div>
               </BumpCard>
 
-              <button
-                type="button"
+              <a
+                href={CAKTO_URL[alvo]}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-5 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[15px] bg-primary px-4 text-center font-heading text-[16.5px] font-bold text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] transition-colors hover:bg-[#08652F]"
               >
                 Liberar sem marca d'água por {brl(total)}
-              </button>
+              </a>
               <p className="mt-3 text-center text-[11.5px] leading-[1.5] text-[#7A897F]">
-                Na próxima tela você vê o QR Code — sua foto libera assim que o pagamento confirmar.
+                Você vai para o checkout seguro (Cakto) — sua foto libera assim que o pagamento confirmar.
               </p>
             </Card>
           )}

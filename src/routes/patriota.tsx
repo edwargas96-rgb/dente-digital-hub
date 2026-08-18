@@ -104,7 +104,7 @@ function Patriota() {
           {/* HERO */}
           <section className="px-5 pb-[26px] pt-6">
             <h1 className="mt-4 font-heading text-[30px] font-extrabold leading-[1.05] tracking-[-0.02em] text-foreground">
-              Mostre pra todo mundo de que lado você está: faça sua foto com o nosso ZeroUm e fortaleça o nosso lado 🇧🇷
+              Mostre pra todo mundo de que lado você está: faça sua foto com o Capitão ou com o ZeroUm e fortaleça o nosso lado 🇧🇷
             </h1>
             <p className="mt-3 text-[14.5px] leading-[1.5] text-[#53645A]">
               Você manda uma foto sua, a gente monta tudo pra você e em poucos minutos ela fica pronta 📸
@@ -143,7 +143,7 @@ function Patriota() {
               to="/patriota-gerar"
               className="mt-[18px] flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F]"
             >
-              Quero minha foto com o ZeroUm
+              Quero minha foto patriota 🇧🇷
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
             </Link>
 
