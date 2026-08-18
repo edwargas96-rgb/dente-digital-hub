@@ -163,11 +163,6 @@ function Funil() {
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
 
-  const [addCombo, setAddCombo] = useState(false);
-  const [addEbooks, setAddEbooks] = useState(false);
-
-  const total = PRECO_BASE + (addCombo ? PRECO_COMBO : 0) + (addEbooks ? PRECO_EBOOKS : 0);
-
   // Validação dos dados: precisa de nome e de um WhatsApp com pelo menos 10 dígitos.
   const whatsappValido = whatsapp.replace(/\D/g, "").length >= 10;
   const dadosOk = nome.trim().length > 1 && whatsappValido;
@@ -199,8 +194,6 @@ function Funil() {
         cenario: cenarioOpts[cenario]?.title,
         enquadramento: ENQUADRAMENTO[enquadramento]?.title,
         clima: CLIMA[clima]?.title,
-        combo: addCombo,
-        ebook: addEbooks,
       });
     } catch (e) {
       console.error("Falha ao salvar pedido:", e);
@@ -420,8 +413,8 @@ function Funil() {
                 </div>
               </div>
 
-              {/* Order bump 1 — Combo */}
-              <BumpCard checked={addCombo} onToggle={() => setAddCombo((v) => !v)} accent="navy" badge="⭐ MAIS ESCOLHIDO">
+              {/* Order bump 1 — Combo (selecionável no checkout da Cakto) */}
+              <BumpCard accent="navy" badge="⭐ MAIS ESCOLHIDO">
                 <p className="font-heading text-[15.5px] font-extrabold text-foreground">Combo 3 Líderes da Direita 🇧🇷</p>
                 <span className="mt-1.5 inline-block rounded-md bg-[color:var(--color-navy)] px-2.5 py-1 font-heading text-[11px] font-bold text-white">
                   SUA FOTO VIRA 3 — POR SÓ + R$ 9,90
@@ -459,9 +452,11 @@ function Funil() {
                 </p>
               </div>
 
-              {/* Order bump 2 — E-books */}
-              <p className="mb-2 mt-4 font-heading text-[14px] font-bold text-foreground">Adicione ao seu pedido</p>
-              <BumpCard checked={addEbooks} onToggle={() => setAddEbooks((v) => !v)}>
+              {/* Order bump 2 — E-book (selecionável no checkout da Cakto) */}
+              <p className="mb-2 mt-4 font-heading text-[14px] font-bold text-foreground">
+                Você também pode adicionar no pagamento:
+              </p>
+              <BumpCard>
                 <div className="flex items-start gap-3">
                   <img src="https://i.imgur.com/XyK2QN0.png" alt="" className="h-[96px] w-[70px] flex-none rounded-lg object-cover" />
                   <div className="min-w-0">
@@ -484,10 +479,11 @@ function Funil() {
                 href={CAKTO_URL[alvo]}
                 className="mt-5 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[15px] bg-primary px-4 text-center font-heading text-[16.5px] font-bold text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] transition-colors hover:bg-[#08652F]"
               >
-                Comprar minha foto por {brl(total)}
+                Comprar minha foto por {brl(PRECO_BASE)}
               </a>
               <p className="mt-3 text-center text-[11.5px] leading-[1.5] text-[#7A897F]">
-                Você vai para o checkout seguro (Cakto) — sua foto libera assim que o pagamento confirmar.
+                No pagamento seguro (Cakto) você pode adicionar o Combo 3 e o E-book. Sua foto libera assim que o
+                pagamento confirmar.
               </p>
             </Card>
           )}
@@ -498,25 +494,16 @@ function Funil() {
 }
 
 function BumpCard({
-  checked,
-  onToggle,
   badge,
   accent,
   children,
 }: {
-  checked: boolean;
-  onToggle: () => void;
   badge?: string;
   accent?: "navy";
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={
-        "relative mt-3 rounded-2xl border bg-card p-[15px] transition-colors " +
-        (checked ? "border-primary shadow-[0_6px_18px_rgba(10,125,60,.12)]" : "border-border shadow-[0_4px_14px_rgba(9,26,18,.04)]")
-      }
-    >
+    <div className="relative mt-3 rounded-2xl border border-border bg-card p-[15px] shadow-[0_4px_14px_rgba(9,26,18,.04)]">
       {badge && (
         <span
           className="absolute -top-2.5 right-3 rounded-full px-2.5 py-1 font-heading text-[10.5px] font-bold text-white"
@@ -525,20 +512,7 @@ function BumpCard({
           {badge}
         </span>
       )}
-      <div className="flex items-start gap-3">
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-pressed={checked}
-          className={
-            "mt-0.5 grid h-[24px] w-[24px] flex-none place-items-center rounded-full border transition-colors " +
-            (checked ? "border-primary bg-primary text-white" : "border-[#CFD8CC] bg-transparent")
-          }
-        >
-          {checked && <Check className="h-[14px] w-[14px]" strokeWidth={3} />}
-        </button>
-        <div className="min-w-0 flex-1">{children}</div>
-      </div>
+      <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
 }
