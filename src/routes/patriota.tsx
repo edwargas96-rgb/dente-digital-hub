@@ -231,8 +231,8 @@ function Patriota() {
               </span>
               <p className="text-[14px] leading-[1.42] text-[#6B5A1E]">
                 E leve <strong className="font-extrabold text-[#8A6A00]">de GRAÇA</strong> o bônus{" "}
-                <strong className="font-bold text-foreground">Poste Como Patriota</strong> — 20 legendas prontas,
-                figurinhas e papéis de parede.
+                <strong className="font-bold text-foreground">Poste Como um Patriota</strong> — 20 legendas prontas
+                para postar em suas redes.
               </p>
             </div>
 

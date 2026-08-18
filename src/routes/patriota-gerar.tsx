@@ -1,17 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Camera,
-  Check,
-  Flag,
-  Heart,
-  Landmark,
-  Loader2,
-  ShieldCheck,
-  Upload,
-} from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, ArrowRight, Camera, Check, Flag, Heart, Landmark } from "lucide-react";
 
 export const Route = createFileRoute("/patriota-gerar")({
   ssr: false,
@@ -24,7 +13,7 @@ export const Route = createFileRoute("/patriota-gerar")({
   component: Funil,
 });
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 6;
 const PRECO_BASE = 1990; // centavos
 const PRECO_COMBO = 990;
 const PRECO_EBOOKS = 990;
@@ -62,18 +51,17 @@ const CLIMA: Opt[] = [{ title: "Patriota discreta" }, { title: "Evento com bande
 
 type Testimonial = { img: string; name: string; quote: string };
 
-const T_SEBASTIAO: Testimonial = {
-  img: "/testimonials/sebastiao.svg",
-  name: "Sebastiao Ramos",
+const T_JOAO: Testimonial = {
+  img: "https://i.imgur.com/T8wJeYk.jpeg",
+  name: "João Victor",
   quote:
-    "Nunca tive a chance de tirar uma foto dessas pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
+    "Fiz todos meus amigos patriotas usarem foto de perfil. Ficou incrível, o grupo todo quis a sua também!",
 };
 
-const T_GERALDO: Testimonial = {
-  img: "/testimonials/geraldo.svg",
-  name: "Geraldo Nunes",
-  quote:
-    "Paguei no PIX e recebi na hora. Compartilhei no grupo e todo mundo pediu o link. Simples até pra mim que não manjo de celular!",
+const T_VALESKA: Testimonial = {
+  img: "https://i.imgur.com/1wYOlpJ.jpeg",
+  name: "Valeska Dalto",
+  quote: "Amei a minha! Chegou rapidinho no WhatsApp e ficou linda demais.",
 };
 
 const SUBTITULO = "Quanto mais claro o objetivo, melhor a IA ajusta pose, luz e formato da imagem.";
@@ -163,7 +151,6 @@ const inputCls =
 function Funil() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [generating, setGenerating] = useState(false);
 
   const [figura, setFigura] = useState<Figura | null>(null);
   const alvo: Figura = figura ?? "Capitão";
@@ -171,21 +158,27 @@ function Funil() {
   const [cenario, setCenario] = useState(0);
   const [enquadramento, setEnquadramento] = useState(0);
   const [clima, setClima] = useState(0);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [email, setEmail] = useState("");
-  const [cpf, setCpf] = useState("");
 
   const [addCombo, setAddCombo] = useState(false);
   const [addEbooks, setAddEbooks] = useState(false);
 
   const total = PRECO_BASE + (addCombo ? PRECO_COMBO : 0) + (addEbooks ? PRECO_EBOOKS : 0);
 
+  // Validação dos dados: precisa de nome e de um WhatsApp com pelo menos 10 dígitos.
+  const whatsappValido = whatsapp.replace(/\D/g, "").length >= 10;
+  const dadosOk = nome.trim().length > 1 && whatsappValido;
+
   // Primeira opção de cenário reflete a figura escolhida.
   const cenarioOpts: Opt[] = CENARIO.map((o, i) => (i === 0 ? { ...o, title: `Selfie com o ${alvo}` } : o));
+
+  // Combo: a mesma selfie também com o Trump e o OUTRO líder (o que não foi escolhido).
+  const outro =
+    alvo === "Capitão"
+      ? { nome: "Flávio, o 01", img: FIGURAS[1].img }
+      : { nome: "Jair Bolsonaro", img: FIGURAS[0].img };
 
   function voltar() {
     if (step === 1) {
@@ -196,15 +189,6 @@ function Funil() {
   }
 
   function avancar() {
-    if (step === 5) {
-      // Geração da imagem (após o upload) antes de coletar os dados.
-      setGenerating(true);
-      window.setTimeout(() => {
-        setGenerating(false);
-        setStep(6);
-      }, 2600);
-      return;
-    }
     setStep((s) => Math.min(TOTAL_STEPS, s + 1));
   }
 
@@ -315,7 +299,7 @@ function Funil() {
                   <OptionRow key={opt.title} opt={opt} selected={enquadramento === i} onSelect={() => setEnquadramento(i)} />
                 ))}
               </div>
-              <TestimonialInline t={T_SEBASTIAO} />
+              <TestimonialInline t={T_JOAO} />
               <Continuar onClick={avancar} />
             </Card>
           )}
@@ -330,44 +314,13 @@ function Funil() {
                   <OptionRow key={opt.title} opt={opt} selected={clima === i} onSelect={() => setClima(i)} />
                 ))}
               </div>
-              <TestimonialInline t={T_GERALDO} />
+              <TestimonialInline t={T_VALESKA} />
               <Continuar onClick={avancar} />
             </Card>
           )}
 
-          {/* PASSO 5 — Upload */}
+          {/* PASSO 5 — Dados */}
           {step === 5 && (
-            <Card>
-              <Titulo>Agora envie a sua foto 📸</Titulo>
-              <Sub>Escolha uma foto sua de frente e com boa luz. É ela que a IA vai usar.</Sub>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/png,image/jpeg"
-                className="hidden"
-                onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="mt-4 flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#C9D6C6] bg-[#F5F8F2] px-4 py-8 text-center transition-colors hover:border-primary"
-              >
-                <span className="grid h-[54px] w-[54px] place-items-center rounded-full bg-[#E7F1E8] text-primary">
-                  <Upload className="h-6 w-6" strokeWidth={2} />
-                </span>
-                <span className="font-heading text-[16px] font-bold text-foreground">{fileName ?? "Enviar selfie"}</span>
-                <span className="text-[12.5px] text-[#7A897F]">JPG ou PNG, de frente e com boa luz</span>
-              </button>
-              <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[12px] text-[#7A897F]">
-                <ShieldCheck className="h-[15px] w-[15px] flex-none text-primary" strokeWidth={2} />
-                Sua foto é usada só pra montar a sua lembrança. Nada além disso.
-              </p>
-              <Continuar onClick={avancar} disabled={!fileName} label={generating ? "Gerando…" : "Continuar"} loading={generating} />
-            </Card>
-          )}
-
-          {/* PASSO 6 — Dados */}
-          {step === 6 && (
             <Card>
               <div className="flex items-start gap-2.5 rounded-[14px] border border-[#EAC94F] bg-[#FFF4CE] px-4 py-3">
                 <span className="text-[20px] leading-none" aria-hidden="true">
@@ -384,7 +337,7 @@ function Funil() {
 
               <Field
                 label="Seu WhatsApp (com DDD)"
-                hint="Usamos este número para entrar em contato e enviar sua foto manualmente no WhatsApp. Os lembretes automáticos de Pix pendente são enviados por e-mail."
+                hint="É por aqui que a sua foto vai ser enviada. Coloque um número válido, senão não conseguimos entregar."
               >
                 <div className="flex items-stretch gap-2">
                   <span className="flex flex-none items-center gap-1 rounded-[12px] border border-border bg-[#F2F5EE] px-3 font-heading text-[13px] font-bold text-[#41533F]">
@@ -398,37 +351,19 @@ function Funil() {
                     onChange={(e) => setWhatsapp(e.target.value)}
                   />
                 </div>
+                {whatsapp.length > 0 && !whatsappValido && (
+                  <p className="mt-1.5 text-[11.5px] font-semibold text-[#C0392B]">
+                    Digite um WhatsApp válido com DDD.
+                  </p>
+                )}
               </Field>
 
-              <Field
-                label="Seu e-mail — é pra lá que a sua foto vai"
-                hint="Enviamos sua foto e um bônus exclusivo pra cá — assim você não perde, nem trocando de celular."
-              >
-                <input
-                  className={inputCls}
-                  inputMode="email"
-                  placeholder="seuemail@exemplo.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Field>
-
-              <Field label="CPF" hint="Precisamos do CPF só para emitir o Pix.">
-                <input
-                  className={inputCls}
-                  inputMode="numeric"
-                  placeholder="000.000.000-00"
-                  value={cpf}
-                  onChange={(e) => setCpf(e.target.value)}
-                />
-              </Field>
-
-              <Continuar onClick={avancar} />
+              <Continuar onClick={avancar} disabled={!dadosOk} />
             </Card>
           )}
 
-          {/* PASSO 7 — Checkout / oferta */}
-          {step === 7 && (
+          {/* PASSO 6 — Checkout / oferta */}
+          {step === 6 && (
             <Card>
               <Titulo>Para liberar a sua foto com o {alvo}</Titulo>
               <Sub>É esta mesma imagem que você recebe — em alta qualidade, com o selo de imagem fictícia gerada por IA.</Sub>
@@ -439,7 +374,7 @@ function Funil() {
                 style={{ background: "linear-gradient(180deg, #FFFBEF, #FFF6D8)" }}
               >
                 <p className="font-heading text-[15px] font-extrabold leading-[1.25] text-[#5A4A15]">
-                  Para liberar a sua foto e já usar no WhatsApp, no Instagram e no Facebook:
+                  Sua foto será entregue no WhatsApp, e já poderá usar no Instagram e no Facebook:
                 </p>
                 <p className="mt-2 font-heading text-[34px] font-extrabold leading-none text-primary">
                   R$&nbsp;19,90 <span className="text-[16px] font-bold text-[#5A4A15]">no Pix</span>
@@ -467,9 +402,8 @@ function Funil() {
                   SUA FOTO VIRA 3 — POR SÓ + R$ 9,90
                 </span>
                 <p className="mt-2 text-[12.5px] leading-[1.5] text-[#4B5B50]">
-                  A <strong>mesma selfie</strong> também com o <strong>Trump</strong> e o <strong>Flávio, o 01</strong>.
-                  Enquanto a esquerda treme, você já mostra de que lado tá — com o 01 e o maior aliado da direita no
-                  mundo. 🇧🇷🇺🇸
+                  A <strong>mesma selfie</strong> também com o <strong>Trump</strong> e o <strong>{outro.nome}</strong>.
+                  Enquanto a esquerda treme, você já mostra de que lado tá — com os maiores nomes da direita. 🇧🇷🇺🇸
                 </p>
                 <div className="mt-2.5 flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
@@ -477,8 +411,8 @@ function Funil() {
                     <span className="text-[12.5px] font-semibold text-[#3A4A40]">Trump</span>
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <img src="/offer/flavio.svg" alt="" className="h-6 w-6 rounded-full object-cover" />
-                    <span className="text-[12.5px] font-semibold text-[#3A4A40]">Flávio · 01</span>
+                    <img src={outro.img} alt="" className="h-6 w-6 rounded-full object-cover" />
+                    <span className="text-[12.5px] font-semibold text-[#3A4A40]">{outro.nome}</span>
                   </span>
                 </div>
                 <div className="mt-2.5 flex items-center gap-2">
@@ -506,8 +440,10 @@ function Funil() {
                 <div className="flex items-start gap-3">
                   <img src="/offer/ebooks.svg" alt="" className="h-[70px] w-[92px] flex-none rounded-lg object-cover" />
                   <div className="min-w-0">
-                    <p className="font-heading text-[14.5px] font-extrabold text-foreground">Pacote 3 E-books</p>
-                    <p className="mt-0.5 text-[12px] leading-[1.4] text-[#7A897F]">Todo conteudo que um patriota precisa</p>
+                    <p className="font-heading text-[14.5px] font-extrabold text-foreground">
+                      E-book Flávio Bolsonaro — Além do Sobrenome
+                    </p>
+                    <p className="mt-0.5 text-[12px] leading-[1.4] text-[#7A897F]">A história do 01 além do sobrenome.</p>
                     <p className="mt-1.5">
                       <span className="text-[12.5px] text-[#A0A99C] line-through">R$ 19,90</span>{" "}
                       <span className="font-heading text-[15px] font-extrabold text-foreground">+ R$ 9,90</span>
@@ -602,28 +538,25 @@ function Continuar({
   onClick,
   disabled = false,
   label = "Continuar",
-  loading = false,
 }: {
   onClick: () => void;
   disabled?: boolean;
   label?: string;
-  loading?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={disabled || loading}
+      disabled={disabled}
       className={
         "mt-5 flex min-h-[56px] w-full items-center justify-center gap-2 rounded-[15px] font-heading text-[17px] font-bold text-primary-foreground transition-colors " +
-        (disabled || loading
+        (disabled
           ? "cursor-not-allowed bg-[#8FBF9F]"
           : "bg-primary shadow-[0_12px_26px_rgba(10,125,60,.28)] hover:bg-[#08652F]")
       }
     >
-      {loading && <Loader2 className="h-[18px] w-[18px] animate-spin" strokeWidth={2.4} />}
       {label}
-      {!loading && <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.4} />}
+      <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.4} />
     </button>
   );
 }
