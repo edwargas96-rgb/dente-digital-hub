@@ -407,7 +407,7 @@ function Funil() {
                 </p>
                 <div className="mt-2.5 flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
-                    <img src="/offer/trump.svg" alt="" className="h-6 w-6 rounded-full object-cover" />
+                    <img src="https://i.imgur.com/q8XqXvu.jpeg" alt="" className="h-6 w-6 rounded-full object-cover" />
                     <span className="text-[12.5px] font-semibold text-[#3A4A40]">Trump</span>
                   </span>
                   <span className="flex items-center gap-1.5">
