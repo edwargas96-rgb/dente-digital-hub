@@ -79,18 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // Evita o tradutor automático do navegador (o site já é em pt-BR).
       // A tradução do Chrome muta o DOM e quebra o React (removeChild NotFoundError).
       { name: "google", content: "notranslate" },
-      { title: "LAB PIGATTO — Portal de ordens de serviço" },
+      { title: "Foto Patriota IA" },
       {
         name: "description",
-        content:
-          "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária.",
+        content: "Crie sua foto patriota com IA — com o Capitão ou o ZeroUm, pronta pra postar. 🇧🇷",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "LAB PIGATTO — Portal de ordens de serviço" },
-      { property: "og:description", content: "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/41495e42-907d-4e23-ba50-964a694094c0/id-preview-aa15575a--d75585d9-79b7-4995-aa53-09658d431feb.lovable.app-1785857482165.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/41495e42-907d-4e23-ba50-964a694094c0/id-preview-aa15575a--d75585d9-79b7-4995-aa53-09658d431feb.lovable.app-1785857482165.png" },
+      { name: "twitter:card", content: "summary" },
+      { property: "og:title", content: "Foto Patriota IA" },
+      { property: "og:description", content: "Crie sua foto patriota com IA — com o Capitão ou o ZeroUm, pronta pra postar. 🇧🇷" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
