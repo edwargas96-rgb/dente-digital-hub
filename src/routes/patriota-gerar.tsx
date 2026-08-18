@@ -519,8 +519,6 @@ function Funil() {
 
               <a
                 href={CAKTO_URL[alvo]}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="mt-5 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[15px] bg-primary px-4 text-center font-heading text-[16.5px] font-bold text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] transition-colors hover:bg-[#08652F]"
               >
                 Liberar sem marca d'água por {brl(total)}
