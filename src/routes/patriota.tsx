@@ -37,12 +37,12 @@ const EXAMPLES = [
     title: "Exemplo 1: Selfie patriota",
   },
   {
-    src: "/examples/patriota/example-real-02.svg",
+    src: "https://i.imgur.com/V5dN9xv.jpeg",
     alt: "Exemplo 2: Encontro com o ZeroUm",
     title: "Exemplo 2: Encontro com o ZeroUm",
   },
   {
-    src: "/examples/patriota/example-real-03.svg",
+    src: "https://i.imgur.com/f0Aa0H1.jpeg",
     alt: "Exemplo 3: Evento com bandeiras",
     title: "Exemplo 3: Evento com bandeiras",
   },
@@ -93,8 +93,8 @@ const SECURITY = [
 const HERO_SLIDES = [
   { src: "https://i.imgur.com/K9BZneU.jpeg", alt: "Selfie com o Capitão" },
   { src: "https://i.imgur.com/nr3BZUR.jpeg", alt: "Selfie com o ZeroUm" },
-  { src: "/examples/patriota/example-real-02.svg", alt: "Encontro patriota" },
-  { src: "/examples/patriota/example-real-03.svg", alt: "Evento com bandeiras" },
+  { src: "https://i.imgur.com/V5dN9xv.jpeg", alt: "Encontro patriota" },
+  { src: "https://i.imgur.com/f0Aa0H1.jpeg", alt: "Evento com bandeiras" },
 ];
 
 /** Mini carrossel do hero: cross-fade automático entre as fotos. */
