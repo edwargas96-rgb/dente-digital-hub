@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ArrowRight, Check, Shield, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/patriota")({
@@ -88,6 +89,61 @@ const SECURITY = [
   "Não é propaganda oficial nem apoio de figura pública",
 ];
 
+// Fotos do carrossel do topo (trocam sozinhas). Troque os src pelas fotos reais.
+const HERO_SLIDES = [
+  { src: "/examples/patriota/example-real-selfie-capitao.svg", alt: "Selfie com o Capitão" },
+  { src: "/examples/patriota/example-selfie-zeroum.svg", alt: "Selfie com o ZeroUm" },
+  { src: "/examples/patriota/example-real-02.svg", alt: "Encontro patriota" },
+  { src: "/examples/patriota/example-real-03.svg", alt: "Evento com bandeiras" },
+];
+
+/** Mini carrossel do hero: cross-fade automático entre as fotos. */
+function HeroCarousel() {
+  const [i, setI] = useState(0);
+
+  useEffect(() => {
+    const t = window.setInterval(() => setI((v) => (v + 1) % HERO_SLIDES.length), 2600);
+    return () => window.clearInterval(t);
+  }, []);
+
+  return (
+    <div className="relative mx-auto mb-0.5 mt-[22px] max-w-[300px]">
+      <div className="relative aspect-[9/16] overflow-hidden rounded-[22px] border-[6px] border-white shadow-[0_22px_46px_rgba(9,26,18,.24)] [transform:rotate(-1.4deg)]">
+        {HERO_SLIDES.map((s, idx) => (
+          <img
+            key={s.src}
+            src={s.src}
+            alt={s.alt}
+            className={
+              "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out " +
+              (idx === i ? "opacity-100" : "opacity-0")
+            }
+          />
+        ))}
+        <span className="absolute bottom-[9px] left-[9px] z-10 rounded-[7px] bg-[rgba(9,20,14,.74)] px-2 py-[5px] font-heading text-[9px] font-bold tracking-[0.07em] text-white">
+          EXEMPLO GERADO POR IA
+        </span>
+        <div className="absolute bottom-[11px] right-[10px] z-10 flex gap-1.5">
+          {HERO_SLIDES.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              aria-label={`Ver foto ${idx + 1}`}
+              onClick={() => setI(idx)}
+              className={
+                "h-[7px] rounded-full transition-all " + (idx === i ? "w-[16px] bg-white" : "w-[7px] bg-white/50")
+              }
+            />
+          ))}
+        </div>
+      </div>
+      <div className="absolute -top-2 right-0.5 grid h-[38px] w-[38px] place-items-center rounded-[11px] bg-[color:var(--color-navy)] shadow-[0_8px_18px_rgba(18,43,107,.3)] [transform:rotate(6deg)]">
+        <Star size={20} className="text-[#E8B713]" />
+      </div>
+    </div>
+  );
+}
+
 function Patriota() {
   return (
     <main
@@ -121,23 +177,7 @@ function Patriota() {
               </p>
             </div>
 
-            <div className="relative mx-auto mb-0.5 mt-[22px] max-w-[300px]">
-              <div className="relative overflow-hidden rounded-[22px] border-[6px] border-white shadow-[0_22px_46px_rgba(9,26,18,.24)] [transform:rotate(-1.4deg)]">
-                <img
-                  alt="Exemplo de foto patriota gerada por IA"
-                  width={450}
-                  height={800}
-                  className="block h-auto w-full"
-                  src="/examples/patriota/example-real-selfie-capitao.svg"
-                />
-                <span className="absolute bottom-[9px] left-[9px] rounded-[7px] bg-[rgba(9,20,14,.74)] px-2 py-[5px] font-heading text-[9px] font-bold tracking-[0.07em] text-white">
-                  EXEMPLO GERADO POR IA
-                </span>
-              </div>
-              <div className="absolute -top-2 right-0.5 grid h-[38px] w-[38px] place-items-center rounded-[11px] bg-[color:var(--color-navy)] shadow-[0_8px_18px_rgba(18,43,107,.3)] [transform:rotate(6deg)]">
-                <Star size={20} className="text-[#E8B713]" />
-              </div>
-            </div>
+            <HeroCarousel />
 
             <Link
               to="/patriota-gerar"
