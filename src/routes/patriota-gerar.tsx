@@ -38,9 +38,9 @@ const CAKTO_URL: Record<Figura, string> = {
   ZeroUm: "https://pay.cakto.com.br/7d5dmz3_1048364",
 };
 
-const FIGURAS: { id: Figura; titulo: string; desc: string; emoji: string }[] = [
-  { id: "Capitão", titulo: "Com o Capitão", desc: "O nosso capitão, o mito da direita.", emoji: "🫡" },
-  { id: "ZeroUm", titulo: "Com o ZeroUm", desc: "O 01, o maior aliado da direita no mundo.", emoji: "①" },
+const FIGURAS: { id: Figura; titulo: string; desc: string; img: string }[] = [
+  { id: "Capitão", titulo: "Com o Capitão", desc: "O nosso capitão, o mito da direita.", img: "https://i.imgur.com/HfMka8B.jpeg" },
+  { id: "ZeroUm", titulo: "Com o ZeroUm", desc: "O 01, o maior aliado da direita no mundo.", img: "https://i.imgur.com/hKwrerY.jpeg" },
 ];
 
 function brl(cents: number) {
@@ -265,9 +265,11 @@ function Funil() {
                           : "border-border bg-card shadow-[0_4px_14px_rgba(9,26,18,.04)]")
                       }
                     >
-                      <span className="grid h-[46px] w-[46px] flex-none place-items-center rounded-[13px] bg-[#EEF2EA] text-[24px] leading-none">
-                        {f.emoji}
-                      </span>
+                      <img
+                        src={f.img}
+                        alt={f.titulo}
+                        className="h-[54px] w-[54px] flex-none rounded-[13px] object-cover"
+                      />
                       <span className="min-w-0 flex-1">
                         <span className="block font-heading text-[16px] font-extrabold text-foreground">{f.titulo}</span>
                         <span className="mt-0.5 block text-[12.5px] leading-[1.4] text-[#7A897F]">{f.desc}</span>
