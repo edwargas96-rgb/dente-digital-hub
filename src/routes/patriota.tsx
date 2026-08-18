@@ -52,23 +52,23 @@ const STEPS = ["Escolha o clima", "Envie uma foto nítida", "Libere sua imagem"]
 
 const TESTIMONIALS = [
   {
-    img: "/testimonials/valdeci.svg",
-    name: "Valdeci Oliveira",
-    handle: "@valdeci.patriota",
+    img: "https://i.imgur.com/T8wJeYk.jpeg",
+    name: "João Victor",
+    handle: "@joaovictor.br",
     quote:
       "Fiz todos meus amigos patriotas usarem foto de perfil com o ZeroUm. Ficou incrível, o grupo todo quis a sua também!",
   },
   {
-    img: "/testimonials/terezinha.svg",
+    img: "https://i.imgur.com/YUshkSn.jpeg",
     name: "Terezinha Souza",
     handle: "@dona.terezinha",
     quote:
       "Botei minha foto com o ZeroUm no WhatsApp e o grupo da família inteiro quis fazer a sua também. Ficou linda!",
   },
   {
-    img: "/testimonials/sebastiao.svg",
-    name: "Sebastiao Ramos",
-    handle: "@sebastiao.brasil",
+    img: "https://i.imgur.com/9NBgvZr.jpeg",
+    name: "Brendha Nunes",
+    handle: "@brendha.nunes",
     quote:
       "Nunca tive a chance de tirar uma foto com o ZeroUm pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
   },
@@ -289,7 +289,7 @@ function Patriota() {
                     </div>
                   </div>
                   <blockquote className="mt-[11px] text-[13.5px] leading-[1.55] text-[#3A4A40]">
-                    “{t.quote}”
+                    {t.quote}
                   </blockquote>
                 </figure>
               ))}

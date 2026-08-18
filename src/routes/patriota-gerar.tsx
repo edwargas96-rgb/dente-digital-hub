@@ -127,7 +127,7 @@ function TestimonialInline({ t }: { t: Testimonial }) {
         <img alt="" src={t.img} className="h-full w-full object-cover" />
       </span>
       <div className="min-w-0">
-        <p className="text-[12.5px] leading-[1.5] text-[#3A4A40]">“{t.quote}”</p>
+        <p className="text-[12.5px] leading-[1.5] text-[#3A4A40]">{t.quote}</p>
         <p className="mt-1.5 text-[11.5px] text-[#7A897F]">
           <strong className="font-bold text-foreground">— {t.name}</strong> · patriota{" "}
           <span className="align-middle text-[9px]" aria-hidden="true">
