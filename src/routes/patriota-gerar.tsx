@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Camera, Check, Flag, Heart, Landmark } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/patriota-gerar")({
   ssr: false,
@@ -188,6 +189,24 @@ function Funil() {
     setStep((s) => Math.max(1, s - 1));
   }
 
+  // Salva as escolhas no Supabase (para você consultar pelo WhatsApp e gerar a imagem rápido).
+  async function salvarPedido() {
+    try {
+      await (supabase as unknown as { from: (t: string) => any }).from("foto_pedidos").insert({
+        nome: nome.trim(),
+        whatsapp,
+        figura: alvo,
+        cenario: cenarioOpts[cenario]?.title,
+        enquadramento: ENQUADRAMENTO[enquadramento]?.title,
+        clima: CLIMA[clima]?.title,
+        combo: addCombo,
+        ebook: addEbooks,
+      });
+    } catch (e) {
+      console.error("Falha ao salvar pedido:", e);
+    }
+  }
+
   function avancar() {
     setStep((s) => Math.min(TOTAL_STEPS, s + 1));
   }
@@ -358,7 +377,13 @@ function Funil() {
                 )}
               </Field>
 
-              <Continuar onClick={avancar} disabled={!dadosOk} />
+              <Continuar
+                onClick={() => {
+                  void salvarPedido();
+                  avancar();
+                }}
+                disabled={!dadosOk}
+              />
             </Card>
           )}
 
