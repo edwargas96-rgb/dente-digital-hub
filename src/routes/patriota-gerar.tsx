@@ -429,8 +429,8 @@ function Funil() {
                 <p className="font-heading text-[14.5px] font-bold text-[#123A5E]">🎁 De brinde: os grupos dos patriotas</p>
                 <p className="mt-1.5 text-[12.5px] leading-[1.5] text-[#3B5468]">
                   Comprando a sua foto você entra nos nossos grupos do <strong>WhatsApp</strong> e do{" "}
-                  <strong>Telegram</strong> — sem pagar nada a mais. É lá que as novidades saem primeiro. O acesso aparece
-                  nesta tela assim que o pagamento confirmar. 🇧🇷
+                  <strong>Telegram</strong> — sem pagar nada a mais. É lá que as novidades saem primeiro. O acesso chega
+                  junto com a foto no WhatsApp. 🇧🇷
                 </p>
               </div>
 
@@ -438,7 +438,7 @@ function Funil() {
               <p className="mb-2 mt-4 font-heading text-[14px] font-bold text-foreground">Adicione ao seu pedido</p>
               <BumpCard checked={addEbooks} onToggle={() => setAddEbooks((v) => !v)}>
                 <div className="flex items-start gap-3">
-                  <img src="/offer/ebooks.svg" alt="" className="h-[70px] w-[92px] flex-none rounded-lg object-cover" />
+                  <img src="https://i.imgur.com/XyK2QN0.png" alt="" className="h-[70px] w-[92px] flex-none rounded-lg object-cover" />
                   <div className="min-w-0">
                     <p className="font-heading text-[14.5px] font-extrabold text-foreground">
                       E-book Flávio Bolsonaro — Além do Sobrenome
