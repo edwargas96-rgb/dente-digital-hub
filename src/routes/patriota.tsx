@@ -72,13 +72,6 @@ const TESTIMONIALS = [
     quote:
       "Nunca tive a chance de tirar uma foto com o ZeroUm pessoalmente, mas essa aqui ficou de arrepiar. Já virou minha foto de perfil!",
   },
-  {
-    img: "/testimonials/geraldo.svg",
-    name: "Geraldo Nunes",
-    handle: "@geraldo.nunes",
-    quote:
-      "Paguei no PIX e recebi na hora. Compartilhei no grupo e todo mundo pediu o link. Simples até pra mim que não manjo de celular!",
-  },
 ];
 
 const SECURITY = [
@@ -88,6 +81,67 @@ const SECURITY = [
   "Seus dados ficam protegidos do início ao fim",
   "Não é propaganda oficial nem apoio de figura pública",
 ];
+
+// Notificações de "alguém comprou" (prova social). Nomes fictícios, ciclam na tela.
+const COMPRAS = [
+  { nome: "Carlos Eduardo", cidade: "Belo Horizonte - MG" },
+  { nome: "Fernanda Lima", cidade: "Curitiba - PR" },
+  { nome: "Marcos Antônio", cidade: "Salvador - BA" },
+  { nome: "Patrícia Gomes", cidade: "Fortaleza - CE" },
+  { nome: "Rafael Souza", cidade: "Porto Alegre - RS" },
+  { nome: "Juliana Alves", cidade: "Recife - PE" },
+  { nome: "Anderson Silva", cidade: "Goiânia - GO" },
+  { nome: "Camila Ribeiro", cidade: "Manaus - AM" },
+  { nome: "Roberto Dias", cidade: "Brasília - DF" },
+  { nome: "Aline Costa", cidade: "Campinas - SP" },
+];
+
+/** Notificação flutuante de prova social: "fulano criou a foto patriota". */
+function SalesNotification() {
+  const [idx, setIdx] = useState(0);
+  const [mins, setMins] = useState(2);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    let hide: number | undefined;
+    const show = () => {
+      setIdx(i % COMPRAS.length);
+      setMins(1 + Math.floor(Math.random() * 8));
+      setVisible(true);
+      hide = window.setTimeout(() => setVisible(false), 5000);
+      i++;
+    };
+    const first = window.setTimeout(show, 10000); // primeira após 10s
+    const loop = window.setInterval(show, 13000); // depois a cada 13s
+    return () => {
+      window.clearTimeout(first);
+      if (hide) window.clearTimeout(hide);
+      window.clearInterval(loop);
+    };
+  }, []);
+
+  const c = COMPRAS[idx];
+  return (
+    <div
+      className={
+        "fixed bottom-4 left-4 z-50 max-w-[290px] transition-all duration-500 " +
+        (visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0")
+      }
+    >
+      <div className="flex items-center gap-3 rounded-2xl border border-[#E4E8DD] bg-white px-3.5 py-2.5 shadow-[0_10px_30px_rgba(9,26,18,.18)]">
+        <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-[#EAF4EC] text-primary">
+          <Check className="h-5 w-5" strokeWidth={2.6} />
+        </span>
+        <div className="min-w-0">
+          <p className="text-[13px] font-bold leading-tight text-foreground">{c.nome} 🇧🇷</p>
+          <p className="text-[11.5px] leading-tight text-[#7A897F]">criou a foto patriota • {c.cidade}</p>
+          <p className="text-[10.5px] text-[#A0A99C]">há {mins} min</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Fotos do carrossel do topo (trocam sozinhas). Troque os src pelas fotos reais.
 const HERO_SLIDES = [
@@ -155,6 +209,7 @@ function Patriota() {
           "radial-gradient(130% 70% at 50% -8%, rgba(10,125,60,.12), transparent 55%), radial-gradient(90% 55% at 108% 4%, rgba(232,183,19,.14), transparent 55%), radial-gradient(80% 55% at -8% 8%, rgba(18,43,107,.08), transparent 55%), #e7ebe1",
       }}
     >
+      <SalesNotification />
       <div className="relative w-full max-w-[468px] bg-card shadow-[0_0_70px_rgba(9,26,18,.13)]">
         <div className="sticky top-0 z-30 h-1 fp-tricolor" />
 
