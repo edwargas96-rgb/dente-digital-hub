@@ -105,19 +105,21 @@ function SalesNotification() {
   useEffect(() => {
     let i = 0;
     let hide: number | undefined;
+    let next: number | undefined;
     const show = () => {
       setIdx(i % COMPRAS.length);
       setMins(1 + Math.floor(Math.random() * 8));
       setVisible(true);
       hide = window.setTimeout(() => setVisible(false), 5000);
       i++;
+      // Espaçamento crescente: 1ª→2ª em 60s, 2ª→3ª em 120s, 3ª→4ª em 180s...
+      next = window.setTimeout(show, i * 60000);
     };
-    const first = window.setTimeout(show, 10000); // primeira após 10s
-    const loop = window.setInterval(show, 13000); // depois a cada 13s
+    const first = window.setTimeout(show, 10000); // primeira após ~10s
     return () => {
       window.clearTimeout(first);
       if (hide) window.clearTimeout(hide);
-      window.clearInterval(loop);
+      if (next) window.clearTimeout(next);
     };
   }, []);
 
@@ -349,6 +351,17 @@ function Patriota() {
                 </figure>
               ))}
             </div>
+          </section>
+
+          {/* CTA entre depoimentos e segurança */}
+          <section className="px-5 pt-2">
+            <Link
+              to="/patriota-gerar"
+              className="flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F]"
+            >
+              Quero minha foto patriota 🇧🇷
+              <ArrowRight className="size-[19px]" strokeWidth={2.4} />
+            </Link>
           </section>
 
           {/* SEGURANÇA */}
