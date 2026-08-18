@@ -34,8 +34,8 @@ type Figura = "Capitão" | "ZeroUm";
 
 // Checkout na Cakto — troque pelos links reais de cada produto.
 const CAKTO_URL: Record<Figura, string> = {
-  "Capitão": "https://pay.cakto.com.br/SEU-LINK-CAPITAO",
-  ZeroUm: "https://pay.cakto.com.br/SEU-LINK-ZEROUM",
+  "Capitão": "https://pay.cakto.com.br/3bswr7q_1048378",
+  ZeroUm: "https://pay.cakto.com.br/7d5dmz3_1048364",
 };
 
 const FIGURAS: { id: Figura; titulo: string; desc: string; emoji: string }[] = [
