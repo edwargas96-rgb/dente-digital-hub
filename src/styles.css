@@ -218,3 +218,62 @@
     transform: translateY(0);
   }
 }
+
+/* ── FOTO PATRIOTA: animações e toques patrióticos ────────────────── */
+
+/* Revela seções ao rolar a página */
+.fp-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.fp-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Botões com toque (aperta ao clicar) */
+.fp-btn {
+  transition: transform 0.12s ease, filter 0.18s ease, box-shadow 0.2s ease;
+}
+.fp-btn:active {
+  transform: scale(0.97);
+}
+
+/* Brilho que passa no botão principal */
+.fp-cta {
+  position: relative;
+  overflow: hidden;
+}
+.fp-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transform: skewX(-20deg);
+  animation: fpSheen 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes fpSheen {
+  0%, 55% { left: -70%; }
+  100% { left: 140%; }
+}
+
+/* Barrinha tricolor de destaque nos títulos das seções */
+.fp-accent {
+  display: block;
+  width: 38px;
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #0a7d3c 0 34%, #e8b713 34% 67%, #122b6b 67% 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fp-reveal { opacity: 1; transform: none; transition: none; }
+  .fp-cta::after { animation: none; display: none; }
+}

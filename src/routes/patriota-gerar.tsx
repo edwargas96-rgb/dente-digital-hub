@@ -479,7 +479,7 @@ function Funil() {
 
               <a
                 href={CAKTO_URL[alvo]}
-                className="mt-5 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[15px] bg-primary px-4 text-center font-heading text-[16.5px] font-bold text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] transition-colors hover:bg-[#08652F]"
+                className="fp-btn fp-cta mt-5 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[15px] bg-primary px-4 text-center font-heading text-[16.5px] font-bold text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] hover:bg-[#08652F]"
               >
                 Comprar minha foto por {brl(PRECO_BASE)}
               </a>
@@ -521,7 +521,9 @@ function BumpCard({
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-5 rounded-[22px] border border-[#E4E8DD] bg-card p-5 shadow-[0_10px_34px_rgba(9,26,18,.08)]">{children}</div>
+    <div className="mt-5 rounded-[22px] border border-[#E4E8DD] bg-card p-5 shadow-[0_10px_34px_rgba(9,26,18,.08)] [animation:fpUp_.35s_cubic-bezier(.22,1,.36,1)_both]">
+      {children}
+    </div>
   );
 }
 
@@ -550,7 +552,7 @@ function Continuar({
       onClick={onClick}
       disabled={disabled}
       className={
-        "mt-5 flex min-h-[56px] w-full items-center justify-center gap-2 rounded-[15px] font-heading text-[17px] font-bold text-primary-foreground transition-colors " +
+        "fp-btn mt-5 flex min-h-[56px] w-full items-center justify-center gap-2 rounded-[15px] font-heading text-[17px] font-bold text-primary-foreground " +
         (disabled
           ? "cursor-not-allowed bg-[#8FBF9F]"
           : "bg-primary shadow-[0_12px_26px_rgba(10,125,60,.28)] hover:bg-[#08652F]")

@@ -205,6 +205,28 @@ function HeroCarousel() {
 }
 
 function Patriota() {
+  // Anima as seções conforme entram na tela ao rolar.
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".fp-reveal"));
+    if (!("IntersectionObserver" in window)) {
+      els.forEach((e) => e.classList.add("is-visible"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+    );
+    els.forEach((e) => io.observe(e));
+    return () => io.disconnect();
+  }, []);
+
   return (
     <main
       className="fp-scope flex min-h-screen justify-center overflow-x-hidden"
@@ -247,7 +269,7 @@ function Patriota() {
 
             <Link
               to="/patriota-gerar"
-              className="mt-[18px] flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F]"
+              className="mt-[18px] flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F] fp-btn fp-cta"
             >
               Quero minha foto patriota <FlagBR />
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
@@ -279,8 +301,9 @@ function Patriota() {
           </section>
 
           {/* EXEMPLOS */}
-          <section className="w-full border-y border-[#ECEFE6] bg-muted pb-6 pt-[22px]">
+          <section className="fp-reveal w-full border-y border-[#ECEFE6] bg-muted pb-6 pt-[22px]">
             <div className="px-5 pb-[14px]">
+              <span className="fp-accent" />
               <h2 className="font-heading text-[19px] font-bold tracking-[-0.01em] text-foreground">
                 Exemplos de resultado
               </h2>
@@ -305,7 +328,8 @@ function Patriota() {
           </section>
 
           {/* COMO FUNCIONA */}
-          <section className="px-5 pb-2 pt-6">
+          <section className="fp-reveal px-5 pb-2 pt-6">
+            <span className="fp-accent" />
             <h2 className="font-heading text-[19px] font-bold tracking-[-0.01em] text-foreground">Como funciona</h2>
             <p className="mb-4 mt-1.5 text-[13px] leading-[1.5] text-muted-foreground">
               O processo é curto, direto e feito para quem quer uma imagem patriota pronta para postar.
@@ -326,7 +350,8 @@ function Patriota() {
           </section>
 
           {/* DEPOIMENTOS */}
-          <section className="px-5 pb-1 pt-6">
+          <section className="fp-reveal px-5 pb-1 pt-6">
+            <span className="fp-accent" />
             <h2 className="font-heading text-[19px] font-bold tracking-[-0.01em] text-foreground">Quem já usou aprova</h2>
             <p className="mb-3.5 mt-1.5 text-[13px] leading-[1.5] text-muted-foreground">
               Mensagens de patriotas que já criaram e compartilharam a própria foto.{" "}
@@ -364,10 +389,10 @@ function Patriota() {
           </section>
 
           {/* CTA entre depoimentos e segurança */}
-          <section className="px-5 pt-2">
+          <section className="fp-reveal px-5 pt-2">
             <Link
               to="/patriota-gerar"
-              className="flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F]"
+              className="flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F] fp-btn fp-cta"
             >
               Quero minha foto patriota <FlagBR />
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
@@ -375,7 +400,7 @@ function Patriota() {
           </section>
 
           {/* SEGURANÇA */}
-          <section className="px-5 pb-1.5 pt-3.5">
+          <section className="fp-reveal px-5 pb-1.5 pt-3.5">
             <div className="overflow-hidden rounded-2xl border border-border shadow-[0_6px_18px_rgba(9,26,18,.05)]">
               <div className="bg-card px-4 pb-1 pt-4">
                 <div className="mb-3 flex items-center gap-2">
