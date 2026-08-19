@@ -30,6 +30,12 @@ const CAKTO_URL: Record<Figura, string> = {
   ZeroUm: "https://pay.cakto.com.br/7d5dmz3_1048364",
 };
 
+// Cupom de indicação (amigo ganha 20%) — um código por produto na Cakto.
+const CUPOM: Record<Figura, string> = {
+  "Capitão": "AMIGO20",
+  ZeroUm: "AMIGO20Z",
+};
+
 const FIGURAS: { id: Figura; titulo: string; desc: string; img: string }[] = [
   { id: "Capitão", titulo: "Com o Capitão", desc: "O nosso capitão, o mito da direita.", img: "https://i.imgur.com/HfMka8B.jpeg" },
   { id: "ZeroUm", titulo: "Com o ZeroUm", desc: "O 01, o maior aliado da direita no mundo.", img: "https://i.imgur.com/hKwrerY.jpeg" },
@@ -510,8 +516,8 @@ function Funil() {
                 <div className="mt-4 flex items-start gap-2 rounded-xl border border-[#EAC94F] bg-[#FFF4CE] px-3.5 py-2.5 text-[12.5px] font-semibold leading-[1.4] text-[#6B5A1E]">
                   <span aria-hidden="true">🎁</span>
                   <span>
-                    Indicação de amigo: use o cupom <strong className="text-[#8A6A00]">AMIGO20</strong> no checkout para
-                    20% de desconto.
+                    Indicação de amigo: use o cupom <strong className="text-[#8A6A00]">{CUPOM[alvo]}</strong> no checkout
+                    para 20% de desconto.
                   </span>
                 </div>
               )}
