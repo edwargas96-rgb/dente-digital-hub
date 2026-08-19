@@ -271,7 +271,7 @@ function Patriota() {
               to="/patriota-gerar"
               className="mt-[18px] flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F] fp-btn fp-cta"
             >
-              Quero minha foto patriota <FlagBR />
+              Quero minha foto patriota
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
             </Link>
 
@@ -370,7 +370,6 @@ function Patriota() {
                     <figcaption className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 font-heading text-[14px] font-bold text-foreground">
                         <span className="truncate">{t.name}</span>
-                        <FlagBR className="flex-none" />
                       </div>
                       <span className="block text-[11.5px] text-[#8A978D]">{t.handle}</span>
                     </figcaption>
@@ -394,7 +393,7 @@ function Patriota() {
               to="/patriota-gerar"
               className="flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F] fp-btn fp-cta"
             >
-              Quero minha foto patriota <FlagBR />
+              Quero minha foto patriota
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
             </Link>
           </section>

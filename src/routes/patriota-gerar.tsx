@@ -117,8 +117,7 @@ function TestimonialInline({ t }: { t: Testimonial }) {
       <div className="min-w-0">
         <p className="text-[12.5px] leading-[1.5] text-[#3A4A40]">{t.quote}</p>
         <p className="mt-1.5 text-[11.5px] text-[#7A897F]">
-          <strong className="font-bold text-foreground">— {t.name}</strong> · patriota{" "}
-          <FlagBR />
+          <strong className="font-bold text-foreground">— {t.name}</strong> · patriota
         </p>
       </div>
     </div>
