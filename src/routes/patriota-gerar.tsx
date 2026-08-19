@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Camera, Check, Flag, Heart, Landmark } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, Check, Flag, Heart, Image as ImageIcon, Landmark } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FlagBR, FlagUS } from "@/components/flags";
 
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/patriota-gerar")({
   component: Funil,
 });
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 const PRECO_BASE = 1990; // centavos
 const PRECO_COMBO = 990;
 const PRECO_EBOOKS = 990;
@@ -38,7 +38,12 @@ function brl(cents: number) {
   return "R$ " + (cents / 100).toFixed(2).replace(".", ",");
 }
 
-type Opt = { title: string; desc?: string; icon?: "camera" | "landmark" | "flag" | "heart" };
+type Opt = { title: string; desc?: string; icon?: "camera" | "landmark" | "flag" | "heart" | "image" };
+
+const FORMATOS: Opt[] = [
+  { title: "Selfie", desc: "Foto de pertinho, como se você mesmo tivesse tirado.", icon: "camera" },
+  { title: "Foto", desc: "Uma foto sua, como se alguém tivesse tirado de você.", icon: "image" },
+];
 
 const CENARIO: Opt[] = [
   { title: "Selfie", desc: "Uma foto casual, como se fosse um registro rápido para postar.", icon: "camera" },
@@ -71,6 +76,7 @@ function OptionIcon({ icon }: { icon: NonNullable<Opt["icon"]> }) {
   if (icon === "camera") return <Camera className={cls} strokeWidth={2} />;
   if (icon === "landmark") return <Landmark className={cls} strokeWidth={2} />;
   if (icon === "flag") return <Flag className={cls} strokeWidth={2} />;
+  if (icon === "image") return <ImageIcon className={cls} strokeWidth={2} />;
   return <Heart className="h-[19px] w-[19px] text-[#E8B713]" fill="currentColor" strokeWidth={0} />;
 }
 
@@ -152,6 +158,8 @@ function Funil() {
   const [figura, setFigura] = useState<Figura | null>(null);
   const alvo: Figura = figura ?? "Capitão";
 
+  const [formato, setFormato] = useState<number | null>(null);
+
   const [cenario, setCenario] = useState(0);
   const [enquadramento, setEnquadramento] = useState(0);
   const [clima, setClima] = useState(0);
@@ -187,6 +195,7 @@ function Funil() {
         nome: nome.trim(),
         whatsapp,
         figura: alvo,
+        formato: formato !== null ? FORMATOS[formato]?.title : null,
         cenario: cenarioOpts[cenario]?.title,
         enquadramento: ENQUADRAMENTO[enquadramento]?.title,
         clima: CLIMA[clima]?.title,
@@ -288,8 +297,22 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 2 — Cenário */}
+          {/* PASSO 2 — Foto ou selfie */}
           {step === 2 && (
+            <Card>
+              <Titulo>Você quer uma foto ou uma selfie?</Titulo>
+              <Sub>Escolha o formato da sua imagem com o líder.</Sub>
+              <div className="mt-4 flex flex-col gap-2.5">
+                {FORMATOS.map((opt, i) => (
+                  <OptionRow key={opt.title} opt={opt} selected={formato === i} onSelect={() => setFormato(i)} />
+                ))}
+              </div>
+              <Continuar onClick={avancar} disabled={formato === null} />
+            </Card>
+          )}
+
+          {/* PASSO 3 — Cenário */}
+          {step === 3 && (
             <Card>
               <Titulo>Escolha o cenário da sua foto</Titulo>
               <Sub>Onde vocês aparecem juntos — a IA monta o fundo e a cena a partir daqui.</Sub>
@@ -302,8 +325,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 3 */}
-          {step === 3 && (
+          {/* PASSO 4 — Enquadramento */}
+          {step === 4 && (
             <Card>
               <Titulo>Defina o enquadramento</Titulo>
               <Sub>Como você quer aparecer na foto: mais de perto ou mostrando o ambiente.</Sub>
@@ -317,8 +340,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 4 */}
-          {step === 4 && (
+          {/* PASSO 5 — Clima */}
+          {step === 5 && (
             <Card>
               <Titulo>Escolha o clima da imagem</Titulo>
               <Sub>O estilo do momento — de um registro discreto a um clima de evento.</Sub>
@@ -332,8 +355,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 5 — Dados */}
-          {step === 5 && (
+          {/* PASSO 6 — Dados */}
+          {step === 6 && (
             <Card>
               <div className="flex items-start gap-2.5 rounded-[14px] border border-[#EAC94F] bg-[#FFF4CE] px-4 py-3">
                 <span className="text-[20px] leading-none" aria-hidden="true">
@@ -381,8 +404,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 6 — Checkout / oferta */}
-          {step === 6 && (
+          {/* PASSO 7 — Checkout / oferta */}
+          {step === 7 && (
             <Card>
               <Titulo>Para liberar a sua foto com o {alvo}</Titulo>
               <Sub>É esta mesma imagem que você recebe — em alta qualidade, com o selo de imagem fictícia gerada por IA.</Sub>
