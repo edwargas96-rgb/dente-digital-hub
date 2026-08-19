@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Camera, Check, Flag, Heart, Landmark } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FlagBR, FlagUS } from "@/components/flags";
 
 export const Route = createFileRoute("/patriota-gerar")({
   ssr: false,
@@ -65,8 +66,6 @@ const T_VALESKA: Testimonial = {
   quote: "Amei a minha! Chegou rapidinho no WhatsApp e ficou linda demais.",
 };
 
-const SUBTITULO = "Quanto mais claro o objetivo, melhor a IA ajusta pose, luz e formato da imagem.";
-
 function OptionIcon({ icon }: { icon: NonNullable<Opt["icon"]> }) {
   const cls = "h-[19px] w-[19px]";
   if (icon === "camera") return <Camera className={cls} strokeWidth={2} />;
@@ -119,9 +118,7 @@ function TestimonialInline({ t }: { t: Testimonial }) {
         <p className="text-[12.5px] leading-[1.5] text-[#3A4A40]">{t.quote}</p>
         <p className="mt-1.5 text-[11.5px] text-[#7A897F]">
           <strong className="font-bold text-foreground">— {t.name}</strong> · patriota{" "}
-          <span className="align-middle text-[9px]" aria-hidden="true">
-            🇧🇷
-          </span>
+          <FlagBR />
         </p>
       </div>
     </div>
@@ -241,10 +238,15 @@ function Funil() {
             />
           </div>
 
+          <p className="mt-2.5 text-center text-[12.5px] text-[#7A897F]">
+            Sua foto por <span className="text-[#A0A99C] line-through">R$ 39,90</span>{" "}
+            <strong className="font-heading text-[14px] font-extrabold text-primary">R$ 19,90</strong> no Pix
+          </p>
+
           {/* PASSO 1 — Escolha da figura */}
           {step === 1 && (
             <Card>
-              <Titulo>Com quem você quer tirar sua foto? 🇧🇷</Titulo>
+              <Titulo>Com quem você quer tirar sua foto? <FlagBR /></Titulo>
               <Sub>Escolha o líder e a IA monta a sua foto do lado dele.</Sub>
               <div className="mt-4 flex flex-col gap-2.5">
                 {FIGURAS.map((f) => {
@@ -291,7 +293,7 @@ function Funil() {
           {step === 2 && (
             <Card>
               <Titulo>Escolha o cenário da sua foto</Titulo>
-              <Sub>{SUBTITULO}</Sub>
+              <Sub>Onde vocês aparecem juntos — a IA monta o fundo e a cena a partir daqui.</Sub>
               <div className="mt-4 flex flex-col gap-2.5">
                 {cenarioOpts.map((opt, i) => (
                   <OptionRow key={opt.title} opt={opt} selected={cenario === i} onSelect={() => setCenario(i)} />
@@ -305,7 +307,7 @@ function Funil() {
           {step === 3 && (
             <Card>
               <Titulo>Defina o enquadramento</Titulo>
-              <Sub>{SUBTITULO}</Sub>
+              <Sub>Como você quer aparecer na foto: mais de perto ou mostrando o ambiente.</Sub>
               <div className="mt-4 flex flex-col gap-2.5">
                 {ENQUADRAMENTO.map((opt, i) => (
                   <OptionRow key={opt.title} opt={opt} selected={enquadramento === i} onSelect={() => setEnquadramento(i)} />
@@ -320,7 +322,7 @@ function Funil() {
           {step === 4 && (
             <Card>
               <Titulo>Escolha o clima da imagem</Titulo>
-              <Sub>{SUBTITULO}</Sub>
+              <Sub>O estilo do momento — de um registro discreto a um clima de evento.</Sub>
               <div className="mt-4 flex flex-col gap-2.5">
                 {CLIMA.map((opt, i) => (
                   <OptionRow key={opt.title} opt={opt} selected={clima === i} onSelect={() => setClima(i)} />
@@ -398,7 +400,7 @@ function Funil() {
                   R$&nbsp;19,90 <span className="text-[16px] font-bold text-[#5A4A15]">no Pix</span>
                 </p>
                 <p className="mt-2.5 text-[13.5px] leading-[1.5] text-[#6B5A1E]">
-                  Esse valor cobre só o nosso trabalho e fortalece o nosso lado, em apoio ao nosso {alvo} 🇧🇷
+                  Esse valor cobre só o nosso trabalho e fortalece o nosso lado, em apoio ao nosso {alvo} <FlagBR />
                 </p>
                 <div className="mt-3 flex items-start gap-2 rounded-xl border border-[#EAD9A0] bg-white/70 px-3 py-2.5">
                   <span className="text-[18px] leading-none" aria-hidden="true">
@@ -415,13 +417,13 @@ function Funil() {
 
               {/* Order bump 1 — Combo (selecionável no checkout da Cakto) */}
               <BumpCard accent="navy" badge="⭐ MAIS ESCOLHIDO">
-                <p className="font-heading text-[15.5px] font-extrabold text-foreground">Combo 3 Líderes da Direita 🇧🇷</p>
+                <p className="font-heading text-[15.5px] font-extrabold text-foreground">Combo 3 Líderes da Direita <FlagBR /></p>
                 <span className="mt-1.5 inline-block rounded-md bg-[color:var(--color-navy)] px-2.5 py-1 font-heading text-[11px] font-bold text-white">
                   SUA FOTO VIRA 3 — POR SÓ + R$ 9,90
                 </span>
                 <p className="mt-2 text-[12.5px] leading-[1.5] text-[#4B5B50]">
                   A <strong>mesma selfie</strong> também com o <strong>Trump</strong> e o <strong>{outro.nome}</strong>.
-                  Enquanto a esquerda treme, você já mostra de que lado tá — com os maiores nomes da direita. 🇧🇷🇺🇸
+                  Enquanto a esquerda treme, você já mostra de que lado tá — com os maiores nomes da direita. <FlagBR /> <FlagUS />
                 </p>
                 <div className="mt-2.5 flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
@@ -448,7 +450,7 @@ function Funil() {
                 <p className="mt-1.5 text-[12.5px] leading-[1.5] text-[#3B5468]">
                   Comprando a sua foto você entra nos nossos grupos do <strong>WhatsApp</strong> e do{" "}
                   <strong>Telegram</strong> — sem pagar nada a mais. É lá que as novidades saem primeiro. O acesso chega
-                  junto com a foto no WhatsApp. 🇧🇷
+                  junto com a foto no WhatsApp. <FlagBR />
                 </p>
               </div>
 

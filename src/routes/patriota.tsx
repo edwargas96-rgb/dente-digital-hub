@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, Shield, ShieldCheck } from "lucide-react";
+import { FlagBR } from "@/components/flags";
 
 export const Route = createFileRoute("/patriota")({
   ssr: false,
@@ -77,6 +78,7 @@ const TESTIMONIALS = [
 const SECURITY = [
   "Imagem gerada por IA",
   "Pagamento único, sem assinatura",
+  "Garantia de 7 dias: não gostou, devolvemos o seu dinheiro",
   "Sua foto é usada apenas para gerar o resultado",
   "Seus dados ficam protegidos do início ao fim",
   "Não é propaganda oficial nem apoio de figura pública",
@@ -136,7 +138,7 @@ function SalesNotification() {
           <Check className="h-5 w-5" strokeWidth={2.6} />
         </span>
         <div className="min-w-0">
-          <p className="text-[13px] font-bold leading-tight text-foreground">{c.nome} 🇧🇷</p>
+          <p className="text-[13px] font-bold leading-tight text-foreground">{c.nome} <FlagBR /></p>
           <p className="text-[11.5px] leading-tight text-[#7A897F]">criou a foto patriota • {c.cidade}</p>
           <p className="text-[10.5px] text-[#A0A99C]">há {mins} min</p>
         </div>
@@ -219,10 +221,15 @@ function Patriota() {
           {/* HERO */}
           <section className="px-5 pb-[26px] pt-6">
             <h1 className="mt-4 font-heading text-[30px] font-extrabold leading-[1.05] tracking-[-0.02em] text-foreground">
-              Mostre pra todo mundo de que lado você está: faça sua foto com o Capitão ou com o ZeroUm e fortaleça o nosso lado 🇧🇷
+              Mostre pra todo mundo de que lado você está: faça sua foto com o Capitão ou com o ZeroUm e fortaleça o nosso lado <FlagBR />
             </h1>
             <p className="mt-3 text-[14.5px] leading-[1.5] text-[#53645A]">
               Você manda uma foto sua, a gente monta tudo pra você e em poucos minutos ela fica pronta 📸
+            </p>
+
+            <p className="mt-2.5 flex items-start gap-2 rounded-[12px] bg-[#EAF4EC] px-3 py-2 text-[13px] font-semibold leading-[1.4] text-[#20302A]">
+              <span aria-hidden="true">📸</span> Já deixe em mãos uma selfie sua, de frente e com boa luz — é ela que a
+              IA vai usar.
             </p>
 
             <div className="mt-[14px] flex items-start gap-2.5 rounded-[14px] border border-[#EAC94F] bg-[#FFF4CE] px-4 py-3">
@@ -242,16 +249,21 @@ function Patriota() {
               to="/patriota-gerar"
               className="mt-[18px] flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F]"
             >
-              Quero minha foto patriota 🇧🇷
+              Quero minha foto patriota <FlagBR />
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
             </Link>
 
-            <div className="mt-[18px] flex flex-wrap justify-center gap-2">
+            <p className="mt-3 text-center text-[13.5px] text-[#53645A]">
+              <span className="text-[#A0A99C] line-through">R$ 39,90</span>{" "}
+              <strong className="font-heading text-[17px] font-extrabold text-primary">R$ 19,90</strong> no Pix
+            </p>
+
+            <div className="mt-[14px] flex flex-wrap justify-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E4E8DD] bg-[#F2F5EE] px-[11px] py-[7px] text-[12px] font-semibold text-[#41533F]">
                 <ShieldCheck className="size-[14px] text-primary" strokeWidth={2} /> Dados protegidos
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E4E8DD] bg-[#F2F5EE] px-[11px] py-[7px] text-[12px] font-semibold text-[#41533F]">
-                <Check className="size-[14px] text-primary" strokeWidth={2.2} /> Garantia de satisfação
+                <Check className="size-[14px] text-primary" strokeWidth={2.2} /> Garantia de 7 dias
               </span>
             </div>
 
@@ -333,9 +345,7 @@ function Patriota() {
                     <figcaption className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 font-heading text-[14px] font-bold text-foreground">
                         <span className="truncate">{t.name}</span>
-                        <span className="flex-none text-[12px]" aria-hidden="true">
-                          🇧🇷
-                        </span>
+                        <FlagBR className="flex-none" />
                       </div>
                       <span className="block text-[11.5px] text-[#8A978D]">{t.handle}</span>
                     </figcaption>
@@ -359,7 +369,7 @@ function Patriota() {
               to="/patriota-gerar"
               className="flex min-h-[56px] w-full items-center justify-center gap-[9px] rounded-[15px] bg-primary font-heading text-[17px] font-bold tracking-[0.01em] text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.3)] transition-colors hover:bg-[#08652F]"
             >
-              Quero minha foto patriota 🇧🇷
+              Quero minha foto patriota <FlagBR />
               <ArrowRight className="size-[19px]" strokeWidth={2.4} />
             </Link>
           </section>
