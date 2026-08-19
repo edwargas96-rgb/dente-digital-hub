@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, Shield, ShieldCheck } from "lucide-react";
 import { FlagBR } from "@/components/flags";
+import { lerIndicadoPor } from "@/lib/referral";
 
 export const Route = createFileRoute("/patriota")({
   ssr: false,
@@ -205,6 +206,11 @@ function HeroCarousel() {
 }
 
 function Patriota() {
+  const [indicadoPor, setIndicadoPor] = useState<string | null>(null);
+  useEffect(() => {
+    setIndicadoPor(lerIndicadoPor());
+  }, []);
+
   // Anima as seções conforme entram na tela ao rolar.
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>(".fp-reveal"));
@@ -242,6 +248,15 @@ function Patriota() {
         <div className="pb-2">
           {/* HERO */}
           <section className="px-5 pb-[26px] pt-6">
+            {indicadoPor && (
+              <div className="mb-2 flex items-center gap-2 rounded-[12px] border border-[#EAC94F] bg-[#FFF4CE] px-3.5 py-2.5 text-[13px] font-semibold leading-[1.35] text-[#6B5A1E]">
+                <span aria-hidden="true">🎁</span>
+                <span>
+                  Um amigo te indicou! Você ganha <strong className="text-[#8A6A00]">20% de desconto</strong> no
+                  pagamento.
+                </span>
+              </div>
+            )}
             <h1 className="mt-4 font-heading text-[30px] font-extrabold leading-[1.05] tracking-[-0.02em] text-foreground">
               Mostre pra todo mundo de que lado você está: faça sua foto com o Capitão ou com o ZeroUm e fortaleça o nosso lado <FlagBR />
             </h1>

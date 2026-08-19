@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Camera, Check, Flag, Heart, Image as ImageIcon, Landmark } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FlagBR, FlagUS } from "@/components/flags";
+import { lerIndicadoPor } from "@/lib/referral";
 
 export const Route = createFileRoute("/patriota-gerar")({
   ssr: false,
@@ -167,6 +168,11 @@ function Funil() {
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
 
+  const [indicadoPor, setIndicadoPor] = useState<string | null>(null);
+  useEffect(() => {
+    setIndicadoPor(lerIndicadoPor());
+  }, []);
+
   // Validação dos dados: precisa de nome e de um WhatsApp com pelo menos 10 dígitos.
   const whatsappValido = whatsapp.replace(/\D/g, "").length >= 10;
   const dadosOk = nome.trim().length > 1 && whatsappValido;
@@ -199,6 +205,7 @@ function Funil() {
         cenario: cenarioOpts[cenario]?.title,
         enquadramento: ENQUADRAMENTO[enquadramento]?.title,
         clima: CLIMA[clima]?.title,
+        indicado_por: indicadoPor,
       });
     } catch (e) {
       console.error("Falha ao salvar pedido:", e);
@@ -499,6 +506,15 @@ function Funil() {
                 </div>
               </BumpCard>
 
+              {indicadoPor && (
+                <div className="mt-4 flex items-start gap-2 rounded-xl border border-[#EAC94F] bg-[#FFF4CE] px-3.5 py-2.5 text-[12.5px] font-semibold leading-[1.4] text-[#6B5A1E]">
+                  <span aria-hidden="true">🎁</span>
+                  <span>
+                    Indicação de amigo: use o cupom <strong className="text-[#8A6A00]">AMIGO20</strong> no checkout para
+                    20% de desconto.
+                  </span>
+                </div>
+              )}
               <a
                 href={CAKTO_URL[alvo]}
                 className="fp-btn fp-cta mt-5 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[15px] bg-primary px-4 text-center font-heading text-[16.5px] font-bold text-primary-foreground shadow-[0_12px_26px_rgba(10,125,60,.30)] hover:bg-[#08652F]"
