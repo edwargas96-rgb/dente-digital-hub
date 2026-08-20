@@ -49,6 +49,15 @@ const CUPOM: Record<Figura, string> = {
   ZeroUm: "AMIGO20Z",
 };
 
+// Prévias PRONTAS (você cria a imagem já borrada e hospeda no imgur).
+// A imagem mostrada depende da figura + do cenário escolhido no funil.
+// Ordem dos cenários: [0] Selfie · [1] Encontro em Brasília · [2] Evento patriota · [3] Encontro popular
+// Deixe "" onde ainda não tiver o link — nesses casos cai na foto que a pessoa enviou (borrada).
+const PREVIA: Record<Figura, string[]> = {
+  "Capitão": ["", "", "", ""],
+  ZeroUm: ["", "", "", ""],
+};
+
 const FIGURAS: { id: Figura; titulo: string; desc: string; img: string }[] = [
   { id: "Capitão", titulo: "Com o Capitão", desc: "O nosso capitão, o mito da direita.", img: "https://i.imgur.com/HfMka8B.jpeg" },
   { id: "ZeroUm", titulo: "Com o ZeroUm", desc: "O 01, o maior aliado da direita no mundo.", img: "https://i.imgur.com/hKwrerY.jpeg" },
@@ -441,11 +450,19 @@ function Funil() {
               </Sub>
 
               <div className="relative mx-auto mt-4 aspect-[3/4] max-w-[260px] overflow-hidden rounded-[18px] border-[5px] border-white shadow-[0_18px_40px_rgba(9,26,18,.22)]">
-                {fileUrl ? (
-                  <img src={fileUrl} alt="Prévia" className="h-full w-full object-cover blur-[7px] saturate-[1.2]" />
-                ) : (
-                  <div className="h-full w-full bg-[#0f5232]" />
-                )}
+                {(() => {
+                  const pronta = PREVIA[alvo]?.[cenario] || "";
+                  const src = pronta || fileUrl;
+                  if (!src) return <div className="h-full w-full bg-[#0f5232]" />;
+                  // Imagem pronta você já borra; a foto enviada recebe blur mais forte.
+                  return (
+                    <img
+                      src={src}
+                      alt="Prévia"
+                      className={"h-full w-full object-cover saturate-[1.15] " + (pronta ? "blur-[2px]" : "blur-[7px]")}
+                    />
+                  );
+                })()}
                 <div
                   className="absolute inset-0"
                   style={{ background: "linear-gradient(160deg, rgba(10,125,60,.30), rgba(18,43,107,.42))" }}
