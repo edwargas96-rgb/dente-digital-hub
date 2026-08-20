@@ -1,6 +1,19 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Camera, Check, Flag, Heart, Image as ImageIcon, Landmark } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Camera,
+  Check,
+  Flag,
+  Heart,
+  Image as ImageIcon,
+  Landmark,
+  Lock,
+  ShieldCheck,
+  Sparkles,
+  Upload,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FlagBR, FlagUS } from "@/components/flags";
 import { lerIndicadoPor } from "@/lib/referral";
@@ -16,7 +29,7 @@ export const Route = createFileRoute("/patriota-gerar")({
   component: Funil,
 });
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 9;
 const PRECO_BASE = 1990; // centavos
 const PRECO_COMBO = 990;
 const PRECO_EBOOKS = 990;
@@ -164,8 +177,12 @@ function Funil() {
 
   const [figura, setFigura] = useState<Figura | null>(null);
   const alvo: Figura = figura ?? "Capitão";
+  const figuraImg = FIGURAS.find((f) => f.id === alvo)?.img ?? "";
 
   const [formato, setFormato] = useState<number | null>(null);
+
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [cenario, setCenario] = useState(0);
   const [enquadramento, setEnquadramento] = useState(0);
@@ -324,8 +341,48 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 3 — Cenário */}
+          {/* PASSO 3 — Upload da foto */}
           {step === 3 && (
+            <Card>
+              <Titulo>Agora envie a sua foto 📸</Titulo>
+              <Sub>Escolha uma foto sua de frente e com boa luz. É ela que a IA vai usar.</Sub>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  setFileUrl(f ? URL.createObjectURL(f) : null);
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="mt-4 flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#C9D6C6] bg-[#F5F8F2] px-4 py-7 text-center transition-colors hover:border-primary"
+              >
+                {fileUrl ? (
+                  <img src={fileUrl} alt="Sua foto" className="h-[120px] w-[120px] rounded-xl object-cover" />
+                ) : (
+                  <span className="grid h-[54px] w-[54px] place-items-center rounded-full bg-[#E7F1E8] text-primary">
+                    <Upload className="h-6 w-6" strokeWidth={2} />
+                  </span>
+                )}
+                <span className="font-heading text-[15px] font-bold text-foreground">
+                  {fileUrl ? "Trocar foto" : "Enviar sua foto"}
+                </span>
+                <span className="text-[12.5px] text-[#7A897F]">JPG ou PNG, de frente e com boa luz</span>
+              </button>
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[12px] text-[#7A897F]">
+                <ShieldCheck className="h-[15px] w-[15px] flex-none text-primary" strokeWidth={2} />
+                Sua foto é usada só para montar a sua imagem. Nada além disso.
+              </p>
+              <Continuar onClick={avancar} disabled={!fileUrl} />
+            </Card>
+          )}
+
+          {/* PASSO 4 — Cenário */}
+          {step === 4 && (
             <Card>
               <Titulo>Escolha o cenário da sua foto</Titulo>
               <Sub>Onde vocês aparecem juntos — a IA monta o fundo e a cena a partir daqui.</Sub>
@@ -338,8 +395,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 4 — Enquadramento */}
-          {step === 4 && (
+          {/* PASSO 5 — Enquadramento */}
+          {step === 5 && (
             <Card>
               <Titulo>Defina o enquadramento</Titulo>
               <Sub>Como você quer aparecer na foto: mais de perto ou mostrando o ambiente.</Sub>
@@ -353,8 +410,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 5 — Clima */}
-          {step === 5 && (
+          {/* PASSO 6 — Clima */}
+          {step === 6 && (
             <Card>
               <Titulo>Escolha o clima da imagem</Titulo>
               <Sub>O estilo do momento — de um registro discreto a um clima de evento.</Sub>
@@ -368,8 +425,54 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 6 — Dados */}
-          {step === 6 && (
+          {/* PASSO 7 — Prévia com filtro (placeholder para a IA) */}
+          {step === 7 && (
+            <Card>
+              <div className="mb-2 flex items-center gap-2">
+                <Sparkles className="h-[18px] w-[18px] text-accent" strokeWidth={2.2} />
+                <p className="font-heading text-[12.5px] font-bold uppercase tracking-[0.06em] text-primary">
+                  Sua prévia
+                </p>
+              </div>
+              <Titulo>Olha como está ficando! 🔥</Titulo>
+              <Sub>
+                Sua imagem com o {alvo} já está sendo montada. Libere a versão final, nítida e sem borrão, no próximo
+                passo.
+              </Sub>
+
+              <div className="relative mx-auto mt-4 aspect-[3/4] max-w-[260px] overflow-hidden rounded-[18px] border-[5px] border-white shadow-[0_18px_40px_rgba(9,26,18,.22)]">
+                {fileUrl ? (
+                  <img src={fileUrl} alt="Prévia" className="h-full w-full object-cover blur-[7px] saturate-[1.2]" />
+                ) : (
+                  <div className="h-full w-full bg-[#0f5232]" />
+                )}
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(160deg, rgba(10,125,60,.30), rgba(18,43,107,.42))" }}
+                />
+                <div className="absolute inset-x-0 top-0 bg-[rgba(9,20,14,.72)] py-[5px] text-center font-heading text-[8.5px] font-bold tracking-[0.08em] text-white">
+                  IMAGEM FICTÍCIA • GERADA POR IA
+                </div>
+                <div className="absolute inset-0 grid place-items-center">
+                  <span className="flex items-center gap-1.5 rounded-lg bg-[rgba(9,20,14,.76)] px-3 py-1.5 font-heading text-[11px] font-bold tracking-[0.06em] text-white">
+                    <Lock className="h-[13px] w-[13px]" strokeWidth={2.4} /> PRÉVIA BLOQUEADA
+                  </span>
+                </div>
+                <div className="absolute bottom-2 right-2 flex items-center gap-1.5 rounded-full bg-[rgba(9,20,14,.72)] px-2 py-1">
+                  <img src={figuraImg} alt="" className="h-6 w-6 rounded-full object-cover" />
+                  <span className="pr-1 font-heading text-[10px] font-bold text-white">+ {alvo}</span>
+                </div>
+              </div>
+
+              <p className="mt-3 text-center text-[13px] font-semibold text-[#20302A]">
+                Ficou incrível, né? 😍 Libere agora e receba no WhatsApp.
+              </p>
+              <Continuar onClick={avancar} label="Quero a minha imagem" />
+            </Card>
+          )}
+
+          {/* PASSO 8 — Dados */}
+          {step === 8 && (
             <Card>
               <div className="flex items-start gap-2.5 rounded-[14px] border border-[#EAC94F] bg-[#FFF4CE] px-4 py-3">
                 <span className="text-[20px] leading-none" aria-hidden="true">
@@ -417,8 +520,8 @@ function Funil() {
             </Card>
           )}
 
-          {/* PASSO 7 — Checkout / oferta */}
-          {step === 7 && (
+          {/* PASSO 9 — Checkout / oferta */}
+          {step === 9 && (
             <Card>
               <Titulo>Para liberar a sua foto com o {alvo}</Titulo>
               <Sub>É esta mesma imagem que você recebe — em alta qualidade, com o selo de imagem fictícia gerada por IA.</Sub>

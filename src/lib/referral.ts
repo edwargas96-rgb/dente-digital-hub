@@ -15,21 +15,32 @@ export function gerarCodigo(nome: string, whatsapp: string): string {
   return iniciais + ult4;
 }
 
-/** Lê o código de quem indicou (da URL ?ref= ou do que ficou salvo). */
+/**
+ * Lê o código de quem indicou.
+ * Usa sessionStorage (só a sessão atual) — assim o banner de indicação
+ * só aparece para quem REALMENTE entrou pelo link ?ref=, e não fica
+ * "grudado" no navegador em visitas normais.
+ */
 export function lerIndicadoPor(): string | null {
   if (typeof window === "undefined") return null;
+  // Limpa resíduo antigo do localStorage (versão anterior).
+  try {
+    window.localStorage.removeItem(REF_KEY);
+  } catch {
+    /* ignore */
+  }
   const daUrl = new URLSearchParams(window.location.search).get("ref");
   if (daUrl) {
     const c = daUrl.toUpperCase().slice(0, 12);
     try {
-      window.localStorage.setItem(REF_KEY, c);
+      window.sessionStorage.setItem(REF_KEY, c);
     } catch {
       /* ignore */
     }
     return c;
   }
   try {
-    return window.localStorage.getItem(REF_KEY);
+    return window.sessionStorage.getItem(REF_KEY);
   } catch {
     return null;
   }
