@@ -7,13 +7,13 @@ export const Route = createFileRoute("/direita-news")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "DIREITA NEWS — Jornal digital independente" },
+      { title: "GAZETA DIREITA — Jornal digital independente" },
       {
         name: "description",
         content:
           "Política, economia, Brasil e mundo em uma experiência desenvolvida para quem prefere uma linha editorial conservadora.",
       },
-      { property: "og:title", content: "DIREITA NEWS — Jornal digital independente" },
+      { property: "og:title", content: "GAZETA DIREITA — Jornal digital independente" },
       {
         property: "og:description",
         content: "Informação organizada, rápida e sem depender apenas do algoritmo.",
@@ -296,28 +296,71 @@ function DireitaNewsPage() {
 
 // ---------------- Urna eletrônica ----------------
 
+type Candidate = { number: string; name: string; party: string; img: string };
+
+const CANDIDATES: Record<string, Candidate> = {
+  "13": { number: "13", name: "Luiz Inácio Lula da Silva", party: "PT", img: "https://i.imgur.com/rjbER6h.jpeg" },
+  "14": { number: "14", name: "Renan Santos", party: "Missão", img: "https://i.imgur.com/7OoSOF0.jpeg" },
+  "22": { number: "22", name: "Flávio Bolsonaro", party: "PL", img: "https://i.imgur.com/t0BjptQ.jpeg" },
+  "28": { number: "28", name: "Pablo Marçal", party: "PRTB", img: "https://i.imgur.com/IkA04gQ.jpeg" },
+};
+
+function playBeep(freq = 900, duration = 90) {
+  try {
+    const w = window as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext };
+    const Ctx = w.AudioContext || w.webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "square";
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration / 1000);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration / 1000 + 0.02);
+    osc.onended = () => ctx.close();
+  } catch {
+    // noop
+  }
+}
+
 function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
   const [digits, setDigits] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
   const canConfirm = digits.length === 2;
-  const isFlavio = digits === "22";
+  const candidate = CANDIDATES[digits];
+  const isPT = digits === "13";
 
   const press = (n: string) => {
     if (confirmed) return;
+    playBeep(900, 80);
     setDigits((d) => (d.length >= 2 ? d : d + n));
   };
   const corrige = () => {
     if (confirmed) return;
+    playBeep(600, 120);
     setDigits("");
   };
   const branco = () => {
     if (confirmed) return;
+    playBeep(700, 100);
     setDigits("BR");
   };
   const confirma = () => {
     if (!canConfirm || confirmed) return;
+    if (isPT) {
+      // buzz de erro
+      playBeep(250, 300);
+      return;
+    }
+    // "FIM" tune: two ascending beeps
+    playBeep(1000, 120);
+    window.setTimeout(() => playBeep(1400, 260), 130);
     setConfirmed(true);
-    window.setTimeout(() => onConfirmed(), 1800);
+    window.setTimeout(() => onConfirmed(), 2000);
   };
 
   useEffect(() => {
@@ -331,11 +374,12 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [digits, confirmed]);
 
-  return (
-    <section className="relative overflow-hidden bg-slate-50">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(0,156,59,0.10),transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_35%_at_50%_100%,rgba(0,39,118,0.06),transparent_70%)]" />
+  const screenBg = isPT
+    ? "from-red-500 to-red-700 text-white border-red-900"
+    : "from-[#d7e5b7] to-[#c5d69a] text-[#1a2a10] border-[#7a8a5a]";
 
+  return (
+    <section className="relative bg-slate-50">
       <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center px-5 py-12">
         <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#002776]/20 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-[#002776] shadow-sm">
@@ -350,143 +394,187 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
           </p>
         </div>
 
-        {/* Urna body */}
-        <div className="w-full max-w-2xl rounded-[28px] border border-[#2a2418] bg-gradient-to-b from-[#f3ecd8] to-[#dcd2b4] p-4 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)] md:p-6">
-          <div className="grid gap-4 md:grid-cols-[1.15fr_1fr]">
-            {/* Screen */}
-            <div className="rounded-2xl border border-[#7a8a5a] bg-gradient-to-b from-[#d7e5b7] to-[#c5d69a] p-4 font-mono text-[#1a2a10]">
-              {confirmed ? (
-                <div className="flex h-full flex-col items-center justify-center py-6 text-center">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.28em]">
-                    {isFlavio ? "Presidente" : "Voto"}
-                  </div>
-                  {isFlavio ? (
-                    <>
-                      <CandidateAvatar />
-                      <div className="mt-2 text-[15px] font-black uppercase tracking-wide">
-                        Flávio Bolsonaro
-                      </div>
-                      <div className="text-[10px] uppercase tracking-widest opacity-70">
-                        Número 22
-                      </div>
-                    </>
-                  ) : (
-                    <div className="mt-4 text-[15px] font-black uppercase tracking-wide">
-                      {digits === "BR" ? "Voto em branco" : `Voto: ${digits}`}
-                    </div>
-                  )}
-                  <div className="mt-4 rounded-md bg-emerald-700 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white">
-                    ✓ Voto confirmado
-                  </div>
-                  <div className="mt-3 flex items-center gap-1.5 text-[10px] opacity-70">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-700" />
-                    FIM
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.28em]">
-                    Seu voto para
-                  </div>
-                  <div className="text-[18px] font-black uppercase leading-tight">
-                    Presidente
-                  </div>
-                  <div className="mt-3 text-[11px] uppercase tracking-widest">
-                    Número
-                  </div>
-                  <div className="mt-1 flex gap-2">
-                    {[0, 1].map((i) => (
-                      <div
-                        key={i}
-                        className={`grid h-12 w-10 place-items-center rounded border-2 text-2xl font-black ${
-                          digits[i]
-                            ? "border-[#1a2a10] bg-white/40"
-                            : "border-[#1a2a10]/40 bg-transparent"
-                        }`}
-                      >
-                        {digits[i] ?? ""}
-                      </div>
-                    ))}
-                  </div>
-
-                  {isFlavio && (
-                    <div className="mt-3 flex items-center gap-3 rounded-md border border-[#1a2a10]/30 bg-white/40 p-2">
-                      <CandidateAvatar small />
-                      <div className="leading-tight">
-                        <div className="text-[11px] font-bold uppercase tracking-wide">
-                          Flávio Bolsonaro
-                        </div>
-                        <div className="text-[9px] uppercase tracking-widest opacity-70">
-                          Presidente • 22
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {digits === "BR" && (
-                    <div className="mt-3 text-[13px] font-bold uppercase">
-                      Voto em branco
-                    </div>
-                  )}
-
-                  <div className="mt-4 text-[10px] uppercase tracking-widest">
-                    Aperte a tecla:
-                    <br />
-                    <span className="font-black">CONFIRMA</span> para confirmar
-                    <br />
-                    <span className="font-black">CORRIGE</span> para reiniciar
-                  </div>
-                </>
-              )}
+        {/* Urna body — bege com base preta como a urna real */}
+        <div className="w-full max-w-2xl overflow-hidden rounded-t-[24px] rounded-b-[8px] border-2 border-[#3a2f1c] bg-gradient-to-b from-[#e8dfc4] via-[#dcd2b4] to-[#c9bf9e] p-1 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]">
+          <div className="rounded-[20px] bg-gradient-to-b from-[#e8dfc4] to-[#d8ceac] p-3 md:p-5">
+            <div className="mb-2 flex items-center justify-between px-1">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 animate-pulse rounded-full bg-red-600 shadow-[0_0_6px_rgba(220,38,38,0.8)]" />
+                <span className="text-[9px] font-bold uppercase tracking-widest text-[#3a2f1c]">
+                  Ligada
+                </span>
+              </div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-[#3a2f1c]">
+                Tribunal Superior Eleitoral
+              </div>
             </div>
 
-            {/* Keypad */}
-            <div className="rounded-2xl bg-[#1a1a1a] p-3">
-              <div className="mb-2 flex items-center justify-end gap-2 pr-1">
-                <svg viewBox="0 0 24 24" className="h-4 w-4 text-yellow-400" fill="currentColor" aria-hidden>
-                  <path d="M12 2l3 6h6l-5 4 2 7-6-4-6 4 2-7-5-4h6z" />
-                </svg>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-yellow-400">
-                  Justiça Eleitoral
+            <div className="grid gap-3 md:grid-cols-[1.2fr_1fr]">
+              {/* Screen bezel */}
+              <div className="rounded-lg bg-[#3a2f1c] p-2">
+                <div className={`min-h-[280px] rounded-md border ${screenBg} bg-gradient-to-b p-3 font-mono`}>
+                  {isPT && !confirmed ? (
+                    <div className="flex h-full min-h-[260px] flex-col items-center justify-center text-center">
+                      <div className="animate-pulse text-[10px] font-black uppercase tracking-[0.32em] text-white/90">
+                        ⚠ Alerta ⚠
+                      </div>
+                      <div className="mt-3 font-serif text-3xl font-black uppercase leading-none tracking-wider text-white drop-shadow md:text-4xl">
+                        Sai fora
+                      </div>
+                      <div className="mt-1 font-serif text-3xl font-black uppercase leading-none tracking-wider text-white drop-shadow md:text-4xl">
+                        petista!
+                      </div>
+                      <div className="mt-4 text-[10px] font-bold uppercase tracking-widest text-white/90">
+                        Pressione CORRIGE
+                      </div>
+                    </div>
+                  ) : confirmed ? (
+                    <div className="flex h-full min-h-[260px] flex-col items-center justify-center text-center">
+                      <div className="text-[10px] font-bold uppercase tracking-[0.28em]">
+                        {candidate ? "Presidente" : "Voto"}
+                      </div>
+                      {candidate ? (
+                        <>
+                          <img
+                            src={candidate.img}
+                            alt={candidate.name}
+                            className="mt-2 h-20 w-16 rounded border border-[#1a2a10]/40 object-cover"
+                          />
+                          <div className="mt-2 text-[13px] font-black uppercase tracking-wide">
+                            {candidate.name}
+                          </div>
+                          <div className="text-[10px] uppercase tracking-widest opacity-80">
+                            Nº {candidate.number} • {candidate.party}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="mt-4 text-[15px] font-black uppercase tracking-wide">
+                          {digits === "BR" ? "Voto em branco" : `Voto: ${digits}`}
+                        </div>
+                      )}
+                      <div className="mt-4 rounded-md bg-emerald-700 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white">
+                        ✓ Voto confirmado
+                      </div>
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] opacity-70">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-700" />
+                        FIM
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.28em]">
+                        Seu voto para
+                      </div>
+                      <div className="text-[20px] font-black uppercase leading-tight">
+                        Presidente
+                      </div>
+                      <div className="mt-3 text-[11px] uppercase tracking-widest">
+                        Número do candidato:
+                      </div>
+                      <div className="mt-1 flex gap-2">
+                        {[0, 1].map((i) => (
+                          <div
+                            key={i}
+                            className={`grid h-14 w-11 place-items-center rounded border-2 text-3xl font-black ${
+                              digits[i]
+                                ? "border-[#1a2a10] bg-white/60"
+                                : "border-[#1a2a10]/40 bg-white/20"
+                            }`}
+                          >
+                            {digits[i] ?? ""}
+                          </div>
+                        ))}
+                      </div>
+
+                      {candidate && (
+                        <div className="mt-3 flex items-center gap-3 rounded-md border border-[#1a2a10]/30 bg-white/50 p-2">
+                          <img
+                            src={candidate.img}
+                            alt={candidate.name}
+                            className="h-14 w-11 rounded border border-[#1a2a10]/40 object-cover"
+                          />
+                          <div className="leading-tight">
+                            <div className="text-[12px] font-black uppercase tracking-wide">
+                              {candidate.name}
+                            </div>
+                            <div className="text-[9px] uppercase tracking-widest opacity-80">
+                              Partido: {candidate.party}
+                            </div>
+                            <div className="text-[9px] uppercase tracking-widest opacity-70">
+                              Presidente • Nº {candidate.number}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {digits === "BR" && (
+                        <div className="mt-3 text-[13px] font-bold uppercase">
+                          Voto em branco
+                        </div>
+                      )}
+
+                      <div className="mt-4 text-[10px] uppercase tracking-widest">
+                        Aperte a tecla:
+                        <br />
+                        <span className="font-black">CONFIRMA</span> para confirmar
+                        <br />
+                        <span className="font-black">CORRIGE</span> para reiniciar
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((n) => (
-                  <UrnaKey key={n} onClick={() => press(n)}>
-                    {n}
-                  </UrnaKey>
-                ))}
-                <div />
-                <UrnaKey onClick={() => press("0")}>0</UrnaKey>
-                <div />
-              </div>
-              <div className="mt-3 grid grid-cols-3 gap-2">
-                <button
-                  onClick={branco}
-                  className="rounded-md bg-[#e5e5e5] py-2.5 text-[11px] font-black uppercase tracking-widest text-[#1a1a1a] transition active:scale-95"
-                >
-                  Branco
-                </button>
-                <button
-                  onClick={corrige}
-                  className="rounded-md bg-orange-500 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition active:scale-95"
-                >
-                  Corrige
-                </button>
-                <button
-                  onClick={confirma}
-                  disabled={!canConfirm}
-                  className="rounded-md bg-emerald-600 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition active:scale-95 disabled:opacity-40"
-                >
-                  Confirma
-                </button>
+
+              {/* Keypad */}
+              <div className="rounded-lg border border-[#3a2f1c] bg-[#111] p-3">
+                <div className="mb-2 flex items-center justify-end gap-2 pr-1">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 text-yellow-400" fill="currentColor" aria-hidden>
+                    <path d="M12 2l3 6h6l-5 4 2 7-6-4-6 4 2-7-5-4h6z" />
+                  </svg>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-yellow-400">
+                    Justiça Eleitoral
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((n) => (
+                    <UrnaKey key={n} onClick={() => press(n)}>
+                      {n}
+                    </UrnaKey>
+                  ))}
+                  <div />
+                  <UrnaKey onClick={() => press("0")}>0</UrnaKey>
+                  <div />
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  <button
+                    onClick={branco}
+                    className="rounded-md bg-[#f0f0f0] py-2.5 text-[11px] font-black uppercase tracking-widest text-[#111] shadow-[0_2px_0_#000] transition active:translate-y-0.5"
+                  >
+                    Branco
+                  </button>
+                  <button
+                    onClick={corrige}
+                    className="rounded-md bg-[#e07800] py-2.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_2px_0_#000] transition active:translate-y-0.5"
+                  >
+                    Corrige
+                  </button>
+                  <button
+                    onClick={confirma}
+                    disabled={!canConfirm}
+                    className="rounded-md bg-[#0a8f2a] py-2.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_2px_0_#000] transition active:translate-y-0.5 disabled:opacity-40"
+                  >
+                    Confirma
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          {/* Base preta como a urna real */}
+          <div className="mt-1 h-3 rounded-b-[6px] bg-[#111]" />
         </div>
 
         <div className="mt-6 text-center text-[11px] font-semibold uppercase tracking-widest text-slate-600">
-          Dica: digite <span className="text-[#002776]">22</span> e pressione CONFIRMA
+          Candidatos: 13 · 14 · 22 · 28
         </div>
       </div>
     </section>
@@ -503,29 +591,10 @@ function UrnaKey({
   return (
     <button
       onClick={onClick}
-      className="grid h-12 place-items-center rounded-md bg-gradient-to-b from-[#3a3a3a] to-[#232323] text-lg font-black text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_2px_0_#000] transition active:translate-y-0.5 active:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+      className="grid h-12 place-items-center rounded-md bg-gradient-to-b from-[#4a4a4a] to-[#1a1a1a] text-lg font-black text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_0_#000] transition active:translate-y-0.5 active:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
     >
       {children}
     </button>
-  );
-}
-
-function CandidateAvatar({ small = false }: { small?: boolean }) {
-  const size = small ? 36 : 64;
-  return (
-    <div
-      className="relative mt-2 overflow-hidden rounded-md border border-[#1a2a10]/40 bg-gradient-to-b from-slate-200 to-slate-400"
-      style={{ width: size, height: size + 6 }}
-    >
-      <svg viewBox="0 0 64 72" className="h-full w-full" aria-hidden>
-        <rect width="64" height="72" fill="#c8d5b0" />
-        <circle cx="32" cy="26" r="12" fill="#3a3a3a" />
-        <circle cx="32" cy="24" r="10" fill="#e6b892" />
-        <rect x="24" y="18" width="16" height="6" rx="1" fill="#2a2a2a" />
-        <path d="M14 72 Q32 44 50 72 Z" fill="#1e3a8a" />
-        <rect x="30" y="52" width="4" height="10" fill="#dc2626" />
-      </svg>
-    </div>
   );
 }
 
@@ -580,7 +649,7 @@ function Logo({ compact = false, invert = false }: { compact?: boolean; invert?:
       </div>
       <div className="leading-tight">
         <div className={`font-serif text-[17px] font-black tracking-tight ${titleClr}`}>
-          DIREITA <span className="text-[#009c3b]">NEWS</span>
+          GAZETA <span className="text-[#009c3b]">DIREITA</span>
         </div>
         {!compact && (
           <div className={`text-[9px] uppercase tracking-[0.28em] ${subClr}`}>
@@ -597,17 +666,8 @@ function Logo({ compact = false, invert = false }: { compact?: boolean; invert?:
 function Intro({ onStart }: { onStart: () => void }) {
   return (
     <>
-      <section className="relative overflow-hidden bg-white">
-        <BackgroundGlow />
+      <section className="relative bg-white">
         <div className="relative mx-auto max-w-3xl px-5 pb-16 pt-14 text-center md:pt-20">
-          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-700 shadow-sm">
-            <span className="inline-flex h-2.5 overflow-hidden rounded-sm">
-              <span className="w-1 bg-[#009c3b]" />
-              <span className="w-1 bg-[#ffdf00]" />
-              <span className="w-1 bg-[#002776]" />
-            </span>
-            Brasil acima de tudo
-          </div>
           <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-slate-900 md:text-6xl">
             Você está acompanhando tudo o que{" "}
             <span className="italic text-[#009c3b]">realmente importa</span> no
@@ -1004,7 +1064,7 @@ function Analyzing({ onDone }: { onDone: () => void }) {
       ) : (
         <>
           <h2 className="font-serif text-3xl text-slate-900">
-            Sua experiência Direita News está pronta.
+            Sua experiência Gazeta Direita está pronta.
           </h2>
           <p className="mt-2 text-sm text-slate-600">
             Editorial ajustado ao seu perfil de leitura.
@@ -1036,8 +1096,7 @@ function Reveal() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-white">
-      <BackgroundGlow />
+    <section className="relative bg-white">
       <div className="relative mx-auto max-w-3xl px-5 py-16 md:py-24">
         {/* Resultado do quiz */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
@@ -1110,7 +1169,7 @@ function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 md:flex-row">
         <Logo compact />
         <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500">
-          © {new Date().getFullYear()} Direita News — Jornal digital independente
+          © {new Date().getFullYear()} Gazeta Direita — Jornal digital independente
         </div>
       </div>
     </footer>
