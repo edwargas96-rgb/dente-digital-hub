@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -188,15 +189,18 @@ const QUESTIONS: Question[] = [
   },
 ];
 
-const STORAGE_KEY = "direita-news-quiz-v1";
+const STORAGE_KEY = "direita-news-quiz-v2";
+
+type Screen = "urna" | "intro" | "quiz" | "analyzing" | "reveal";
 
 type QuizState = {
-  step: number; // 0 = intro, 1..N = questions, N+1 = analyzing, N+2 = product reveal
+  screen: Screen;
+  step: number; // question index 1..N when screen === "quiz"
   answers: Record<string, string | string[]>;
   startedAt?: number;
 };
 
-const initialState: QuizState = { step: 0, answers: {} };
+const initialState: QuizState = { screen: "urna", step: 0, answers: {} };
 
 // ---------------- Page ----------------
 
@@ -211,7 +215,7 @@ function DireitaNewsPage() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as QuizState;
-        if (parsed && typeof parsed.step === "number") setState(parsed);
+        if (parsed && typeof parsed.step === "number" && parsed.screen) setState(parsed);
       }
     } catch {
       // noop
@@ -229,14 +233,19 @@ function DireitaNewsPage() {
   }, [state, hydrated]);
 
   const totalQ = QUESTIONS.length;
-  const isIntro = state.step === 0;
-  const isQuiz = state.step >= 1 && state.step <= totalQ;
-  const isAnalyzing = state.step === totalQ + 1;
-  const isReveal = state.step >= totalQ + 2;
+  const isUrna = state.screen === "urna";
+  const isIntro = state.screen === "intro";
+  const isQuiz = state.screen === "quiz";
+  const isAnalyzing = state.screen === "analyzing";
+  const isReveal = state.screen === "reveal";
+
+  const onUrnaConfirmed = () => {
+    setState((s) => ({ ...s, screen: "intro", step: 0 }));
+  };
 
   const startQuiz = () => {
     track("quiz_started", { ...utms.current });
-    setState((s) => ({ ...s, step: 1, startedAt: Date.now() }));
+    setState((s) => ({ ...s, screen: "quiz", step: 1, startedAt: Date.now() }));
   };
 
   const answerQuestion = (q: Question, value: string | string[]) => {
@@ -255,18 +264,20 @@ function DireitaNewsPage() {
     if (nextStep === totalQ + 1) {
       track("quiz_completed");
     }
-    setState((s) => ({ ...s, step: nextStep, answers: nextAnswers }));
+    const nextScreen: Screen = nextStep > totalQ ? "analyzing" : "quiz";
+    setState((s) => ({ ...s, screen: nextScreen, step: nextStep, answers: nextAnswers }));
   };
 
   const goReveal = () => {
     track("newspaper_preview_viewed");
-    setState((s) => ({ ...s, step: totalQ + 2 }));
+    setState((s) => ({ ...s, screen: "reveal" }));
   };
 
   return (
     <div className="min-h-screen bg-[#050810] text-slate-100 antialiased">
-      <TopBar />
+      {!isUrna && <TopBar />}
       <main>
+        {isUrna && <UrnaScreen onConfirmed={onUrnaConfirmed} />}
         {isIntro && <Intro onStart={startQuiz} />}
         {isQuiz && (
           <QuizStep
@@ -284,7 +295,254 @@ function DireitaNewsPage() {
         {isAnalyzing && <Analyzing onDone={goReveal} />}
         {isReveal && <Reveal />}
       </main>
-      <Footer />
+      {!isUrna && <Footer />}
+    </div>
+  );
+}
+
+// ---------------- Urna eletrônica ----------------
+
+function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
+  const [digits, setDigits] = useState<string>("");
+  const [confirmed, setConfirmed] = useState(false);
+  const canConfirm = digits.length === 2;
+  const isFlavio = digits === "22";
+
+  const press = (n: string) => {
+    if (confirmed) return;
+    setDigits((d) => (d.length >= 2 ? d : d + n));
+  };
+  const corrige = () => {
+    if (confirmed) return;
+    setDigits("");
+  };
+  const branco = () => {
+    if (confirmed) return;
+    setDigits("BR");
+  };
+  const confirma = () => {
+    if (!canConfirm || confirmed) return;
+    setConfirmed(true);
+    window.setTimeout(() => onConfirmed(), 1800);
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (/^[0-9]$/.test(e.key)) press(e.key);
+      else if (e.key === "Enter") confirma();
+      else if (e.key === "Backspace" || e.key === "Delete") corrige();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [digits, confirmed]);
+
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-[#040610]">
+      {/* BR flag ambient */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(0,156,59,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_35%_at_50%_100%,rgba(255,223,0,0.10),transparent_70%)]" />
+      <FlagStripe />
+
+      <div className="relative mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-5 py-10">
+        <div className="mb-6 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-yellow-400/30 bg-yellow-400/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-yellow-300">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-300" />
+            Simulação
+          </div>
+          <h1 className="mt-4 font-serif text-3xl leading-tight text-white md:text-4xl">
+            Confirme seu voto para continuar
+          </h1>
+          <p className="mt-2 text-sm text-slate-400">
+            Digite o número do seu candidato à Presidência.
+          </p>
+        </div>
+
+        {/* Urna body */}
+        <div className="w-full max-w-2xl rounded-[28px] border border-[#2a2418] bg-gradient-to-b from-[#f3ecd8] to-[#dcd2b4] p-4 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)] md:p-6">
+          <div className="grid gap-4 md:grid-cols-[1.15fr_1fr]">
+            {/* Screen */}
+            <div className="rounded-2xl border border-[#7a8a5a] bg-gradient-to-b from-[#d7e5b7] to-[#c5d69a] p-4 font-mono text-[#1a2a10]">
+              {confirmed ? (
+                <div className="flex h-full flex-col items-center justify-center py-6 text-center">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.28em]">
+                    {isFlavio ? "Presidente" : "Voto"}
+                  </div>
+                  {isFlavio ? (
+                    <>
+                      <CandidateAvatar />
+                      <div className="mt-2 text-[15px] font-black uppercase tracking-wide">
+                        Flávio Bolsonaro
+                      </div>
+                      <div className="text-[10px] uppercase tracking-widest opacity-70">
+                        Número 22
+                      </div>
+                    </>
+                  ) : (
+                    <div className="mt-4 text-[15px] font-black uppercase tracking-wide">
+                      {digits === "BR" ? "Voto em branco" : `Voto: ${digits}`}
+                    </div>
+                  )}
+                  <div className="mt-4 rounded-md bg-emerald-700 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white">
+                    ✓ Voto confirmado
+                  </div>
+                  <div className="mt-3 flex items-center gap-1.5 text-[10px] opacity-70">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-700" />
+                    FIM
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.28em]">
+                    Seu voto para
+                  </div>
+                  <div className="text-[18px] font-black uppercase leading-tight">
+                    Presidente
+                  </div>
+                  <div className="mt-3 text-[11px] uppercase tracking-widest">
+                    Número
+                  </div>
+                  <div className="mt-1 flex gap-2">
+                    {[0, 1].map((i) => (
+                      <div
+                        key={i}
+                        className={`grid h-12 w-10 place-items-center rounded border-2 text-2xl font-black ${
+                          digits[i]
+                            ? "border-[#1a2a10] bg-white/40"
+                            : "border-[#1a2a10]/40 bg-transparent"
+                        }`}
+                      >
+                        {digits[i] ?? ""}
+                      </div>
+                    ))}
+                  </div>
+
+                  {isFlavio && (
+                    <div className="mt-3 flex items-center gap-3 rounded-md border border-[#1a2a10]/30 bg-white/40 p-2">
+                      <CandidateAvatar small />
+                      <div className="leading-tight">
+                        <div className="text-[11px] font-bold uppercase tracking-wide">
+                          Flávio Bolsonaro
+                        </div>
+                        <div className="text-[9px] uppercase tracking-widest opacity-70">
+                          Presidente • 22
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {digits === "BR" && (
+                    <div className="mt-3 text-[13px] font-bold uppercase">
+                      Voto em branco
+                    </div>
+                  )}
+
+                  <div className="mt-4 text-[10px] uppercase tracking-widest">
+                    Aperte a tecla:
+                    <br />
+                    <span className="font-black">CONFIRMA</span> para confirmar
+                    <br />
+                    <span className="font-black">CORRIGE</span> para reiniciar
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Keypad */}
+            <div className="rounded-2xl bg-[#1a1a1a] p-3">
+              <div className="mb-2 flex items-center justify-end gap-2 pr-1">
+                <svg viewBox="0 0 24 24" className="h-4 w-4 text-yellow-400" fill="currentColor" aria-hidden>
+                  <path d="M12 2l3 6h6l-5 4 2 7-6-4-6 4 2-7-5-4h6z" />
+                </svg>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-yellow-400">
+                  Justiça Eleitoral
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((n) => (
+                  <UrnaKey key={n} onClick={() => press(n)}>
+                    {n}
+                  </UrnaKey>
+                ))}
+                <div />
+                <UrnaKey onClick={() => press("0")}>0</UrnaKey>
+                <div />
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <button
+                  onClick={branco}
+                  className="rounded-md bg-[#e5e5e5] py-2.5 text-[11px] font-black uppercase tracking-widest text-[#1a1a1a] transition active:scale-95"
+                >
+                  Branco
+                </button>
+                <button
+                  onClick={corrige}
+                  className="rounded-md bg-orange-500 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition active:scale-95"
+                >
+                  Corrige
+                </button>
+                <button
+                  onClick={confirma}
+                  disabled={!canConfirm}
+                  className="rounded-md bg-emerald-600 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition active:scale-95 disabled:opacity-40"
+                >
+                  Confirma
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 text-center text-[11px] uppercase tracking-widest text-slate-500">
+          Dica: digite <span className="text-yellow-300">22</span> e pressione CONFIRMA
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function UrnaKey({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="grid h-12 place-items-center rounded-md bg-gradient-to-b from-[#3a3a3a] to-[#232323] text-lg font-black text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_2px_0_#000] transition active:translate-y-0.5 active:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+    >
+      {children}
+    </button>
+  );
+}
+
+function CandidateAvatar({ small = false }: { small?: boolean }) {
+  const size = small ? 36 : 64;
+  return (
+    <div
+      className="relative mt-2 overflow-hidden rounded-md border border-[#1a2a10]/40 bg-gradient-to-b from-slate-200 to-slate-400"
+      style={{ width: size, height: size + 6 }}
+    >
+      <svg viewBox="0 0 64 72" className="h-full w-full" aria-hidden>
+        <rect width="64" height="72" fill="#c8d5b0" />
+        <circle cx="32" cy="26" r="12" fill="#3a3a3a" />
+        <circle cx="32" cy="24" r="10" fill="#e6b892" />
+        <rect x="24" y="18" width="16" height="6" rx="1" fill="#2a2a2a" />
+        <path d="M14 72 Q32 44 50 72 Z" fill="#1e3a8a" />
+        <rect x="30" y="52" width="4" height="10" fill="#dc2626" />
+      </svg>
+    </div>
+  );
+}
+
+function FlagStripe() {
+  return (
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-1 flex">
+      <div className="flex-1 bg-[#009c3b]" />
+      <div className="flex-1 bg-[#ffdf00]" />
+      <div className="flex-1 bg-[#002776]" />
     </div>
   );
 }
@@ -306,6 +564,7 @@ function TopBar() {
   }, []);
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-[#050810]/85 backdrop-blur">
+      <FlagStripe />
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <Logo />
@@ -352,8 +611,12 @@ function Intro({ onStart }: { onStart: () => void }) {
       <BackgroundGlow />
       <div className="mx-auto max-w-3xl px-5 pb-24 pt-16 text-center md:pt-24">
         <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-slate-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-          Quiz editorial
+          <span className="inline-flex h-2.5 overflow-hidden rounded-sm">
+            <span className="w-1 bg-[#009c3b]" />
+            <span className="w-1 bg-[#ffdf00]" />
+            <span className="w-1 bg-[#002776]" />
+          </span>
+          Brasil acima de tudo
         </div>
         <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-white md:text-6xl">
           Você está acompanhando tudo o que{" "}
