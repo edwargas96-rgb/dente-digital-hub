@@ -1,21 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowRight,
-  Bookmark,
-  Check,
-  ChevronRight,
-  Clock,
-  Globe2,
-  Landmark,
-  Lock,
-  Newspaper,
-  Radio,
-  Smartphone,
-  TrendingUp,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, Check, Clock, Newspaper } from "lucide-react";
 
 export const Route = createFileRoute("/direita-news")({
   ssr: false,
@@ -1020,517 +1006,82 @@ function Analyzing({ onDone }: { onDone: () => void }) {
   );
 }
 
-// ---------------- Reveal (product + preview + offer) ----------------
+// ---------------- Reveal (simplified result + checkout) ----------------
 
 function Reveal() {
   useEffect(() => {
-    const onScroll = () => {
-      const el = document.getElementById("oferta");
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.85) {
-        track("offer_viewed");
-        window.removeEventListener("scroll", onScroll);
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    track("newspaper_preview_viewed");
+    track("offer_viewed");
   }, []);
 
-  return (
-    <>
-      <ProductIntro />
-      <Preview />
-      <Benefits />
-      <InteractiveSim />
-      <Problem />
-      <Independence />
-      <Urgency />
-      <Offer />
-      <FinalCTA />
-    </>
-  );
-}
+  const handleCheckout = () => {
+    track("checkout_clicked", { ...getUtms(), placement: "reveal" });
+    // Integração futura com checkout
+  };
 
-function ProductIntro() {
   return (
-    <section className="relative overflow-hidden border-t border-white/5">
+    <section className="relative overflow-hidden bg-white">
       <BackgroundGlow />
-      <div className="mx-auto max-w-4xl px-5 py-20 text-center">
-        <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-amber-300">
-          Resultado personalizado
+      <div className="relative mx-auto max-w-3xl px-5 py-16 md:py-24">
+        {/* Resultado do quiz */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-[#009c3b]/10 text-[#009c3b]">
+              <Check className="h-5 w-5" strokeWidth={3} />
+            </div>
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#009c3b]">
+                Resultado do quiz
+              </div>
+              <div className="font-serif text-lg font-bold text-slate-900">
+                Seu perfil de leitor
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-3 gap-2">
+            {[
+              { label: "Perfil", value: "Patriota" },
+              { label: "Interesse", value: "Alto" },
+              { label: "Linha", value: "Conservadora" },
+            ].map((it) => (
+              <div
+                key={it.label}
+                className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-center"
+              >
+                <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+                  {it.label}
+                </div>
+                <div className="mt-1 text-sm font-bold text-slate-900">{it.value}</div>
+              </div>
+            ))}
+          </div>
         </div>
-        <h2 className="font-serif text-4xl leading-tight text-white md:text-5xl">
-          Informação sem precisar caçar notícia pela internet inteira.
+
+        {/* Mensagem principal */}
+        <h2 className="mt-10 font-serif text-3xl leading-tight text-slate-900 md:text-4xl">
+          Você acompanha o Brasil, valoriza a informação e demonstra interesse
+          pelo rumo do nosso país.
         </h2>
-        <p className="mx-auto mt-6 max-w-2xl text-base text-slate-300">
-          O <strong className="text-white">Direita News</strong> reúne política,
-          economia, Brasil, mundo e os principais acontecimentos do dia em uma
-          experiência desenvolvida para quem prefere uma linha editorial
-          conservadora e quer acompanhar as notícias de maneira rápida e
-          organizada.
+
+        <p className="mt-6 text-lg leading-relaxed text-slate-700 md:text-xl">
+          Por isso chegou o <strong className="text-slate-900">Gazeta Direita</strong>{" "}
+          — notícias e análises organizadas em um único lugar.
         </p>
-      </div>
-    </section>
-  );
-}
 
-// ------ Phone preview ------
-
-type NewsCard = {
-  tag: string;
-  title: string;
-  meta?: string;
-};
-
-const NEWS_BY_CATEGORY: Record<string, NewsCard[]> = {
-  Início: [
-    { tag: "BRASIL", title: "Entenda o principal assunto político desta manhã", meta: "há 8 min" },
-    { tag: "CONGRESSO", title: "As principais movimentações que você precisa acompanhar", meta: "há 22 min" },
-    { tag: "ECONOMIA", title: "Os números e decisões que podem afetar o seu dia", meta: "há 41 min" },
-    { tag: "MUNDO", title: "O que está acontecendo fora do Brasil", meta: "há 1 h" },
-  ],
-  Política: [
-    { tag: "BRASÍLIA", title: "Bastidores da articulação da semana no Planalto", meta: "há 5 min" },
-    { tag: "CONGRESSO", title: "Pauta prioritária avança em comissão importante", meta: "há 18 min" },
-    { tag: "STF", title: "Decisão repercute entre parlamentares", meta: "há 34 min" },
-    { tag: "ELEIÇÕES", title: "Movimentações partidárias começam a se desenhar", meta: "há 1 h" },
-  ],
-  Brasil: [
-    { tag: "SEGURANÇA", title: "Operação de grande porte mobiliza autoridades", meta: "há 12 min" },
-    { tag: "ESTADOS", title: "Governadores debatem medida que impacta o país", meta: "há 25 min" },
-    { tag: "SAÚDE", title: "Novo dado nacional divulgado nesta manhã", meta: "há 44 min" },
-    { tag: "INFRAESTRUTURA", title: "Projeto estratégico entra em fase decisiva", meta: "há 1 h" },
-  ],
-  Economia: [
-    { tag: "MERCADO", title: "Fechamento repercute cenário político da véspera", meta: "há 4 min" },
-    { tag: "JUROS", title: "Expectativa cresce em relação à próxima decisão", meta: "há 19 min" },
-    { tag: "EMPRESAS", title: "Movimento no setor produtivo chama atenção", meta: "há 37 min" },
-    { tag: "DÓLAR", title: "Câmbio reage ao ambiente doméstico e externo", meta: "há 58 min" },
-  ],
-  Mundo: [
-    { tag: "EUA", title: "Cenário político norte-americano ganha novo capítulo", meta: "há 10 min" },
-    { tag: "EUROPA", title: "Movimento diplomático chama atenção", meta: "há 26 min" },
-    { tag: "GEOPOLÍTICA", title: "Tensão regional entra em novo estágio", meta: "há 45 min" },
-    { tag: "AMÉRICA LATINA", title: "Eleições no continente movimentam análises", meta: "há 1 h" },
-  ],
-};
-
-function PhoneMockup({ category = "Início" as string }: { category?: string }) {
-  const [now, setNow] = useState("");
-  useEffect(() => {
-    const t = () =>
-      setNow(
-        new Date().toLocaleTimeString("pt-BR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      );
-    t();
-    const id = window.setInterval(t, 30000);
-    return () => window.clearInterval(id);
-  }, []);
-  const cards = NEWS_BY_CATEGORY[category] ?? NEWS_BY_CATEGORY.Início;
-
-  return (
-    <div className="relative mx-auto w-[300px] md:w-[340px]">
-      <div className="absolute -inset-6 -z-10 rounded-[48px] bg-[radial-gradient(60%_50%_at_50%_50%,rgba(250,204,21,0.15),transparent_70%)]" />
-      <div className="relative rounded-[42px] border border-white/10 bg-gradient-to-b from-[#0b1220] to-[#050810] p-2.5 shadow-[0_50px_120px_-40px_rgba(0,0,0,0.9)]">
-        <div className="relative overflow-hidden rounded-[34px] bg-[#0b1120]">
-          {/* Status bar */}
-          <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[10px] font-medium text-slate-300">
-            <span>{now || "09:41"}</span>
-            <div className="flex items-center gap-1">
-              <span className="h-2 w-3 rounded-sm bg-white/70" />
-              <span className="h-2 w-4 rounded-sm border border-white/40" />
-            </div>
-          </div>
-          {/* Notch pill */}
-          <div className="absolute left-1/2 top-2 h-4 w-20 -translate-x-1/2 rounded-full bg-black" />
-
-          {/* Header */}
-          <div className="px-5 pt-3">
-            <div className="flex items-center justify-between">
-              <div className="font-serif text-[15px] font-black tracking-tight text-white">
-                DIREITA <span className="text-amber-400">NEWS</span>
-              </div>
-              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-emerald-300">
-                Ao vivo
-              </span>
-            </div>
-            <div className="mt-3 text-[11px] uppercase tracking-widest text-slate-400">
-              Bom dia.
-            </div>
-            <div className="mt-0.5 text-[13px] font-medium text-slate-200">
-              Principais notícias
-            </div>
-          </div>
-
-          {/* Featured */}
-          <div className="mx-5 mt-3 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-[#122043] to-[#0b1424] p-4">
-            <div className="flex items-center gap-2">
-              <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-red-300">
-                DESTAQUE
-              </span>
-              <span className="text-[10px] uppercase tracking-widest text-slate-400">
-                {category}
-              </span>
-            </div>
-            <div className="mt-2 font-serif text-[15px] leading-snug text-white">
-              {cards[0].title}
-            </div>
-            <div className="mt-2 text-[10px] text-slate-400">{cards[0].meta}</div>
-          </div>
-
-          {/* List */}
-          <div className="mx-5 mt-3 space-y-2 pb-24">
-            {cards.slice(1).map((c) => (
-              <div
-                key={c.title}
-                className="rounded-lg border border-white/5 bg-white/[0.03] p-3"
-              >
-                <div className="text-[9px] font-bold uppercase tracking-widest text-amber-300">
-                  {c.tag}
-                </div>
-                <div className="mt-1 text-[12px] leading-snug text-slate-100">
-                  {c.title}
-                </div>
-                <div className="mt-1 text-[9px] text-slate-500">{c.meta}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom nav */}
-          <div className="absolute inset-x-0 bottom-0 border-t border-white/5 bg-[#050810]/90 px-3 py-2 backdrop-blur">
-            <div className="grid grid-cols-5 text-[9px] uppercase tracking-widest text-slate-400">
-              {[
-                { l: "Início", active: true },
-                { l: "Política" },
-                { l: "Brasil" },
-                { l: "Salvos" },
-                { l: "Perfil" },
-              ].map((n) => (
-                <div
-                  key={n.l}
-                  className={`flex flex-col items-center gap-1 py-1 ${
-                    n.active ? "text-amber-300" : ""
-                  }`}
-                >
-                  <span
-                    className={`h-1 w-1 rounded-full ${
-                      n.active ? "bg-amber-400" : "bg-transparent"
-                    }`}
-                  />
-                  {n.l}
-                </div>
-              ))}
-            </div>
+        {/* CTA de checkout */}
+        <div className="mt-10">
+          <button
+            onClick={handleCheckout}
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#009c3b] px-8 py-5 text-base font-bold uppercase tracking-wider text-white shadow-[0_20px_60px_-20px_rgba(0,156,59,0.55)] transition hover:bg-[#007a2e] md:w-auto"
+          >
+            Quero acessar o Gazeta Direita
+            <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5" />
+          </button>
+          <div className="mt-3 text-xs text-slate-500">
+            Acesso rápido • Leia pelo celular • Ambiente digital
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function Preview() {
-  return (
-    <section className="border-t border-white/5 bg-gradient-to-b from-[#050810] to-[#070c1a]">
-      <div className="mx-auto grid max-w-6xl gap-14 px-5 py-20 md:grid-cols-2 md:items-center">
-        <div>
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-slate-300">
-            Prévia do jornal
-          </div>
-          <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
-            Uma redação inteira no seu celular.
-          </h3>
-          <p className="mt-4 max-w-md text-slate-300">
-            Uma interface mobile-first, organizada como um portal moderno.
-            Manchetes, contexto e navegação clara — sem ruído de rede social.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {["Sem barulho", "Editorial claro", "Rápido de ler"].map((t) => (
-              <span
-                key={t}
-                className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="flex justify-center">
-          <PhoneMockup />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Benefits() {
-  const items = [
-    { icon: Newspaper, title: "Notícias selecionadas", text: "Os principais acontecimentos reunidos em um único lugar." },
-    { icon: Zap, title: "Resumo rápido", text: "Entenda o essencial sem passar horas procurando informação." },
-    { icon: Landmark, title: "Política", text: "Cobertura de Brasília, Congresso, eleições e decisões políticas." },
-    { icon: Globe2, title: "Brasil e Mundo", text: "Os acontecimentos nacionais e internacionais que merecem atenção." },
-    { icon: Bookmark, title: "Salvar para depois", text: "Guarde matérias importantes para ler quando quiser." },
-    { icon: Smartphone, title: "Experiência mobile", text: "Leia diretamente pelo celular com interface rápida e organizada." },
-    { icon: Radio, title: "Destaques", text: "Tenha acesso aos assuntos mais relevantes sem precisar acompanhar dezenas de perfis diferentes." },
-  ];
-  return (
-    <section className="border-t border-white/5 bg-[#050810]">
-      <div className="mx-auto max-w-6xl px-5 py-20">
-        <div className="mb-10 max-w-2xl">
-          <div className="mb-3 inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-slate-300">
-            Funcionalidades
-          </div>
-          <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
-            Feito para quem quer acompanhar e entender.
-          </h3>
-        </div>
-        <div className="grid gap-4 md:grid-cols-3">
-          {items.map(({ icon: Icon, title, text }) => (
-            <div
-              key={title}
-              className="group rounded-2xl border border-white/5 bg-white/[0.03] p-6 transition hover:border-amber-400/40 hover:bg-white/[0.05]"
-            >
-              <div className="grid h-10 w-10 place-items-center rounded-lg bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/20">
-                <Icon className="h-5 w-5" />
-              </div>
-              <div className="mt-4 text-base font-semibold text-white">{title}</div>
-              <div className="mt-1 text-sm text-slate-400">{text}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function InteractiveSim() {
-  const cats = ["Política", "Brasil", "Economia", "Mundo"];
-  const [cat, setCat] = useState(cats[0]);
-  return (
-    <section className="border-t border-white/5 bg-gradient-to-b from-[#070c1a] to-[#050810]">
-      <div className="mx-auto grid max-w-6xl gap-14 px-5 py-20 md:grid-cols-2 md:items-center">
-        <div className="order-2 md:order-1 flex justify-center">
-          <PhoneMockup category={cat} />
-        </div>
-        <div className="order-1 md:order-2">
-          <div className="mb-3 inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-slate-300">
-            Simulação interativa
-          </div>
-          <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
-            Veja como é por dentro.
-          </h3>
-          <p className="mt-4 max-w-md text-slate-300">
-            Selecione uma editoria e veja o feed se atualizar — como no
-            aplicativo real.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {cats.map((c) => (
-              <button
-                key={c}
-                onClick={() => setCat(c)}
-                className={`rounded-full border px-4 py-2 text-sm transition ${
-                  cat === c
-                    ? "border-amber-400 bg-amber-400 text-[#050810]"
-                    : "border-white/10 bg-white/[0.03] text-slate-200 hover:border-white/20"
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Problem() {
-  const chips = ["Instagram", "TikTok", "YouTube", "X", "WhatsApp", "Portais"];
-  return (
-    <section className="border-t border-white/5 bg-[#050810]">
-      <div className="mx-auto max-w-4xl px-5 py-20 text-center">
-        <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
-          As notícias estão espalhadas por toda parte.
-        </h3>
-        <div className="mt-8 flex flex-wrap justify-center gap-2">
-          {chips.map((c) => (
-            <span
-              key={c}
-              className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm text-slate-300"
-            >
-              {c}
-            </span>
-          ))}
-        </div>
-        <p className="mx-auto mt-8 max-w-xl text-slate-300">
-          Todos os dias surge uma enxurrada de informações. O{" "}
-          <strong className="text-white">Direita News</strong> foi criado para
-          transformar esse caos em uma leitura organizada.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function Independence() {
-  return (
-    <section className="border-t border-white/5 bg-gradient-to-b from-[#050810] via-[#0a1024] to-[#050810]">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 md:grid-cols-[1fr_1.4fr] md:items-center">
-        <div className="flex justify-center">
-          <div className="relative grid h-40 w-40 place-items-center rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-400/10 to-transparent md:h-52 md:w-52">
-            <Lock className="h-16 w-16 text-amber-300 md:h-20 md:w-20" />
-            <div className="absolute -inset-2 -z-10 rounded-3xl bg-amber-400/10 blur-2xl" />
-          </div>
-        </div>
-        <div>
-          <div className="mb-3 inline-flex rounded-full border border-amber-400/30 bg-amber-400/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-amber-300">
-            Independência editorial
-          </div>
-          <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
-            Não dependa apenas do algoritmo.
-          </h3>
-          <p className="mt-4 max-w-xl text-slate-300">
-            Redes sociais podem alterar alcance, regras e disponibilidade de
-            conteúdo a qualquer momento. Ter acesso direto a uma publicação
-            digital significa não depender exclusivamente do feed de uma
-            plataforma para acompanhar as notícias que interessam a você.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Urgency() {
-  return (
-    <section className="border-t border-white/5 bg-black">
-      <div className="mx-auto max-w-3xl px-5 py-16 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-red-300">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-400" />
-          Acesso disponível
-        </div>
-        <h3 className="mt-5 font-serif text-3xl leading-tight text-white md:text-4xl">
-          Entre agora para acompanhar as próximas edições do Direita News.
-        </h3>
-        <p className="mt-3 text-sm text-slate-400">
-          As próximas edições já estão sendo preparadas pela redação.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function Offer() {
-  const items = [
-    "Jornal digital",
-    "Notícias selecionadas",
-    "Política",
-    "Brasil",
-    "Economia",
-    "Mundo",
-    "Resumos",
-    "Experiência mobile",
-    "Atualizações frequentes",
-    "Acesso às próximas edições",
-  ];
-
-  const handleCheckout = () => {
-    track("checkout_clicked", { ...getUtms() });
-    // Placeholder: integração futura com checkout
-    // window.location.href = "/checkout?product=direita-news";
-  };
-
-  return (
-    <section id="oferta" className="border-t border-white/5 bg-[#050810]">
-      <div className="mx-auto max-w-3xl px-5 py-20">
-        <div className="relative overflow-hidden rounded-3xl border border-amber-400/30 bg-gradient-to-b from-[#0c1428] to-[#050810] p-8 shadow-[0_40px_120px_-30px_rgba(250,204,21,0.25)] md:p-10">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(250,204,21,0.12),transparent_70%)]" />
-          <div className="relative">
-            <div className="flex items-center justify-between">
-              <Logo />
-              <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-amber-300">
-                Acesso premium
-              </span>
-            </div>
-
-            <h3 className="mt-6 font-serif text-3xl leading-tight text-white md:text-4xl">
-              Tudo o que você precisa acompanhar, em um só lugar.
-            </h3>
-
-            <ul className="mt-6 grid gap-2 md:grid-cols-2">
-              {items.map((it) => (
-                <li
-                  key={it}
-                  className="flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2.5 text-sm text-slate-200"
-                >
-                  <span className="grid h-5 w-5 place-items-center rounded-full bg-amber-400/15 text-amber-300">
-                    <Check className="h-3 w-3" strokeWidth={4} />
-                  </span>
-                  {it}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 rounded-2xl border border-white/10 bg-black/40 p-6 text-center">
-              <div className="text-[11px] uppercase tracking-[0.24em] text-slate-400">
-                Investimento único
-              </div>
-              <div
-                className="mt-2 font-serif text-5xl font-black tracking-tight text-white"
-                data-price-placeholder
-              >
-                R$ XX,XX
-              </div>
-              <div className="mt-1 text-xs text-slate-500">
-                Valor configurável no sistema
-              </div>
-
-              <button
-                onClick={handleCheckout}
-                className="group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-sm font-bold uppercase tracking-wider text-[#050810] transition hover:bg-amber-300"
-              >
-                Quero acessar o Direita News
-                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-              </button>
-
-              <div className="mt-4 text-[11px] uppercase tracking-widest text-slate-500">
-                Acesso rápido • Ambiente digital • Leia pelo celular
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FinalCTA() {
-  const handleCheckout = () => {
-    track("checkout_clicked", { ...getUtms(), placement: "final_cta" });
-  };
-  return (
-    <section className="border-t border-white/5 bg-black">
-      <div className="mx-auto max-w-3xl px-5 py-24 text-center">
-        <div className="mx-auto mb-8 inline-block">
-          <Logo />
-        </div>
-        <h3 className="font-serif text-4xl leading-tight text-white md:text-5xl">
-          Informação é vantagem.
-        </h3>
-        <p className="mx-auto mt-4 max-w-lg text-slate-400">
-          Tenha um lugar único para acompanhar os assuntos que movimentam o
-          Brasil.
-        </p>
-        <button
-          onClick={handleCheckout}
-          className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-[#050810] transition hover:bg-amber-300"
-        >
-          Acessar Direita News
-          <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-        </button>
       </div>
     </section>
   );
