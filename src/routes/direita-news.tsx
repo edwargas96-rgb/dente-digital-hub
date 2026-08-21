@@ -19,6 +19,14 @@ export const Route = createFileRoute("/direita-news")({
         content: "Informação organizada, rápida e sem depender apenas do algoritmo.",
       },
     ],
+    links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@600;700&display=swap",
+      },
+    ],
   }),
   component: DireitaNewsPage,
 });
@@ -636,25 +644,22 @@ function Intro({ onStart }: { onStart: () => void }) {
 function SejaPatriota() {
   const cards = [
     {
-      name: "Carlos, 54",
-      role: "Empresário — São Paulo",
-      quote:
-        "Cansei de depender do Instagram. Agora acompanho tudo em um só lugar.",
-      initials: "CS",
+      name: "Flávio Bolsonaro",
+      role: "Senador — Rio de Janeiro",
+      img: "https://i.imgur.com/t0BjptQ.jpeg",
+      bio: "Flávio Bolsonaro é advogado, empresário e político brasileiro. Filho do ex-presidente Jair Bolsonaro, foi deputado estadual no Rio de Janeiro por quatro mandatos e atualmente é senador pelo Rio de Janeiro, filiado ao PL. Sua atuação política é fortemente ligada a pautas da direita, especialmente segurança pública e temas conservadores.",
     },
     {
-      name: "Marcelo, 42",
-      role: "Militar — Brasília",
-      quote:
-        "Notícia direta, sem enrolação. Isso faz falta no Brasil.",
-      initials: "MB",
+      name: "Flávio Bolsonaro",
+      role: "Presidente da Comissão de Segurança Pública",
+      img: "https://i.imgur.com/DM6vnGP.jpeg",
+      bio: "Flávio Bolsonaro é senador pelo Rio de Janeiro, filiado ao PL, e filho do ex-presidente Jair Bolsonaro. Está no Senado desde 2019 e tem atuação ligada principalmente à segurança pública e às pautas da direita e do conservadorismo brasileiro. Atualmente, também preside a Comissão de Segurança Pública do Senado.",
     },
     {
-      name: "Roberto, 61",
-      role: "Aposentado — Curitiba",
-      quote:
-        "Finalmente um jornal digital que respeita o leitor conservador.",
-      initials: "RA",
+      name: "Nikolas Ferreira",
+      role: "Deputado Federal — Minas Gerais",
+      img: "https://i.imgur.com/dS56vM5.jpeg",
+      bio: "Nikolas Ferreira é deputado federal por Minas Gerais, conhecido pela forte presença nas redes sociais e por seu discurso conservador. Filiado ao PL, ganhou projeção nacional defendendo pautas da direita, críticas ao governo Lula e posições alinhadas ao bolsonarismo.",
     },
   ];
   return (
@@ -666,23 +671,32 @@ function SejaPatriota() {
             Comunidade
           </div>
           <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-slate-900 md:text-4xl">
-            SEJA PATRIOTA <span className="text-slate-400 line-through">ASSIM COMO ELE</span>
+            SEJA PATRIOTA ASSIM COMO ELES
           </h2>
           <p className="mt-2 text-sm text-slate-600">
-            Milhares de brasileiros já acompanham as notícias pelo Direita News.
+            Referências da direita brasileira. Passe o cursor para conhecer.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {cards.map((c) => (
-            <div
-              key={c.name}
-              className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {cards.map((c, i) => (
+            <article
+              key={i}
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-gradient-to-br from-[#002776] via-[#0a3a9e] to-[#009c3b]">
-                <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_40%,rgba(255,223,0,0.25),transparent_70%)]" />
-                <div className="relative grid h-24 w-24 place-items-center rounded-full border-2 border-white/40 bg-white/10 font-serif text-3xl font-black text-white backdrop-blur">
-                  {c.initials}
+              <div className="relative aspect-[3/4] overflow-hidden bg-slate-200">
+                <img
+                  src={c.img}
+                  alt={c.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                {/* Hover bio overlay */}
+                <div className="absolute inset-0 flex items-end bg-black/70 p-5 opacity-0 backdrop-blur-sm transition duration-300 group-hover:opacity-100">
+                  <p className="text-[13px] leading-relaxed text-white">
+                    {c.bio}
+                  </p>
                 </div>
                 <div className="absolute inset-x-0 bottom-0 h-1 flex">
                   <div className="flex-1 bg-[#009c3b]" />
@@ -691,15 +705,17 @@ function SejaPatriota() {
                 </div>
               </div>
               <div className="p-5">
-                <div className="font-serif text-base font-bold text-slate-900">{c.name}</div>
-                <div className="text-[11px] uppercase tracking-widest text-slate-500">
+                <div
+                  className="text-lg font-black leading-tight text-slate-900"
+                  style={{ fontFamily: "'Bebas Neue', 'Oswald', 'Impact', system-ui, sans-serif", letterSpacing: "0.04em" }}
+                >
+                  {c.name.toUpperCase()}
+                </div>
+                <div className="mt-1 text-[11px] font-semibold uppercase tracking-widest text-[#002776]">
                   {c.role}
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-slate-700">
-                  "{c.quote}"
-                </p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>
