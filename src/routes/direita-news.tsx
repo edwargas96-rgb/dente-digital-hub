@@ -189,7 +189,7 @@ const QUESTIONS: Question[] = [
   },
 ];
 
-const STORAGE_KEY = "direita-news-quiz-v2";
+const STORAGE_KEY = "direita-news-quiz-v3";
 
 type Screen = "urna" | "intro" | "quiz" | "analyzing" | "reveal";
 
@@ -200,7 +200,7 @@ type QuizState = {
   startedAt?: number;
 };
 
-const initialState: QuizState = { screen: "urna", step: 0, answers: {} };
+const initialState: QuizState = { screen: "intro", step: 0, answers: {} };
 
 // ---------------- Page ----------------
 
@@ -240,12 +240,12 @@ function DireitaNewsPage() {
   const isReveal = state.screen === "reveal";
 
   const onUrnaConfirmed = () => {
-    setState((s) => ({ ...s, screen: "intro", step: 0 }));
+    track("quiz_started", { ...utms.current });
+    setState((s) => ({ ...s, screen: "quiz", step: 1, startedAt: Date.now() }));
   };
 
   const startQuiz = () => {
-    track("quiz_started", { ...utms.current });
-    setState((s) => ({ ...s, screen: "quiz", step: 1, startedAt: Date.now() }));
+    setState((s) => ({ ...s, screen: "urna" }));
   };
 
   const answerQuestion = (q: Question, value: string | string[]) => {
@@ -274,11 +274,11 @@ function DireitaNewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050810] text-slate-100 antialiased">
-      {!isUrna && <TopBar />}
+    <div className="min-h-screen bg-white text-slate-900 antialiased">
+      <TopBar />
       <main>
-        {isUrna && <UrnaScreen onConfirmed={onUrnaConfirmed} />}
         {isIntro && <Intro onStart={startQuiz} />}
+        {isUrna && <UrnaScreen onConfirmed={onUrnaConfirmed} />}
         {isQuiz && (
           <QuizStep
             key={state.step}
@@ -295,7 +295,7 @@ function DireitaNewsPage() {
         {isAnalyzing && <Analyzing onDone={goReveal} />}
         {isReveal && <Reveal />}
       </main>
-      {!isUrna && <Footer />}
+      <Footer />
     </div>
   );
 }
@@ -338,22 +338,20 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
   }, [digits, confirmed]);
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#040610]">
-      {/* BR flag ambient */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(0,156,59,0.18),transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_35%_at_50%_100%,rgba(255,223,0,0.10),transparent_70%)]" />
-      <FlagStripe />
+    <section className="relative overflow-hidden bg-slate-50">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(0,156,59,0.10),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_35%_at_50%_100%,rgba(0,39,118,0.06),transparent_70%)]" />
 
-      <div className="relative mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-5 py-10">
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center px-5 py-12">
         <div className="mb-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-yellow-400/30 bg-yellow-400/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-yellow-300">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-300" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#002776]/20 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-[#002776] shadow-sm">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#009c3b]" />
             Simulação
           </div>
-          <h1 className="mt-4 font-serif text-3xl leading-tight text-white md:text-4xl">
+          <h1 className="mt-4 font-serif text-3xl leading-tight text-slate-900 md:text-4xl">
             Confirme seu voto para continuar
           </h1>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-slate-600">
             Digite o número do seu candidato à Presidência.
           </p>
         </div>
@@ -493,8 +491,8 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
           </div>
         </div>
 
-        <div className="mt-6 text-center text-[11px] uppercase tracking-widest text-slate-500">
-          Dica: digite <span className="text-yellow-300">22</span> e pressione CONFIRMA
+        <div className="mt-6 text-center text-[11px] font-semibold uppercase tracking-widest text-slate-600">
+          Dica: digite <span className="text-[#002776]">22</span> e pressione CONFIRMA
         </div>
       </div>
     </section>
@@ -550,51 +548,48 @@ function FlagStripe() {
 // ---------------- Top bar ----------------
 
 function TopBar() {
-  const [date, setDate] = useState("");
-  useEffect(() => {
-    const d = new Date();
-    setDate(
-      d.toLocaleDateString("pt-BR", {
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }),
-    );
-  }, []);
   return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-[#050810]/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <CensuraAlert />
       <FlagStripe />
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Logo />
-        </div>
-        <div className="hidden items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-slate-400 md:flex">
-          <Radio className="h-3.5 w-3.5 text-amber-400" />
-          <span>Edição digital</span>
-          <span className="text-slate-600">•</span>
-          <span className="capitalize">{date}</span>
-        </div>
-        <span className="rounded-full border border-amber-400/30 bg-amber-400/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-amber-300">
-          Independente
-        </span>
+        <Logo />
       </div>
     </header>
   );
 }
 
-function Logo({ compact = false }: { compact?: boolean }) {
+function CensuraAlert() {
+  return (
+    <div className="w-full bg-red-600 text-white">
+      <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 px-4 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] md:text-xs">
+        <span className="relative flex h-2.5 w-2.5 shrink-0">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+        </span>
+        <span className="animate-pulse">
+          Este portal pode ser derrubado a qualquer momento pela censura — garanta seu acesso
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Logo({ compact = false, invert = false }: { compact?: boolean; invert?: boolean }) {
+  const titleClr = invert ? "text-white" : "text-slate-900";
+  const subClr = invert ? "text-slate-400" : "text-slate-500";
+  const badgeBg = invert ? "bg-white text-[#050810]" : "bg-[#050810] text-white";
   return (
     <div className="flex items-center gap-2">
-      <div className="grid h-8 w-8 place-items-center rounded-md bg-white text-[#050810]">
+      <div className={`grid h-8 w-8 place-items-center rounded-md ${badgeBg}`}>
         <Newspaper className="h-4.5 w-4.5" strokeWidth={2.4} />
       </div>
       <div className="leading-tight">
-        <div className="font-serif text-[17px] font-black tracking-tight text-white">
-          DIREITA <span className="text-amber-400">NEWS</span>
+        <div className={`font-serif text-[17px] font-black tracking-tight ${titleClr}`}>
+          DIREITA <span className="text-[#009c3b]">NEWS</span>
         </div>
         {!compact && (
-          <div className="text-[9px] uppercase tracking-[0.28em] text-slate-400">
+          <div className={`text-[9px] uppercase tracking-[0.28em] ${subClr}`}>
             Jornal digital independente
           </div>
         )}
@@ -607,57 +602,117 @@ function Logo({ compact = false }: { compact?: boolean }) {
 
 function Intro({ onStart }: { onStart: () => void }) {
   return (
-    <section className="relative overflow-hidden">
-      <BackgroundGlow />
-      <div className="mx-auto max-w-3xl px-5 pb-24 pt-16 text-center md:pt-24">
-        <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-slate-300">
-          <span className="inline-flex h-2.5 overflow-hidden rounded-sm">
-            <span className="w-1 bg-[#009c3b]" />
-            <span className="w-1 bg-[#ffdf00]" />
-            <span className="w-1 bg-[#002776]" />
-          </span>
-          Brasil acima de tudo
-        </div>
-        <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-white md:text-6xl">
-          Você está acompanhando tudo o que{" "}
-          <span className="italic text-amber-300">realmente importa</span> no
-          Brasil?
-        </h1>
-        <p className="mx-auto mt-6 max-w-xl text-base text-slate-300 md:text-lg">
-          Responda algumas perguntas rápidas e descubra uma nova forma de
-          acompanhar política, economia, Brasil e os principais acontecimentos
-          do dia.
-        </p>
+    <>
+      <section className="relative overflow-hidden bg-white">
+        <BackgroundGlow />
+        <div className="relative mx-auto max-w-3xl px-5 pb-16 pt-14 text-center md:pt-20">
+          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-700 shadow-sm">
+            <span className="inline-flex h-2.5 overflow-hidden rounded-sm">
+              <span className="w-1 bg-[#009c3b]" />
+              <span className="w-1 bg-[#ffdf00]" />
+              <span className="w-1 bg-[#002776]" />
+            </span>
+            Brasil acima de tudo
+          </div>
+          <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-slate-900 md:text-6xl">
+            Você está acompanhando tudo o que{" "}
+            <span className="italic text-[#009c3b]">realmente importa</span> no
+            Brasil?
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-base text-slate-600 md:text-lg">
+            Responda algumas perguntas rápidas e descubra uma nova forma de
+            acompanhar política, economia, Brasil e os principais acontecimentos
+            do dia.
+          </p>
 
-        <div className="mt-10 flex flex-col items-center gap-3">
-          <button
-            onClick={onStart}
-            className="group inline-flex items-center gap-2 rounded-xl bg-white px-7 py-4 text-[15px] font-semibold text-[#050810] shadow-[0_20px_60px_-20px_rgba(250,204,21,0.45)] transition hover:bg-amber-300"
-          >
-            COMEÇAR O QUIZ
-            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-          </button>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Clock className="h-3.5 w-3.5" />
-            Leva aproximadamente 2 minutos.
+          <div className="mt-10 flex flex-col items-center gap-3">
+            <button
+              onClick={onStart}
+              className="group inline-flex items-center gap-2 rounded-xl bg-[#002776] px-7 py-4 text-[15px] font-bold uppercase tracking-wider text-white shadow-[0_18px_50px_-15px_rgba(0,39,118,0.55)] transition hover:bg-[#001a55]"
+            >
+              Começar o quiz
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </button>
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <Clock className="h-3.5 w-3.5" />
+              Leva aproximadamente 2 minutos.
+            </div>
           </div>
         </div>
+      </section>
 
-        <div className="mx-auto mt-16 grid max-w-2xl grid-cols-3 gap-3 text-left">
-          {[
-            { icon: Landmark, label: "Política" },
-            { icon: TrendingUp, label: "Economia" },
-            { icon: Globe2, label: "Brasil & Mundo" },
-          ].map(({ icon: Icon, label }) => (
+      <SejaPatriota />
+      <Feedback />
+    </>
+  );
+}
+
+function SejaPatriota() {
+  const cards = [
+    {
+      name: "Carlos, 54",
+      role: "Empresário — São Paulo",
+      quote:
+        "Cansei de depender do Instagram. Agora acompanho tudo em um só lugar.",
+      initials: "CS",
+    },
+    {
+      name: "Marcelo, 42",
+      role: "Militar — Brasília",
+      quote:
+        "Notícia direta, sem enrolação. Isso faz falta no Brasil.",
+      initials: "MB",
+    },
+    {
+      name: "Roberto, 61",
+      role: "Aposentado — Curitiba",
+      quote:
+        "Finalmente um jornal digital que respeita o leitor conservador.",
+      initials: "RA",
+    },
+  ];
+  return (
+    <section className="border-y border-slate-200 bg-slate-50">
+      <div className="mx-auto max-w-5xl px-5 py-16">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#009c3b]/30 bg-[#009c3b]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#009c3b]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#009c3b]" />
+            Comunidade
+          </div>
+          <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-slate-900 md:text-4xl">
+            SEJA PATRIOTA <span className="text-slate-400 line-through">ASSIM COMO ELE</span>
+          </h2>
+          <p className="mt-2 text-sm text-slate-600">
+            Milhares de brasileiros já acompanham as notícias pelo Direita News.
+          </p>
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {cards.map((c) => (
             <div
-              key={label}
-              className="rounded-xl border border-white/5 bg-white/[0.03] p-4"
+              key={c.name}
+              className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <Icon className="h-5 w-5 text-amber-300" />
-              <div className="mt-3 text-[11px] uppercase tracking-widest text-slate-400">
-                Cobertura
+              <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-gradient-to-br from-[#002776] via-[#0a3a9e] to-[#009c3b]">
+                <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_40%,rgba(255,223,0,0.25),transparent_70%)]" />
+                <div className="relative grid h-24 w-24 place-items-center rounded-full border-2 border-white/40 bg-white/10 font-serif text-3xl font-black text-white backdrop-blur">
+                  {c.initials}
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-1 flex">
+                  <div className="flex-1 bg-[#009c3b]" />
+                  <div className="flex-1 bg-[#ffdf00]" />
+                  <div className="flex-1 bg-[#002776]" />
+                </div>
               </div>
-              <div className="text-sm font-semibold text-white">{label}</div>
+              <div className="p-5">
+                <div className="font-serif text-base font-bold text-slate-900">{c.name}</div>
+                <div className="text-[11px] uppercase tracking-widest text-slate-500">
+                  {c.role}
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                  "{c.quote}"
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -666,16 +721,88 @@ function Intro({ onStart }: { onStart: () => void }) {
   );
 }
 
+function Feedback() {
+  const items = [
+    { name: "Ana Paula", city: "Rio de Janeiro", stars: 5, text: "Simples, rápido e direto ao ponto. Finalmente uma alternativa." },
+    { name: "João Vitor", city: "Belo Horizonte", stars: 5, text: "Recomendei para toda a família. Melhor do que ficar caçando notícia em rede social." },
+    { name: "Sandra L.", city: "Porto Alegre", stars: 5, text: "As manchetes são claras e a linha editorial é honesta." },
+    { name: "Eduardo M.", city: "Goiânia", stars: 5, text: "Vale cada centavo. Uso todos os dias." },
+  ];
+  return (
+    <section className="bg-white">
+      <div className="mx-auto max-w-5xl px-5 py-16">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-slate-700">
+            Feedback dos leitores
+          </div>
+          <h3 className="mt-3 font-serif text-3xl font-black leading-tight text-slate-900 md:text-4xl">
+            O que estão dizendo
+          </h3>
+          <div className="mt-2 flex items-center justify-center gap-2 text-sm text-slate-600">
+            <div className="flex gap-0.5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <StarIcon key={i} filled />
+              ))}
+            </div>
+            <span className="font-semibold text-slate-900">4,9</span>
+            <span className="text-slate-500">· milhares de leitores</span>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          {items.map((f) => (
+            <div
+              key={f.name}
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-semibold text-slate-900">{f.name}</div>
+                  <div className="text-[11px] uppercase tracking-widest text-slate-500">
+                    {f.city}
+                  </div>
+                </div>
+                <div className="flex gap-0.5">
+                  {Array.from({ length: f.stars }).map((_, i) => (
+                    <StarIcon key={i} filled />
+                  ))}
+                </div>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-slate-700">"{f.text}"</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StarIcon({ filled }: { filled?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={14}
+      height={14}
+      fill={filled ? "#ffdf00" : "none"}
+      stroke="#ffdf00"
+      strokeWidth={1.5}
+      aria-hidden
+    >
+      <path d="M12 2.5l2.7 5.5 6 .9-4.35 4.24 1.03 6-5.38-2.83L6.6 19.13l1.03-6L3.28 8.9l6-.9L12 2.5z" />
+    </svg>
+  );
+}
+
 function BackgroundGlow() {
   return (
     <>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(30,58,138,0.35),transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(30%_25%_at_50%_0%,rgba(250,204,21,0.1),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_45%_at_50%_0%,rgba(0,39,118,0.10),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(30%_25%_at_50%_0%,rgba(0,156,59,0.08),transparent_70%)]" />
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.035]"
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+            "linear-gradient(rgba(0,0,0,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.6) 1px, transparent 1px)",
           backgroundSize: "42px 42px",
         }}
       />
@@ -725,14 +852,14 @@ function QuizStep({
     <section className="mx-auto max-w-2xl px-5 pb-20 pt-8 md:pt-14">
       <ProgressBar percent={pct} step={index} total={total} />
       <div className="mt-8">
-        <div className="mb-3 text-[11px] uppercase tracking-[0.24em] text-amber-300">
+        <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#002776]">
           Pergunta {index} de {total}
         </div>
-        <h2 className="font-serif text-[26px] leading-tight text-white md:text-[34px]">
+        <h2 className="font-serif text-[26px] leading-tight text-slate-900 md:text-[34px]">
           {question.title}
         </h2>
         {question.hint && (
-          <div className="mt-2 text-xs text-slate-400">{question.hint}</div>
+          <div className="mt-2 text-xs text-slate-500">{question.hint}</div>
         )}
 
         <div className="mt-7 grid gap-3">
@@ -747,16 +874,16 @@ function QuizStep({
                 }
                 className={`group relative flex items-center justify-between rounded-xl border px-5 py-4 text-left transition ${
                   isSelected
-                    ? "border-amber-400/60 bg-amber-400/10"
-                    : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
+                    ? "border-[#002776] bg-[#002776]/5"
+                    : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
                 }`}
               >
-                <span className="text-[15px] font-medium text-white">{opt}</span>
+                <span className="text-[15px] font-medium text-slate-900">{opt}</span>
                 <span
                   className={`grid h-6 w-6 place-items-center rounded-md border transition ${
                     isSelected
-                      ? "border-amber-400 bg-amber-400 text-[#050810]"
-                      : "border-white/20 text-transparent group-hover:border-white/40"
+                      ? "border-[#002776] bg-[#002776] text-white"
+                      : "border-slate-300 text-transparent group-hover:border-slate-400"
                   }`}
                 >
                   <Check className="h-3.5 w-3.5" strokeWidth={3} />
@@ -770,9 +897,9 @@ function QuizStep({
           <button
             disabled={multi.length === 0}
             onClick={() => onAnswer(multi)}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-[#050810] transition disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#002776] px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-[#001a55] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            CONTINUAR
+            Continuar
             <ArrowRight className="h-4 w-4" />
           </button>
         )}
@@ -780,7 +907,7 @@ function QuizStep({
         <div className="mt-6 flex items-center justify-between text-xs text-slate-500">
           <button
             onClick={onBack}
-            className="rounded px-2 py-1 hover:text-slate-300"
+            className="rounded px-2 py-1 hover:text-slate-700"
             disabled={index === 1}
           >
             ← Voltar
@@ -803,13 +930,13 @@ function ProgressBar({
 }) {
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-slate-400">
+      <div className="mb-2 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
         <span>Progresso</span>
-        <span className="text-amber-300">{percent}%</span>
+        <span className="text-[#002776]">{percent}%</span>
       </div>
-      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 transition-[width] duration-500"
+          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#009c3b] via-[#ffdf00] to-[#002776] transition-[width] duration-500"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -847,24 +974,24 @@ function Analyzing({ onDone }: { onDone: () => void }) {
   return (
     <section className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-xl flex-col items-center justify-center px-5 py-16 text-center">
       <div className="relative mb-8 h-20 w-20">
-        <div className="absolute inset-0 rounded-full border-2 border-white/10" />
-        <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-amber-400" />
-        <div className="absolute inset-3 rounded-full bg-white/5" />
-        <Newspaper className="absolute inset-0 m-auto h-7 w-7 text-amber-300" />
+        <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
+        <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-[#002776]" />
+        <div className="absolute inset-3 rounded-full bg-slate-50" />
+        <Newspaper className="absolute inset-0 m-auto h-7 w-7 text-[#002776]" />
       </div>
       {!done ? (
         <>
-          <h2 className="font-serif text-3xl text-white">Analisando suas respostas…</h2>
-          <p className="mt-2 text-sm text-slate-400">
+          <h2 className="font-serif text-3xl text-slate-900">Analisando suas respostas…</h2>
+          <p className="mt-2 text-sm text-slate-600">
             Cruzando preferências para montar sua experiência editorial.
           </p>
           <ul className="mt-8 grid w-full gap-2 text-left">
             {items.slice(0, shown).map((it) => (
               <li
                 key={it}
-                className="flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.03] px-4 py-3 text-sm text-slate-200 animate-in fade-in slide-in-from-bottom-1 duration-500"
+                className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 animate-in fade-in slide-in-from-bottom-1 duration-500 shadow-sm"
               >
-                <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500/20 text-emerald-400">
+                <span className="grid h-5 w-5 place-items-center rounded-full bg-[#009c3b]/15 text-[#009c3b]">
                   <Check className="h-3 w-3" strokeWidth={4} />
                 </span>
                 {it}
@@ -874,17 +1001,17 @@ function Analyzing({ onDone }: { onDone: () => void }) {
         </>
       ) : (
         <>
-          <h2 className="font-serif text-3xl text-white">
+          <h2 className="font-serif text-3xl text-slate-900">
             Sua experiência Direita News está pronta.
           </h2>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-slate-600">
             Editorial ajustado ao seu perfil de leitura.
           </p>
           <button
             onClick={onDone}
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-amber-400 px-7 py-4 text-sm font-semibold text-[#050810] transition hover:bg-amber-300"
+            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#002776] px-7 py-4 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-[#001a55]"
           >
-            VER MINHA EXPERIÊNCIA
+            Ver minha experiência
             <ArrowRight className="h-4 w-4" />
           </button>
         </>
@@ -1411,7 +1538,8 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-black">
+    <footer className="border-t border-slate-200 bg-white">
+      <FlagStripe />
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 md:flex-row">
         <Logo compact />
         <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500">
