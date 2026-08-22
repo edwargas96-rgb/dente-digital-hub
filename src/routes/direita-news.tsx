@@ -267,9 +267,14 @@ function DireitaNewsPage() {
     setState((s) => ({ ...s, screen: "reveal" }));
   };
 
+  const goHome = () => {
+    setState({ screen: "intro", step: 0, answers: {} });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen bg-white text-slate-900 antialiased">
-      <TopBar />
+    <div className="min-h-screen bg-white text-slate-900 antialiased pb-20">
+      <TopBar onHome={goHome} />
       <main>
         {isIntro && <Intro onStart={startQuiz} />}
         {isUrna && <UrnaScreen onConfirmed={onUrnaConfirmed} />}
@@ -610,13 +615,21 @@ function FlagStripe() {
 
 // ---------------- Top bar ----------------
 
-function TopBar() {
+function TopBar({ onHome }: { onHome?: () => void }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <CensuraAlert />
       <FlagStripe />
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Logo />
+        <button
+          type="button"
+          onClick={onHome}
+          aria-label="Voltar ao início"
+          title="Voltar ao início"
+          className="group rounded-md transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002776]/40"
+        >
+          <Logo />
+        </button>
       </div>
     </header>
   );
@@ -911,7 +924,7 @@ function QuizStep({
   );
 
   return (
-    <section className="mx-auto max-w-2xl px-5 pb-20 pt-8 md:pt-14">
+    <section className="mx-auto max-w-2xl px-5 pb-20 pt-8 md:pt-14" style={{ minHeight: "calc(100vh - 240px)" }}>
       <ProgressBar percent={pct} step={index} total={total} />
       <div className="mt-8">
         <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#002776]">
@@ -959,10 +972,10 @@ function QuizStep({
           <button
             disabled={multi.length === 0}
             onClick={() => onAnswer(multi)}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#002776] px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-[#001a55] disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0a8f2a] px-6 py-4 text-base font-black uppercase tracking-wider text-white shadow-[0_16px_40px_-16px_rgba(10,143,42,0.55)] ring-2 ring-[#0a8f2a]/20 transition hover:bg-[#087023] disabled:cursor-not-allowed disabled:opacity-40"
           >
             Continuar
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-5 w-5" />
           </button>
         )}
 
@@ -1164,12 +1177,12 @@ function Reveal() {
 
 function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white">
+    <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 backdrop-blur shadow-[0_-6px_20px_-10px_rgba(0,0,0,0.15)]">
       <FlagStripe />
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 md:flex-row">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
         <Logo compact />
-        <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500">
-          © {new Date().getFullYear()} Gazeta Direita — Jornal digital independente
+        <div className="hidden text-[10px] uppercase tracking-[0.22em] text-slate-500 md:block">
+          © {new Date().getFullYear()} Gazeta Direita
         </div>
       </div>
     </footer>
