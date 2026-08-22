@@ -198,6 +198,86 @@ const initialState: QuizState = { screen: "intro", step: 0, answers: {} };
 
 // ---------------- Page ----------------
 
+// ---------------- Scroll reveal + shared animations ----------------
+
+function useReveal<T extends Element>(threshold = 0.15) {
+  const ref = useRef<T | null>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setVisible(true);
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [threshold]);
+  return { ref, visible };
+}
+
+function Reveal({
+  children,
+  delay = 0,
+  as: Tag = "div",
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  as?: keyof React.JSX.IntrinsicElements;
+  className?: string;
+}) {
+  const { ref, visible } = useReveal<HTMLElement>();
+  const Comp = Tag as unknown as React.ElementType;
+  return (
+    <Comp
+      ref={ref as React.Ref<HTMLElement>}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-700 ease-out ${
+        visible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-6"
+      } ${className}`}
+    >
+      {children}
+    </Comp>
+  );
+}
+
+function GlobalAnims() {
+  return (
+    <style>{`
+      @keyframes gd-kenburns {
+        0%   { transform: scale(1) translate(0, 0); }
+        50%  { transform: scale(1.08) translate(-1%, -1.5%); }
+        100% { transform: scale(1) translate(0, 0); }
+      }
+      @keyframes gd-float {
+        0%,100% { transform: translateY(0) rotate(-1deg); }
+        50%     { transform: translateY(-8px) rotate(1deg); }
+      }
+      @keyframes gd-shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .gd-kenburns { animation: gd-kenburns 14s ease-in-out infinite; }
+      .gd-float    { animation: gd-float 6s ease-in-out infinite; }
+      .gd-shimmer  {
+        background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+        background-size: 200% 100%;
+        animation: gd-shimmer 3s linear infinite;
+      }
+    `}</style>
+  );
+}
+
 function DireitaNewsPage() {
   const [state, setState] = useState<QuizState>(initialState);
   const [hydrated, setHydrated] = useState(false);
@@ -274,6 +354,7 @@ function DireitaNewsPage() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased pb-20">
+      <GlobalAnims />
       <TopBar onHome={goHome} />
       <main>
         {isIntro && <Intro onStart={startQuiz} />}
@@ -292,7 +373,7 @@ function DireitaNewsPage() {
           />
         )}
         {isAnalyzing && <Analyzing onDone={goReveal} />}
-        {isReveal && <Reveal />}
+        {isReveal && <ResultPage />}
       </main>
       <Footer />
     </div>
@@ -401,16 +482,31 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
 
         {/* Urna body — bege com base preta como a urna real */}
         <div className="w-full max-w-2xl overflow-hidden rounded-t-[24px] rounded-b-[8px] border-2 border-[#3a2f1c] bg-gradient-to-b from-[#e8dfc4] via-[#dcd2b4] to-[#c9bf9e] p-1 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]">
+          {/* Alça superior estilizada */}
+          <div className="mx-auto mt-1 mb-2 h-1 w-24 rounded-full bg-[#3a2f1c]/40" />
           <div className="rounded-[20px] bg-gradient-to-b from-[#e8dfc4] to-[#d8ceac] p-3 md:p-5">
             <div className="mb-2 flex items-center justify-between px-1">
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 animate-pulse rounded-full bg-red-600 shadow-[0_0_6px_rgba(220,38,38,0.8)]" />
-                <span className="text-[9px] font-bold uppercase tracking-widest text-[#3a2f1c]">
-                  Ligada
-                </span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-red-600 shadow-[0_0_6px_rgba(220,38,38,0.8)]" />
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-[#3a2f1c]">
+                    Ligada
+                  </span>
+                </div>
+                {/* Furos do alto-falante */}
+                <div className="hidden gap-0.5 md:flex">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i} className="h-1 w-1 rounded-full bg-[#3a2f1c]/60" />
+                  ))}
+                </div>
               </div>
-              <div className="text-[9px] font-bold uppercase tracking-widest text-[#3a2f1c]">
-                Tribunal Superior Eleitoral
+              <div className="flex items-center gap-2">
+                <div className="grid h-4 w-4 place-items-center rounded-sm bg-[#3a2f1c] text-[7px] font-black text-[#e8dfc4]">
+                  TSE
+                </div>
+                <div className="text-[9px] font-bold uppercase tracking-widest text-[#3a2f1c]">
+                  Tribunal Superior Eleitoral
+                </div>
               </div>
             </div>
 
@@ -738,7 +834,7 @@ function SejaPatriota() {
   return (
     <section className="border-y border-slate-200 bg-slate-50">
       <div className="mx-auto max-w-5xl px-5 py-16">
-        <div className="text-center">
+        <Reveal as="div" className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#009c3b]/30 bg-[#009c3b]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#009c3b]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#009c3b]" />
             Comunidade
@@ -749,12 +845,14 @@ function SejaPatriota() {
           <p className="mt-2 text-sm text-slate-600">
             Referências da direita brasileira. Passe o cursor para conhecer.
           </p>
-        </div>
+        </Reveal>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {cards.map((c, i) => (
-            <article
+            <Reveal
               key={i}
+              as="article"
+              delay={i * 120}
               className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
             >
               <div className="relative aspect-[3/4] overflow-hidden bg-slate-200">
@@ -788,7 +886,7 @@ function SejaPatriota() {
                   {c.role}
                 </div>
               </div>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -825,9 +923,11 @@ function Feedback() {
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {items.map((f) => (
-            <div
+          {items.map((f, i) => (
+            <Reveal
               key={f.name}
+              as="div"
+              delay={i * 100}
               className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
             >
               <div className="flex items-center justify-between">
@@ -844,7 +944,7 @@ function Feedback() {
                 </div>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-slate-700">"{f.text}"</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -924,73 +1024,150 @@ function QuizStep({
   );
 
   return (
-    <section className="mx-auto max-w-2xl px-5 pb-20 pt-8 md:pt-14" style={{ minHeight: "calc(100vh - 240px)" }}>
+    <section
+      className="mx-auto max-w-6xl px-5 pb-20 pt-8 md:pt-14"
+      style={{ minHeight: "calc(100vh - 240px)" }}
+    >
       <ProgressBar percent={pct} step={index} total={total} />
-      <div className="mt-8">
-        <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#002776]">
-          Pergunta {index} de {total}
-        </div>
-        <h2 className="font-serif text-[26px] leading-tight text-slate-900 md:text-[34px]">
-          {question.title}
-        </h2>
-        {question.hint && (
-          <div className="mt-2 text-xs text-slate-500">{question.hint}</div>
-        )}
+      <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_1fr] md:items-start">
+        {/* Left: pergunta */}
+        <div>
+          <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#002776]">
+            Pergunta {index} de {total}
+          </div>
+          <h2 className="font-serif text-[26px] leading-tight text-slate-900 md:text-[34px]">
+            {question.title}
+          </h2>
+          {question.hint && (
+            <div className="mt-2 text-xs text-slate-500">{question.hint}</div>
+          )}
 
-        <div className="mt-7 grid gap-3">
-          {question.options.map((opt) => {
-            const isSelected =
-              question.type === "multi" ? multi.includes(opt) : picked === opt;
-            return (
-              <button
-                key={opt}
-                onClick={() =>
-                  question.type === "multi" ? toggleMulti(opt) : handleSingle(opt)
-                }
-                className={`group relative flex items-center justify-between rounded-xl border px-5 py-4 text-left transition ${
-                  isSelected
-                    ? "border-[#002776] bg-[#002776]/5"
-                    : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
-                }`}
-              >
-                <span className="text-[15px] font-medium text-slate-900">{opt}</span>
-                <span
-                  className={`grid h-6 w-6 place-items-center rounded-md border transition ${
+          <div className="mt-7 grid gap-3">
+            {question.options.map((opt) => {
+              const isSelected =
+                question.type === "multi" ? multi.includes(opt) : picked === opt;
+              return (
+                <button
+                  key={opt}
+                  onClick={() =>
+                    question.type === "multi" ? toggleMulti(opt) : handleSingle(opt)
+                  }
+                  className={`group relative flex items-center justify-between rounded-xl border px-5 py-4 text-left transition ${
                     isSelected
-                      ? "border-[#002776] bg-[#002776] text-white"
-                      : "border-slate-300 text-transparent group-hover:border-slate-400"
+                      ? "border-[#002776] bg-[#002776]/5"
+                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
                   }`}
                 >
-                  <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                </span>
-              </button>
-            );
-          })}
+                  <span className="text-[15px] font-medium text-slate-900">{opt}</span>
+                  <span
+                    className={`grid h-6 w-6 place-items-center rounded-md border transition ${
+                      isSelected
+                        ? "border-[#002776] bg-[#002776] text-white"
+                        : "border-slate-300 text-transparent group-hover:border-slate-400"
+                    }`}
+                  >
+                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {question.type === "multi" && (
+            <button
+              disabled={multi.length === 0}
+              onClick={() => onAnswer(multi)}
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#002776] px-6 py-4 text-base font-black uppercase tracking-wider text-white shadow-[0_16px_40px_-16px_rgba(0,39,118,0.6)] ring-2 ring-[#002776]/20 transition hover:bg-[#001a55] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Continuar
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          )}
+
+          <div className="mt-6 flex items-center justify-between text-xs text-slate-500">
+            <button
+              onClick={onBack}
+              className="rounded px-2 py-1 hover:text-slate-700"
+              disabled={index === 1}
+            >
+              ← Voltar
+            </button>
+            <span>Suas respostas são anônimas.</span>
+          </div>
         </div>
 
-        {question.type === "multi" && (
-          <button
-            disabled={multi.length === 0}
-            onClick={() => onAnswer(multi)}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0a8f2a] px-6 py-4 text-base font-black uppercase tracking-wider text-white shadow-[0_16px_40px_-16px_rgba(10,143,42,0.55)] ring-2 ring-[#0a8f2a]/20 transition hover:bg-[#087023] disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Continuar
-            <ArrowRight className="h-5 w-5" />
-          </button>
-        )}
-
-        <div className="mt-6 flex items-center justify-between text-xs text-slate-500">
-          <button
-            onClick={onBack}
-            className="rounded px-2 py-1 hover:text-slate-700"
-            disabled={index === 1}
-          >
-            ← Voltar
-          </button>
-          <span>Suas respostas são anônimas.</span>
-        </div>
+        {/* Right: card com foto animada */}
+        <QuizSideCard index={index} />
       </div>
     </section>
+  );
+}
+
+const QUIZ_SIDE_SLIDES = [
+  {
+    img: "https://i.imgur.com/t0BjptQ.jpeg",
+    kicker: "Bastidores",
+    title: "Política que importa",
+    sub: "Cobertura direta de Brasília e do Congresso.",
+  },
+  {
+    img: "https://i.imgur.com/DM6vnGP.jpeg",
+    kicker: "Segurança",
+    title: "Voz da direita",
+    sub: "Pautas conservadoras sem filtro do algoritmo.",
+  },
+  {
+    img: "https://i.imgur.com/dS56vM5.jpeg",
+    kicker: "Análise",
+    title: "Contexto que falta",
+    sub: "As notícias que a mídia tradicional esconde.",
+  },
+  {
+    img: "https://i.imgur.com/IkA04gQ.jpeg",
+    kicker: "Movimento",
+    title: "Brasil acima de tudo",
+    sub: "Informação para quem quer entender o país.",
+  },
+];
+
+function QuizSideCard({ index }: { index: number }) {
+  const slide = QUIZ_SIDE_SLIDES[(index - 1) % QUIZ_SIDE_SLIDES.length];
+  return (
+    <div className="relative hidden md:block">
+      <div className="sticky top-28">
+        <div className="relative">
+          {/* Faixa da bandeira flutuando atrás */}
+          <div className="absolute -top-4 -right-4 h-24 w-24 rounded-2xl bg-gradient-to-br from-[#009c3b] via-[#ffdf00] to-[#002776] opacity-30 blur-xl" />
+          <div className="gd-float relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_30px_80px_-30px_rgba(0,39,118,0.35)]">
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <img
+                key={slide.img}
+                src={slide.img}
+                alt={slide.title}
+                className="gd-kenburns h-full w-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 gd-shimmer opacity-40 mix-blend-screen" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[#002776]/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#ffdf00]" />
+                  {slide.kicker}
+                </div>
+                <div className="font-serif text-2xl font-black leading-tight">
+                  {slide.title}
+                </div>
+                <div className="mt-1 text-sm text-white/90">{slide.sub}</div>
+              </div>
+              <div className="absolute inset-x-0 bottom-0 h-1 flex">
+                <div className="flex-1 bg-[#009c3b]" />
+                <div className="flex-1 bg-[#ffdf00]" />
+                <div className="flex-1 bg-[#002776]" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1097,7 +1274,7 @@ function Analyzing({ onDone }: { onDone: () => void }) {
 
 // ---------------- Reveal (simplified result + checkout) ----------------
 
-function Reveal() {
+function ResultPage() {
   useEffect(() => {
     track("newspaper_preview_viewed");
     track("offer_viewed");
@@ -1161,7 +1338,7 @@ function Reveal() {
         <div className="mt-10">
           <button
             onClick={handleCheckout}
-            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#009c3b] px-8 py-5 text-base font-bold uppercase tracking-wider text-white shadow-[0_20px_60px_-20px_rgba(0,156,59,0.55)] transition hover:bg-[#007a2e] md:w-auto"
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#002776] px-8 py-5 text-base font-bold uppercase tracking-wider text-white shadow-[0_20px_60px_-20px_rgba(0,39,118,0.55)] transition hover:bg-[#001a55] md:w-auto"
           >
             Quero acessar o Gazeta Direita
             <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5" />
