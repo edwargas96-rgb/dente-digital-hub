@@ -353,7 +353,7 @@ function DireitaNewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 antialiased pb-20">
+    <div className="min-h-screen bg-black text-slate-100 antialiased pb-20">
       <GlobalAnims />
       <TopBar onHome={goHome} />
       <main>
@@ -465,17 +465,17 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
     : "from-[#d7e5b7] to-[#c5d69a] text-[#1a2a10] border-[#7a8a5a]";
 
   return (
-    <section className="relative bg-slate-50">
+    <section className="relative bg-black">
       <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center px-5 py-12">
         <div className="mb-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#002776]/20 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-[#002776] shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#002776]/20 bg-slate-950 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-[#002776] shadow-sm">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#009c3b]" />
             Simulação
           </div>
-          <h1 className="mt-4 font-serif text-3xl leading-tight text-slate-900 md:text-4xl">
+          <h1 className="mt-4 font-serif text-3xl leading-tight text-white md:text-4xl">
             Confirme seu voto para continuar
           </h1>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-400">
             Digite o número do seu candidato à Presidência.
           </p>
         </div>
@@ -578,7 +578,7 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
                             key={i}
                             className={`grid h-14 w-11 place-items-center rounded border-2 text-3xl font-black ${
                               digits[i]
-                                ? "border-[#1a2a10] bg-white/60"
+                                ? "border-[#1a2a10] bg-white/10"
                                 : "border-[#1a2a10]/40 bg-white/20"
                             }`}
                           >
@@ -674,7 +674,7 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
           <div className="mt-1 h-3 rounded-b-[6px] bg-[#111]" />
         </div>
 
-        <div className="mt-6 text-center text-[11px] font-semibold uppercase tracking-widest text-slate-600">
+        <div className="mt-6 text-center text-[11px] font-semibold uppercase tracking-widest text-slate-400">
           Candidatos: 13 · 14 · 22 · 28
         </div>
       </div>
@@ -713,7 +713,7 @@ function FlagStripe() {
 
 function TopBar({ onHome }: { onHome?: () => void }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-800 bg-black/85 backdrop-blur">
       <CensuraAlert />
       <FlagStripe />
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -736,8 +736,8 @@ function CensuraAlert() {
     <div className="w-full bg-red-600 text-white">
       <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 px-4 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] md:text-xs">
         <span className="relative flex h-2.5 w-2.5 shrink-0">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-950 opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-slate-950" />
         </span>
         <span className="animate-pulse">
           Este portal pode ser derrubado a qualquer momento pela censura — garanta seu acesso
@@ -747,21 +747,22 @@ function CensuraAlert() {
   );
 }
 
-function Logo({ compact = false, invert = false }: { compact?: boolean; invert?: boolean }) {
-  const titleClr = invert ? "text-white" : "text-slate-900";
-  const subClr = invert ? "text-slate-400" : "text-slate-500";
-  const badgeBg = invert ? "bg-white text-[#050810]" : "bg-[#050810] text-white";
+const LOGO_URL = "https://i.imgur.com/GI1pnSd.jpeg";
+
+function Logo({ compact = false }: { compact?: boolean; invert?: boolean }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className={`grid h-8 w-8 place-items-center rounded-md ${badgeBg}`}>
-        <Newspaper className="h-4.5 w-4.5" strokeWidth={2.4} />
-      </div>
+    <div className="flex items-center gap-2.5">
+      <img
+        src={LOGO_URL}
+        alt="Gazeta Direita"
+        className="h-10 w-10 rounded-full border-2 border-[#009c3b] object-cover shadow-[0_0_0_2px_rgba(255,255,255,0.06)]"
+      />
       <div className="leading-tight">
-        <div className={`font-serif text-[17px] font-black tracking-tight ${titleClr}`}>
+        <div className="font-serif text-[17px] font-black tracking-tight text-white">
           GAZETA <span className="text-[#009c3b]">DIREITA</span>
         </div>
         {!compact && (
-          <div className={`text-[9px] uppercase tracking-[0.28em] ${subClr}`}>
+          <div className="text-[9px] uppercase tracking-[0.28em] text-slate-400">
             Jornal digital independente
           </div>
         )}
@@ -775,14 +776,14 @@ function Logo({ compact = false, invert = false }: { compact?: boolean; invert?:
 function Intro({ onStart }: { onStart: () => void }) {
   return (
     <>
-      <section className="relative bg-white">
+      <section className="relative bg-slate-950">
         <div className="relative mx-auto max-w-3xl px-5 pb-16 pt-14 text-center md:pt-20">
-          <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-slate-900 md:text-6xl">
+          <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-white md:text-6xl">
             Você está acompanhando tudo o que{" "}
             <span className="italic text-[#009c3b]">realmente importa</span> no
             Brasil?
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-slate-600 md:text-lg">
+          <p className="mx-auto mt-6 max-w-xl text-base text-slate-400 md:text-lg">
             Responda algumas perguntas rápidas e descubra uma nova forma de
             acompanhar política, economia, Brasil e os principais acontecimentos
             do dia.
@@ -832,17 +833,17 @@ function SejaPatriota() {
     },
   ];
   return (
-    <section className="border-y border-slate-200 bg-slate-50">
+    <section className="border-y border-slate-800 bg-black">
       <div className="mx-auto max-w-5xl px-5 py-16">
         <Reveal as="div" className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#009c3b]/30 bg-[#009c3b]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#009c3b]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#009c3b]" />
             Comunidade
           </div>
-          <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-slate-900 md:text-4xl">
+          <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-white md:text-4xl">
             SEJA PATRIOTA ASSIM COMO ELES
           </h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-400">
             Referências da direita brasileira. Passe o cursor para conhecer.
           </p>
         </Reveal>
@@ -853,9 +854,9 @@ function SejaPatriota() {
               key={i}
               as="article"
               delay={i * 120}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative aspect-[3/4] overflow-hidden bg-slate-200">
+              <div className="relative aspect-[3/4] overflow-hidden bg-slate-800">
                 <img
                   src={c.img}
                   alt={c.name}
@@ -877,7 +878,7 @@ function SejaPatriota() {
               </div>
               <div className="p-5">
                 <div
-                  className="text-lg font-black leading-tight text-slate-900"
+                  className="text-lg font-black leading-tight text-white"
                   style={{ fontFamily: "'Bebas Neue', 'Oswald', 'Impact', system-ui, sans-serif", letterSpacing: "0.04em" }}
                 >
                   {c.name.toUpperCase()}
@@ -902,22 +903,22 @@ function Feedback() {
     { name: "Eduardo M.", city: "Goiânia", stars: 5, text: "Vale cada centavo. Uso todos os dias." },
   ];
   return (
-    <section className="bg-white">
+    <section className="bg-slate-950">
       <div className="mx-auto max-w-5xl px-5 py-16">
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-slate-700">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-slate-300">
             Feedback dos leitores
           </div>
-          <h3 className="mt-3 font-serif text-3xl font-black leading-tight text-slate-900 md:text-4xl">
+          <h3 className="mt-3 font-serif text-3xl font-black leading-tight text-white md:text-4xl">
             O que estão dizendo
           </h3>
-          <div className="mt-2 flex items-center justify-center gap-2 text-sm text-slate-600">
+          <div className="mt-2 flex items-center justify-center gap-2 text-sm text-slate-400">
             <div className="flex gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <StarIcon key={i} filled />
               ))}
             </div>
-            <span className="font-semibold text-slate-900">4,9</span>
+            <span className="font-semibold text-white">4,9</span>
             <span className="text-slate-500">· milhares de leitores</span>
           </div>
         </div>
@@ -928,11 +929,11 @@ function Feedback() {
               key={f.name}
               as="div"
               delay={i * 100}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-semibold text-slate-900">{f.name}</div>
+                  <div className="font-semibold text-white">{f.name}</div>
                   <div className="text-[11px] uppercase tracking-widest text-slate-500">
                     {f.city}
                   </div>
@@ -943,7 +944,7 @@ function Feedback() {
                   ))}
                 </div>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-slate-700">"{f.text}"</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">"{f.text}"</p>
             </Reveal>
           ))}
         </div>
@@ -1029,13 +1030,15 @@ function QuizStep({
       style={{ minHeight: "calc(100vh - 240px)" }}
     >
       <ProgressBar percent={pct} step={index} total={total} />
-      <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_1fr] md:items-start">
-        {/* Left: pergunta */}
+      <div className="mt-8 grid gap-8 md:grid-cols-[1fr_1.1fr] md:items-start">
+        {/* Left: card com foto animada */}
+        <QuizSideCard index={index} />
+        {/* Right: pergunta */}
         <div>
           <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#002776]">
             Pergunta {index} de {total}
           </div>
-          <h2 className="font-serif text-[26px] leading-tight text-slate-900 md:text-[34px]">
+          <h2 className="font-serif text-[26px] leading-tight text-white md:text-[34px]">
             {question.title}
           </h2>
           {question.hint && (
@@ -1055,15 +1058,15 @@ function QuizStep({
                   className={`group relative flex items-center justify-between rounded-xl border px-5 py-4 text-left transition ${
                     isSelected
                       ? "border-[#002776] bg-[#002776]/5"
-                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                      : "border-slate-800 bg-slate-950 hover:border-slate-700 hover:bg-black"
                   }`}
                 >
-                  <span className="text-[15px] font-medium text-slate-900">{opt}</span>
+                  <span className="text-[15px] font-medium text-white">{opt}</span>
                   <span
                     className={`grid h-6 w-6 place-items-center rounded-md border transition ${
                       isSelected
                         ? "border-[#002776] bg-[#002776] text-white"
-                        : "border-slate-300 text-transparent group-hover:border-slate-400"
+                        : "border-slate-700 text-transparent group-hover:border-slate-500"
                     }`}
                   >
                     <Check className="h-3.5 w-3.5" strokeWidth={3} />
@@ -1087,7 +1090,7 @@ function QuizStep({
           <div className="mt-6 flex items-center justify-between text-xs text-slate-500">
             <button
               onClick={onBack}
-              className="rounded px-2 py-1 hover:text-slate-700"
+              className="rounded px-2 py-1 hover:text-slate-300"
               disabled={index === 1}
             >
               ← Voltar
@@ -1096,8 +1099,6 @@ function QuizStep({
           </div>
         </div>
 
-        {/* Right: card com foto animada */}
-        <QuizSideCard index={index} />
       </div>
     </section>
   );
@@ -1138,7 +1139,7 @@ function QuizSideCard({ index }: { index: number }) {
         <div className="relative">
           {/* Faixa da bandeira flutuando atrás */}
           <div className="absolute -top-4 -right-4 h-24 w-24 rounded-2xl bg-gradient-to-br from-[#009c3b] via-[#ffdf00] to-[#002776] opacity-30 blur-xl" />
-          <div className="gd-float relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_30px_80px_-30px_rgba(0,39,118,0.35)]">
+          <div className="gd-float relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-[0_30px_80px_-30px_rgba(0,39,118,0.35)]">
             <div className="relative aspect-[4/5] overflow-hidden">
               <img
                 key={slide.img}
@@ -1186,7 +1187,7 @@ function ProgressBar({
         <span>Progresso</span>
         <span className="text-[#002776]">{percent}%</span>
       </div>
-      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
         <div
           className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#009c3b] via-[#ffdf00] to-[#002776] transition-[width] duration-500"
           style={{ width: `${percent}%` }}
@@ -1226,22 +1227,22 @@ function Analyzing({ onDone }: { onDone: () => void }) {
   return (
     <section className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-xl flex-col items-center justify-center px-5 py-16 text-center">
       <div className="relative mb-8 h-20 w-20">
-        <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
+        <div className="absolute inset-0 rounded-full border-2 border-slate-800" />
         <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-[#002776]" />
-        <div className="absolute inset-3 rounded-full bg-slate-50" />
+        <div className="absolute inset-3 rounded-full bg-black" />
         <Newspaper className="absolute inset-0 m-auto h-7 w-7 text-[#002776]" />
       </div>
       {!done ? (
         <>
-          <h2 className="font-serif text-3xl text-slate-900">Analisando suas respostas…</h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <h2 className="font-serif text-3xl text-white">Analisando suas respostas…</h2>
+          <p className="mt-2 text-sm text-slate-400">
             Cruzando preferências para montar sua experiência editorial.
           </p>
           <ul className="mt-8 grid w-full gap-2 text-left">
             {items.slice(0, shown).map((it) => (
               <li
                 key={it}
-                className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 animate-in fade-in slide-in-from-bottom-1 duration-500 shadow-sm"
+                className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100 animate-in fade-in slide-in-from-bottom-1 duration-500 shadow-sm"
               >
                 <span className="grid h-5 w-5 place-items-center rounded-full bg-[#009c3b]/15 text-[#009c3b]">
                   <Check className="h-3 w-3" strokeWidth={4} />
@@ -1253,10 +1254,10 @@ function Analyzing({ onDone }: { onDone: () => void }) {
         </>
       ) : (
         <>
-          <h2 className="font-serif text-3xl text-slate-900">
+          <h2 className="font-serif text-3xl text-white">
             Sua experiência Gazeta Direita está pronta.
           </h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-400">
             Editorial ajustado ao seu perfil de leitura.
           </p>
           <button
@@ -1286,10 +1287,10 @@ function ResultPage() {
   };
 
   return (
-    <section className="relative bg-white">
+    <section className="relative bg-slate-950">
       <div className="relative mx-auto max-w-3xl px-5 py-16 md:py-24">
         {/* Resultado do quiz */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+        <div className="rounded-3xl border border-slate-800 bg-slate-950 p-6 shadow-sm md:p-8">
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-full bg-[#009c3b]/10 text-[#009c3b]">
               <Check className="h-5 w-5" strokeWidth={3} />
@@ -1298,7 +1299,7 @@ function ResultPage() {
               <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#009c3b]">
                 Resultado do quiz
               </div>
-              <div className="font-serif text-lg font-bold text-slate-900">
+              <div className="font-serif text-lg font-bold text-white">
                 Seu perfil de leitor
               </div>
             </div>
@@ -1312,25 +1313,25 @@ function ResultPage() {
             ].map((it) => (
               <div
                 key={it.label}
-                className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-center"
+                className="rounded-lg border border-slate-800 bg-black p-3 text-center"
               >
                 <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                   {it.label}
                 </div>
-                <div className="mt-1 text-sm font-bold text-slate-900">{it.value}</div>
+                <div className="mt-1 text-sm font-bold text-white">{it.value}</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Mensagem principal */}
-        <h2 className="mt-10 font-serif text-3xl leading-tight text-slate-900 md:text-4xl">
+        <h2 className="mt-10 font-serif text-3xl leading-tight text-white md:text-4xl">
           Você acompanha o Brasil, valoriza a informação e demonstra interesse
           pelo rumo do nosso país.
         </h2>
 
-        <p className="mt-6 text-lg leading-relaxed text-slate-700 md:text-xl">
-          Por isso chegou o <strong className="text-slate-900">Gazeta Direita</strong>{" "}
+        <p className="mt-6 text-lg leading-relaxed text-slate-300 md:text-xl">
+          Por isso chegou o <strong className="text-white">Gazeta Direita</strong>{" "}
           — notícias e análises organizadas em um único lugar.
         </p>
 
@@ -1354,7 +1355,7 @@ function ResultPage() {
 
 function Footer() {
   return (
-    <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 backdrop-blur shadow-[0_-6px_20px_-10px_rgba(0,0,0,0.15)]">
+    <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-800 bg-black/85 backdrop-blur shadow-[0_-6px_20px_-10px_rgba(0,0,0,0.15)]">
       <FlagStripe />
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
         <Logo compact />
