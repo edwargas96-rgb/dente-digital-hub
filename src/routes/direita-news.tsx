@@ -353,7 +353,7 @@ function DireitaNewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-slate-100 antialiased pb-20">
+    <div className="min-h-screen bg-[#0a0e1a] text-slate-100 antialiased pb-20">
       <GlobalAnims />
       <TopBar onHome={goHome} />
       <main>
@@ -469,7 +469,7 @@ function UrnaScreen({ onConfirmed }: { onConfirmed: () => void }) {
       <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center px-5 py-12">
         <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#002776]/20 bg-slate-950 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] text-[#002776] shadow-sm">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#009c3b]" />
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#1B7A4A]" />
             Simulação
           </div>
           <h1 className="mt-4 font-serif text-3xl leading-tight text-white md:text-4xl">
@@ -701,11 +701,15 @@ function UrnaKey({
 
 function FlagStripe() {
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-1 flex">
-      <div className="flex-1 bg-[#009c3b]" />
-      <div className="flex-1 bg-[#ffdf00]" />
-      <div className="flex-1 bg-[#002776]" />
-    </div>
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 h-[2px]"
+      style={{
+        background:
+          "linear-gradient(90deg, #1B7A4A 0%, #1B7A4A 33.33%, #D4A937 33.33%, #D4A937 66.66%, #1e3a8a 66.66%, #1e3a8a 100%)",
+        boxShadow: "0 1px 6px rgba(0,0,0,0.6)",
+      }}
+    />
   );
 }
 
@@ -713,16 +717,18 @@ function FlagStripe() {
 
 function TopBar({ onHome }: { onHome?: () => void }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800 bg-black/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/5 bg-[#0a0e1a]/90 backdrop-blur-md">
       <CensuraAlert />
-      <FlagStripe />
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <div className="relative">
+        <FlagStripe />
+      </div>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-8">
         <button
           type="button"
           onClick={onHome}
           aria-label="Voltar ao início"
           title="Voltar ao início"
-          className="group rounded-md transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002776]/40"
+          className="group rounded-md transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A937]/40"
         >
           <Logo />
         </button>
@@ -733,11 +739,11 @@ function TopBar({ onHome }: { onHome?: () => void }) {
 
 function CensuraAlert() {
   return (
-    <div className="w-full bg-red-600 text-white">
+    <div className="w-full bg-red-700 text-white shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
       <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 px-4 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] md:text-xs">
         <span className="relative flex h-2.5 w-2.5 shrink-0">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-950 opacity-75" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-slate-950" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
         </span>
         <span className="animate-pulse">
           Este portal pode ser derrubado a qualquer momento pela censura — garanta seu acesso
@@ -751,18 +757,25 @@ const LOGO_URL = "https://i.imgur.com/GI1pnSd.jpeg";
 
 function Logo({ compact = false }: { compact?: boolean; invert?: boolean }) {
   return (
-    <div className="flex items-center gap-2.5">
-      <img
-        src={LOGO_URL}
-        alt="Gazeta Direita"
-        className="h-10 w-10 rounded-full border-2 border-[#009c3b] object-cover shadow-[0_0_0_2px_rgba(255,255,255,0.06)]"
-      />
+    <div className="flex items-center gap-3">
+      <div className="relative">
+        <div
+          aria-hidden
+          className="absolute -inset-1 rounded-full opacity-70 blur-md"
+          style={{ background: "radial-gradient(circle, rgba(212,169,55,0.35), transparent 70%)" }}
+        />
+        <img
+          src={LOGO_URL}
+          alt="Gazeta Direita"
+          className="relative h-11 w-11 rounded-full object-cover ring-2 ring-[#D4A937] shadow-[0_0_0_3px_rgba(10,14,26,1),0_0_18px_-4px_rgba(212,169,55,0.65)]"
+        />
+      </div>
       <div className="leading-tight">
-        <div className="font-serif text-[17px] font-black tracking-tight text-white">
-          GAZETA <span className="text-[#009c3b]">DIREITA</span>
+        <div className="font-serif text-[18px] font-black tracking-tight text-white">
+          GAZETA <span className="text-[#D4A937]">DIREITA</span>
         </div>
         {!compact && (
-          <div className="text-[9px] uppercase tracking-[0.28em] text-slate-400">
+          <div className="text-[9px] font-semibold uppercase tracking-[0.3em] text-slate-400">
             Jornal digital independente
           </div>
         )}
@@ -776,28 +789,43 @@ function Logo({ compact = false }: { compact?: boolean; invert?: boolean }) {
 function Intro({ onStart }: { onStart: () => void }) {
   return (
     <>
-      <section className="relative bg-slate-950">
-        <div className="relative mx-auto max-w-3xl px-5 pb-16 pt-14 text-center md:pt-20">
+      <section
+        className="relative overflow-hidden"
+        style={{
+          background:
+            "radial-gradient(80% 60% at 50% 0%, #12203f 0%, #0d1428 45%, #0a0e1a 100%)",
+        }}
+      >
+        {/* Vinheta de transição para a próxima seção */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-32"
+          style={{
+            background:
+              "linear-gradient(to bottom, transparent, rgba(8,11,22,0.65) 60%, #080b16 100%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-3xl px-6 pb-24 pt-20 text-center md:px-8 md:pt-28">
           <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-white md:text-6xl">
             Você está acompanhando tudo o que{" "}
-            <span className="italic text-[#009c3b]">realmente importa</span> no
+            <span className="italic text-[#D4A937]">realmente importa</span> no
             Brasil?
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-slate-400 md:text-lg">
+          <p className="mx-auto mt-6 max-w-xl text-base text-white/85 md:text-lg">
             Responda algumas perguntas rápidas e descubra uma nova forma de
             acompanhar política, economia, Brasil e os principais acontecimentos
             do dia.
           </p>
 
-          <div className="mt-10 flex flex-col items-center gap-3">
+          <div className="mt-12 flex flex-col items-center gap-3">
             <button
               onClick={onStart}
-              className="group inline-flex items-center gap-2 rounded-xl bg-[#002776] px-7 py-4 text-[15px] font-bold uppercase tracking-wider text-white shadow-[0_18px_50px_-15px_rgba(0,39,118,0.55)] transition hover:bg-[#001a55]"
+              className="group inline-flex items-center gap-2 rounded-xl bg-[#D4A937] px-8 py-4 text-[15px] font-black uppercase tracking-wider text-[#0a0e1a] shadow-[0_18px_50px_-15px_rgba(212,169,55,0.55)] ring-1 ring-black/10 transition hover:bg-[#e0b743] hover:shadow-[0_22px_60px_-15px_rgba(212,169,55,0.7)]"
             >
               Começar o quiz
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
             </button>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
               <Clock className="h-3.5 w-3.5" />
               Leva aproximadamente 2 minutos.
             </div>
@@ -833,35 +861,35 @@ function SejaPatriota() {
     },
   ];
   return (
-    <section className="border-y border-slate-800 bg-black">
-      <div className="mx-auto max-w-5xl px-5 py-16">
+    <section className="relative bg-[#080b16]">
+      <div className="mx-auto max-w-5xl px-6 py-24 md:px-8">
         <Reveal as="div" className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#009c3b]/30 bg-[#009c3b]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#009c3b]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#009c3b]" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#D4A937]/30 bg-[#D4A937]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#D4A937]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#D4A937]" />
             Comunidade
           </div>
-          <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-white md:text-4xl">
+          <h2 className="mt-4 font-serif text-3xl font-black leading-tight text-white md:text-4xl">
             SEJA PATRIOTA ASSIM COMO ELES
           </h2>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-white/70">
             Referências da direita brasileira. Passe o cursor para conhecer.
           </p>
         </Reveal>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
           {cards.map((c, i) => (
             <Reveal
               key={i}
               as="article"
               delay={i * 120}
-              className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0e1424] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.6)] transition duration-300 hover:-translate-y-1 hover:border-[#D4A937]/40 hover:shadow-[0_25px_60px_-20px_rgba(212,169,55,0.35)]"
             >
-              <div className="relative aspect-[3/4] overflow-hidden bg-slate-800">
+              <div className="relative aspect-[3/4] overflow-hidden bg-slate-900">
                 <img
                   src={c.img}
                   alt={c.name}
                   loading="lazy"
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover grayscale contrast-[0.95] transition duration-700 group-hover:scale-105 group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-105"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                 {/* Hover bio overlay */}
@@ -870,11 +898,14 @@ function SejaPatriota() {
                     {c.bio}
                   </p>
                 </div>
-                <div className="absolute inset-x-0 bottom-0 h-1 flex">
-                  <div className="flex-1 bg-[#009c3b]" />
-                  <div className="flex-1 bg-[#ffdf00]" />
-                  <div className="flex-1 bg-[#002776]" />
-                </div>
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-[2px]"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #1B7A4A 0%, #1B7A4A 33.33%, #D4A937 33.33%, #D4A937 66.66%, #1e3a8a 66.66%, #1e3a8a 100%)",
+                  }}
+                />
               </div>
               <div className="p-5">
                 <div
@@ -883,7 +914,7 @@ function SejaPatriota() {
                 >
                   {c.name.toUpperCase()}
                 </div>
-                <div className="mt-1 text-[11px] font-semibold uppercase tracking-widest text-[#002776]">
+                <div className="mt-1 text-[11px] font-semibold uppercase tracking-widest text-[#D4A937]">
                   {c.role}
                 </div>
               </div>
@@ -903,8 +934,8 @@ function Feedback() {
     { name: "Eduardo M.", city: "Goiânia", stars: 5, text: "Vale cada centavo. Uso todos os dias." },
   ];
   return (
-    <section className="bg-slate-950">
-      <div className="mx-auto max-w-5xl px-5 py-16">
+    <section className="bg-[#0a0e1a]">
+      <div className="mx-auto max-w-5xl px-6 py-24 md:px-8">
         <div className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-slate-300">
             Feedback dos leitores
@@ -959,8 +990,8 @@ function StarIcon({ filled }: { filled?: boolean }) {
       viewBox="0 0 24 24"
       width={14}
       height={14}
-      fill={filled ? "#ffdf00" : "none"}
-      stroke="#ffdf00"
+      fill={filled ? "#D4A937" : "none"}
+      stroke="#D4A937"
       strokeWidth={1.5}
       aria-hidden
     >
@@ -1138,7 +1169,7 @@ function QuizSideCard({ index }: { index: number }) {
       <div className="sticky top-28">
         <div className="relative">
           {/* Faixa da bandeira flutuando atrás */}
-          <div className="absolute -top-4 -right-4 h-24 w-24 rounded-2xl bg-gradient-to-br from-[#009c3b] via-[#ffdf00] to-[#002776] opacity-30 blur-xl" />
+          <div className="absolute -top-4 -right-4 h-24 w-24 rounded-2xl bg-gradient-to-br from-[#1B7A4A] via-[#D4A937] to-[#002776] opacity-30 blur-xl" />
           <div className="gd-float relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-[0_30px_80px_-30px_rgba(0,39,118,0.35)]">
             <div className="relative aspect-[4/5] overflow-hidden">
               <img
@@ -1151,7 +1182,7 @@ function QuizSideCard({ index }: { index: number }) {
               <div className="pointer-events-none absolute inset-0 gd-shimmer opacity-40 mix-blend-screen" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                 <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[#002776]/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#ffdf00]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#D4A937]" />
                   {slide.kicker}
                 </div>
                 <div className="font-serif text-2xl font-black leading-tight">
@@ -1160,8 +1191,8 @@ function QuizSideCard({ index }: { index: number }) {
                 <div className="mt-1 text-sm text-white/90">{slide.sub}</div>
               </div>
               <div className="absolute inset-x-0 bottom-0 h-1 flex">
-                <div className="flex-1 bg-[#009c3b]" />
-                <div className="flex-1 bg-[#ffdf00]" />
+                <div className="flex-1 bg-[#1B7A4A]" />
+                <div className="flex-1 bg-[#D4A937]" />
                 <div className="flex-1 bg-[#002776]" />
               </div>
             </div>
@@ -1189,7 +1220,7 @@ function ProgressBar({
       </div>
       <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#009c3b] via-[#ffdf00] to-[#002776] transition-[width] duration-500"
+          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#1B7A4A] via-[#D4A937] to-[#002776] transition-[width] duration-500"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -1244,7 +1275,7 @@ function Analyzing({ onDone }: { onDone: () => void }) {
                 key={it}
                 className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100 animate-in fade-in slide-in-from-bottom-1 duration-500 shadow-sm"
               >
-                <span className="grid h-5 w-5 place-items-center rounded-full bg-[#009c3b]/15 text-[#009c3b]">
+                <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1B7A4A]/15 text-[#1B7A4A]">
                   <Check className="h-3 w-3" strokeWidth={4} />
                 </span>
                 {it}
@@ -1292,11 +1323,11 @@ function ResultPage() {
         {/* Resultado do quiz */}
         <div className="rounded-3xl border border-slate-800 bg-slate-950 p-6 shadow-sm md:p-8">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-[#009c3b]/10 text-[#009c3b]">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-[#1B7A4A]/10 text-[#1B7A4A]">
               <Check className="h-5 w-5" strokeWidth={3} />
             </div>
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#009c3b]">
+              <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#1B7A4A]">
                 Resultado do quiz
               </div>
               <div className="font-serif text-lg font-bold text-white">
@@ -1339,7 +1370,7 @@ function ResultPage() {
         <div className="mt-10">
           <button
             onClick={handleCheckout}
-            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#002776] px-8 py-5 text-base font-bold uppercase tracking-wider text-white shadow-[0_20px_60px_-20px_rgba(0,39,118,0.55)] transition hover:bg-[#001a55] md:w-auto"
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4A937] px-8 py-5 text-base font-black uppercase tracking-wider text-[#0a0e1a] shadow-[0_20px_60px_-20px_rgba(212,169,55,0.55)] ring-1 ring-black/10 transition hover:bg-[#e0b743] md:w-auto"
           >
             Quero acessar o Gazeta Direita
             <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5" />
@@ -1355,11 +1386,13 @@ function ResultPage() {
 
 function Footer() {
   return (
-    <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-800 bg-black/85 backdrop-blur shadow-[0_-6px_20px_-10px_rgba(0,0,0,0.15)]">
-      <FlagStripe />
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
+    <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-white/5 bg-[#0a0e1a]/90 backdrop-blur-md shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.6)]">
+      <div className="relative">
+        <FlagStripe />
+      </div>
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4 md:px-8">
         <Logo compact />
-        <div className="hidden text-[10px] uppercase tracking-[0.22em] text-slate-500 md:block">
+        <div className="hidden text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500 md:block">
           © {new Date().getFullYear()} Gazeta Direita
         </div>
       </div>
