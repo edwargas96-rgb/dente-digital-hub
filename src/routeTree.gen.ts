@@ -11,20 +11,21 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as DireitaNewsRouteImport } from './routes/direita-news'
+import { Route as IndiqueRouteImport } from './routes/indique'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as PigattoRouteImport } from './routes/pigatto'
 import { Route as PatriotaRouteImport } from './routes/patriota'
 import { Route as PatriotaGerarRouteImport } from './routes/patriota-gerar'
-import { Route as IndiqueRouteImport } from './routes/indique'
+import { Route as PigattoRouteImport } from './routes/pigatto'
+import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
 import { Route as AppCalendarioRouteImport } from './routes/_app.calendario'
 import { Route as AppClinicasRouteImport } from './routes/_app.clinicas'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app.configuracoes'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
-import { Route as AppVisaoRouteImport } from './routes/_app.visao'
 import { Route as AppExpedicaoRouteImport } from './routes/_app.expedicao'
-import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
-import { Route as AppOsRouteImport } from './routes/_app.os'
 import { Route as AppNovaOrdemRouteImport } from './routes/_app.nova-ordem'
+import { Route as AppOsRouteImport } from './routes/_app.os'
+import { Route as AppVisaoRouteImport } from './routes/_app.visao'
 import { Route as AppOrdensIdRouteImport } from './routes/_app.ordens.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -36,14 +37,19 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DireitaNewsRoute = DireitaNewsRouteImport.update({
+  id: '/direita-news',
+  path: '/direita-news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndiqueRoute = IndiqueRouteImport.update({
+  id: '/indique',
+  path: '/indique',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PigattoRoute = PigattoRouteImport.update({
-  id: '/pigatto',
-  path: '/pigatto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatriotaRoute = PatriotaRouteImport.update({
@@ -56,10 +62,15 @@ const PatriotaGerarRoute = PatriotaGerarRouteImport.update({
   path: '/patriota-gerar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndiqueRoute = IndiqueRouteImport.update({
-  id: '/indique',
-  path: '/indique',
+const PigattoRoute = PigattoRouteImport.update({
+  id: '/pigatto',
+  path: '/pigatto',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppCalendarioRoute = AppCalendarioRouteImport.update({
   id: '/calendario',
@@ -81,19 +92,14 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
-const AppVisaoRoute = AppVisaoRouteImport.update({
-  id: '/visao',
-  path: '/visao',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppExpedicaoRoute = AppExpedicaoRouteImport.update({
   id: '/expedicao',
   path: '/expedicao',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
+const AppNovaOrdemRoute = AppNovaOrdemRouteImport.update({
+  id: '/nova-ordem',
+  path: '/nova-ordem',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOsRoute = AppOsRouteImport.update({
@@ -101,9 +107,9 @@ const AppOsRoute = AppOsRouteImport.update({
   path: '/os',
   getParentRoute: () => AppRoute,
 } as any)
-const AppNovaOrdemRoute = AppNovaOrdemRouteImport.update({
-  id: '/nova-ordem',
-  path: '/nova-ordem',
+const AppVisaoRoute = AppVisaoRouteImport.update({
+  id: '/visao',
+  path: '/visao',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOrdensIdRoute = AppOrdensIdRouteImport.update({
@@ -114,126 +120,133 @@ const AppOrdensIdRoute = AppOrdensIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/direita-news': typeof DireitaNewsRoute
+  '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
-  '/pigatto': typeof PigattoRoute
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
-  '/indique': typeof IndiqueRoute
+  '/pigatto': typeof PigattoRoute
+  '/analytics': typeof AppAnalyticsRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
-  '/visao': typeof AppVisaoRoute
   '/expedicao': typeof AppExpedicaoRoute
-  '/analytics': typeof AppAnalyticsRoute
-  '/os': typeof AppOsRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
+  '/os': typeof AppOsRoute
+  '/visao': typeof AppVisaoRoute
   '/ordens/$id': typeof AppOrdensIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/direita-news': typeof DireitaNewsRoute
+  '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
-  '/pigatto': typeof PigattoRoute
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
-  '/indique': typeof IndiqueRoute
+  '/pigatto': typeof PigattoRoute
+  '/analytics': typeof AppAnalyticsRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
-  '/visao': typeof AppVisaoRoute
   '/expedicao': typeof AppExpedicaoRoute
-  '/analytics': typeof AppAnalyticsRoute
-  '/os': typeof AppOsRoute
   '/nova-ordem': typeof AppNovaOrdemRoute
+  '/os': typeof AppOsRoute
+  '/visao': typeof AppVisaoRoute
   '/ordens/$id': typeof AppOrdensIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/direita-news': typeof DireitaNewsRoute
+  '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
-  '/pigatto': typeof PigattoRoute
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
-  '/indique': typeof IndiqueRoute
+  '/pigatto': typeof PigattoRoute
+  '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/calendario': typeof AppCalendarioRoute
   '/_app/clinicas': typeof AppClinicasRoute
   '/_app/configuracoes': typeof AppConfiguracoesRoute
   '/_app/dashboard': typeof AppDashboardRoute
-  '/_app/visao': typeof AppVisaoRoute
   '/_app/expedicao': typeof AppExpedicaoRoute
-  '/_app/analytics': typeof AppAnalyticsRoute
-  '/_app/os': typeof AppOsRoute
   '/_app/nova-ordem': typeof AppNovaOrdemRoute
+  '/_app/os': typeof AppOsRoute
+  '/_app/visao': typeof AppVisaoRoute
   '/_app/ordens/$id': typeof AppOrdensIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/direita-news'
+    | '/indique'
     | '/login'
-    | '/pigatto'
     | '/patriota'
     | '/patriota-gerar'
-    | '/indique'
+    | '/pigatto'
+    | '/analytics'
     | '/calendario'
     | '/clinicas'
     | '/configuracoes'
     | '/dashboard'
-    | '/visao'
     | '/expedicao'
-    | '/analytics'
-    | '/os'
     | '/nova-ordem'
+    | '/os'
+    | '/visao'
     | '/ordens/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/direita-news'
+    | '/indique'
     | '/login'
-    | '/pigatto'
     | '/patriota'
     | '/patriota-gerar'
-    | '/indique'
+    | '/pigatto'
+    | '/analytics'
     | '/calendario'
     | '/clinicas'
     | '/configuracoes'
     | '/dashboard'
-    | '/visao'
     | '/expedicao'
-    | '/analytics'
-    | '/os'
     | '/nova-ordem'
+    | '/os'
+    | '/visao'
     | '/ordens/$id'
   id:
     | '__root__'
     | '/'
     | '/_app'
+    | '/direita-news'
+    | '/indique'
     | '/login'
-    | '/pigatto'
     | '/patriota'
     | '/patriota-gerar'
-    | '/indique'
+    | '/pigatto'
+    | '/_app/analytics'
     | '/_app/calendario'
     | '/_app/clinicas'
     | '/_app/configuracoes'
     | '/_app/dashboard'
-    | '/_app/visao'
     | '/_app/expedicao'
-    | '/_app/analytics'
-    | '/_app/os'
     | '/_app/nova-ordem'
+    | '/_app/os'
+    | '/_app/visao'
     | '/_app/ordens/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  DireitaNewsRoute: typeof DireitaNewsRoute
+  IndiqueRoute: typeof IndiqueRoute
   LoginRoute: typeof LoginRoute
-  PigattoRoute: typeof PigattoRoute
   PatriotaRoute: typeof PatriotaRoute
   PatriotaGerarRoute: typeof PatriotaGerarRoute
-  IndiqueRoute: typeof IndiqueRoute
+  PigattoRoute: typeof PigattoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,18 +265,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/direita-news': {
+      id: '/direita-news'
+      path: '/direita-news'
+      fullPath: '/direita-news'
+      preLoaderRoute: typeof DireitaNewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/indique': {
+      id: '/indique'
+      path: '/indique'
+      fullPath: '/indique'
+      preLoaderRoute: typeof IndiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pigatto': {
-      id: '/pigatto'
-      path: '/pigatto'
-      fullPath: '/pigatto'
-      preLoaderRoute: typeof PigattoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/patriota': {
@@ -280,12 +300,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatriotaGerarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/indique': {
-      id: '/indique'
-      path: '/indique'
-      fullPath: '/indique'
-      preLoaderRoute: typeof IndiqueRouteImport
+    '/pigatto': {
+      id: '/pigatto'
+      path: '/pigatto'
+      fullPath: '/pigatto'
+      preLoaderRoute: typeof PigattoRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/analytics': {
+      id: '/_app/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/calendario': {
       id: '/_app/calendario'
@@ -315,13 +342,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/visao': {
-      id: '/_app/visao'
-      path: '/visao'
-      fullPath: '/visao'
-      preLoaderRoute: typeof AppVisaoRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/expedicao': {
       id: '/_app/expedicao'
       path: '/expedicao'
@@ -329,11 +349,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppExpedicaoRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/analytics': {
-      id: '/_app/analytics'
-      path: '/analytics'
-      fullPath: '/analytics'
-      preLoaderRoute: typeof AppAnalyticsRouteImport
+    '/_app/nova-ordem': {
+      id: '/_app/nova-ordem'
+      path: '/nova-ordem'
+      fullPath: '/nova-ordem'
+      preLoaderRoute: typeof AppNovaOrdemRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/os': {
@@ -343,11 +363,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/nova-ordem': {
-      id: '/_app/nova-ordem'
-      path: '/nova-ordem'
-      fullPath: '/nova-ordem'
-      preLoaderRoute: typeof AppNovaOrdemRouteImport
+    '/_app/visao': {
+      id: '/_app/visao'
+      path: '/visao'
+      fullPath: '/visao'
+      preLoaderRoute: typeof AppVisaoRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/ordens/$id': {
@@ -361,28 +381,28 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppCalendarioRoute: typeof AppCalendarioRoute
   AppClinicasRoute: typeof AppClinicasRoute
   AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppDashboardRoute: typeof AppDashboardRoute
-  AppVisaoRoute: typeof AppVisaoRoute
   AppExpedicaoRoute: typeof AppExpedicaoRoute
-  AppAnalyticsRoute: typeof AppAnalyticsRoute
-  AppOsRoute: typeof AppOsRoute
   AppNovaOrdemRoute: typeof AppNovaOrdemRoute
+  AppOsRoute: typeof AppOsRoute
+  AppVisaoRoute: typeof AppVisaoRoute
   AppOrdensIdRoute: typeof AppOrdensIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAnalyticsRoute: AppAnalyticsRoute,
   AppCalendarioRoute: AppCalendarioRoute,
   AppClinicasRoute: AppClinicasRoute,
   AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppDashboardRoute: AppDashboardRoute,
-  AppVisaoRoute: AppVisaoRoute,
   AppExpedicaoRoute: AppExpedicaoRoute,
-  AppAnalyticsRoute: AppAnalyticsRoute,
-  AppOsRoute: AppOsRoute,
   AppNovaOrdemRoute: AppNovaOrdemRoute,
+  AppOsRoute: AppOsRoute,
+  AppVisaoRoute: AppVisaoRoute,
   AppOrdensIdRoute: AppOrdensIdRoute,
 }
 
@@ -391,12 +411,23 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  DireitaNewsRoute: DireitaNewsRoute,
+  IndiqueRoute: IndiqueRoute,
   LoginRoute: LoginRoute,
-  PigattoRoute: PigattoRoute,
   PatriotaRoute: PatriotaRoute,
   PatriotaGerarRoute: PatriotaGerarRoute,
-  IndiqueRoute: IndiqueRoute,
+  PigattoRoute: PigattoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
