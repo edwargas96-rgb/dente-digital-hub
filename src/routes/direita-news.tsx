@@ -387,7 +387,7 @@ type Candidate = { number: string; name: string; party: string; img: string };
 const CANDIDATES: Record<string, Candidate> = {
   "13": { number: "13", name: "Luiz Inácio Lula da Silva", party: "PT", img: "https://i.imgur.com/rjbER6h.jpeg" },
   "14": { number: "14", name: "Renan Santos", party: "Missão", img: "https://i.imgur.com/7OoSOF0.jpeg" },
-  "22": { number: "22", name: "Flávio Bolsonaro", party: "PL", img: "https://i.imgur.com/t0BjptQ.jpeg" },
+  "22": { number: "22", name: "Flávio Bolsonaro", party: "PL", img: "https://i.imgur.com/DM6vnGP.jpeg" },
   "28": { number: "28", name: "Pablo Marçal", party: "PRTB", img: "https://i.imgur.com/IkA04gQ.jpeg" },
 };
 
@@ -1135,62 +1135,37 @@ function QuizStep({
   );
 }
 
-const QUIZ_SIDE_SLIDES = [
-  {
-    img: "https://i.imgur.com/t0BjptQ.jpeg",
-    kicker: "Bastidores",
-    title: "Política que importa",
-    sub: "Cobertura direta de Brasília e do Congresso.",
-  },
-  {
-    img: "https://i.imgur.com/DM6vnGP.jpeg",
-    kicker: "Segurança",
-    title: "Voz da direita",
-    sub: "Pautas conservadoras sem filtro do algoritmo.",
-  },
-  {
-    img: "https://i.imgur.com/dS56vM5.jpeg",
-    kicker: "Análise",
-    title: "Contexto que falta",
-    sub: "As notícias que a mídia tradicional esconde.",
-  },
-  {
-    img: "https://i.imgur.com/IkA04gQ.jpeg",
-    kicker: "Movimento",
-    title: "Brasil acima de tudo",
-    sub: "Informação para quem quer entender o país.",
-  },
+const QUIZ_SIDE_IMAGES: string[] = [
+  "https://i.imgur.com/Xxr8umk.jpeg",
+  "https://i.imgur.com/RB3nvjg.jpeg",
+  "https://i.imgur.com/NyfK0vK.jpeg",
+  "https://i.imgur.com/rGWZCm8.jpeg",
+  "https://i.imgur.com/febdLmq.jpeg",
+  "https://i.imgur.com/KGoCXO9.jpeg",
+  "https://i.imgur.com/qHLadrE.jpeg",
+  "https://i.imgur.com/7Q3uELZ.jpeg",
+  "https://i.imgur.com/xhBGphR.jpeg",
+  "https://i.imgur.com/sRvdBWy.jpeg",
 ];
 
 function QuizSideCard({ index }: { index: number }) {
-  const slide = QUIZ_SIDE_SLIDES[(index - 1) % QUIZ_SIDE_SLIDES.length];
+  const img = QUIZ_SIDE_IMAGES[(index - 1) % QUIZ_SIDE_IMAGES.length];
   return (
-    <div className="relative hidden md:block">
-      <div className="sticky top-28">
+    <div className="relative mx-auto w-full max-w-[300px] md:max-w-none">
+      <div className="md:sticky md:top-28">
         <div className="relative">
-          {/* Faixa da bandeira flutuando atrás */}
           <div className="absolute -top-4 -right-4 h-24 w-24 rounded-2xl bg-gradient-to-br from-[#1B7A4A] via-[#D4A937] to-[#002776] opacity-30 blur-xl" />
           <div className="gd-float relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-[0_30px_80px_-30px_rgba(0,39,118,0.35)]">
             <div className="relative aspect-[4/5] overflow-hidden">
               <img
-                key={slide.img}
-                src={slide.img}
-                alt={slide.title}
+                key={img}
+                src={img}
+                alt={`Pergunta ${index}`}
                 className="gd-kenburns h-full w-full object-cover"
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-              <div className="pointer-events-none absolute inset-0 gd-shimmer opacity-40 mix-blend-screen" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[#002776]/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#D4A937]" />
-                  {slide.kicker}
-                </div>
-                <div className="font-serif text-2xl font-black leading-tight">
-                  {slide.title}
-                </div>
-                <div className="mt-1 text-sm text-white/90">{slide.sub}</div>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 h-1 flex">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 gd-shimmer opacity-30 mix-blend-screen" />
+              <div className="absolute inset-x-0 bottom-0 h-[3px] flex">
                 <div className="flex-1 bg-[#1B7A4A]" />
                 <div className="flex-1 bg-[#D4A937]" />
                 <div className="flex-1 bg-[#002776]" />
@@ -1386,15 +1361,28 @@ function ResultPage() {
 
 function Footer() {
   return (
-    <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-white/5 bg-[#0a0e1a]/90 backdrop-blur-md shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.6)]">
+    <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-white/5 bg-[#0a0e1a]/95 backdrop-blur-md shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.6)]">
       <div className="relative">
         <FlagStripe />
       </div>
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4 md:px-8">
-        <Logo compact />
-        <div className="hidden text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500 md:block">
-          © {new Date().getFullYear()} Gazeta Direita
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 md:px-6">
+        <div className="flex items-center gap-2">
+          <img
+            src={LOGO_URL}
+            alt="Gazeta Direita"
+            className="h-6 w-6 rounded-full ring-1 ring-[#D4A937]/70"
+          />
+          <span className="font-serif text-[13px] font-black tracking-tight text-white">
+            GAZETA <span className="text-[#D4A937]">DIREITA</span>
+          </span>
         </div>
+        <a
+          href="mailto:suporte@nobilex.com.br"
+          className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-300 transition hover:border-[#D4A937]/40 hover:text-[#D4A937]"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#1B7A4A]" />
+          Suporte Nobilex
+        </a>
       </div>
     </footer>
   );
