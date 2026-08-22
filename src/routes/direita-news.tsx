@@ -1076,7 +1076,11 @@ function QuizStep({
             <div className="mt-2 text-xs text-slate-500">{question.hint}</div>
           )}
 
-          <div className="mt-7 grid gap-3">
+          <div
+            className={`mt-7 grid gap-2.5 ${
+              question.type === "multi" ? "sm:grid-cols-2" : ""
+            }`}
+          >
             {question.options.map((opt) => {
               const isSelected =
                 question.type === "multi" ? multi.includes(opt) : picked === opt;
@@ -1086,21 +1090,21 @@ function QuizStep({
                   onClick={() =>
                     question.type === "multi" ? toggleMulti(opt) : handleSingle(opt)
                   }
-                  className={`group relative flex items-center justify-between rounded-xl border px-5 py-4 text-left transition ${
+                  className={`group relative flex items-center justify-between rounded-xl border px-4 py-3 text-left transition ${
                     isSelected
                       ? "border-[#002776] bg-[#002776]/5"
                       : "border-slate-800 bg-slate-950 hover:border-slate-700 hover:bg-black"
                   }`}
                 >
-                  <span className="text-[15px] font-medium text-white">{opt}</span>
+                  <span className="text-[14px] font-medium text-white">{opt}</span>
                   <span
-                    className={`grid h-6 w-6 place-items-center rounded-md border transition ${
+                    className={`grid h-5 w-5 shrink-0 place-items-center rounded-md border transition ${
                       isSelected
                         ? "border-[#002776] bg-[#002776] text-white"
                         : "border-slate-700 text-transparent group-hover:border-slate-500"
                     }`}
                   >
-                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                    <Check className="h-3 w-3" strokeWidth={3} />
                   </span>
                 </button>
               );
@@ -1108,14 +1112,21 @@ function QuizStep({
           </div>
 
           {question.type === "multi" && (
-            <button
-              disabled={multi.length === 0}
-              onClick={() => onAnswer(multi)}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#002776] px-6 py-4 text-base font-black uppercase tracking-wider text-white shadow-[0_16px_40px_-16px_rgba(0,39,118,0.6)] ring-2 ring-[#002776]/20 transition hover:bg-[#001a55] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Continuar
-              <ArrowRight className="h-5 w-5" />
-            </button>
+            <div className="sticky bottom-16 z-20 mt-4 -mx-2 rounded-2xl bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/95 to-transparent px-2 pb-2 pt-4 backdrop-blur-sm">
+              <button
+                disabled={multi.length === 0}
+                onClick={() => onAnswer(multi)}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#002776] px-6 py-3.5 text-sm font-black uppercase tracking-wider text-white shadow-[0_16px_40px_-16px_rgba(0,39,118,0.6)] ring-2 ring-[#002776]/20 transition hover:bg-[#001a55] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Continuar
+                {multi.length > 0 && (
+                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-[11px]">
+                    {multi.length}
+                  </span>
+                )}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
           )}
 
           <div className="mt-6 flex items-center justify-between text-xs text-slate-500">
