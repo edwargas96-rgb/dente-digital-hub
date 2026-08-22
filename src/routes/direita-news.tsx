@@ -1389,10 +1389,15 @@ function Footer() {
         </div>
         <a
           href="mailto:suporte@nobilex.com.br"
-          className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-300 transition hover:border-[#D4A937]/40 hover:text-[#D4A937]"
+          className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold tracking-wide text-slate-300 transition hover:border-[#D4A937]/40 hover:text-[#D4A937]"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-[#1B7A4A]" />
-          Suporte Nobilex
+          <span className="hidden uppercase tracking-[0.16em] sm:inline">
+            Suporte Nobilex ·
+          </span>
+          <span className="lowercase text-white group-hover:text-[#D4A937]">
+            suporte@nobilex.com.br
+          </span>
         </a>
       </div>
     </footer>
