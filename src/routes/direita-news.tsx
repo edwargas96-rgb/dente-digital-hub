@@ -1352,6 +1352,9 @@ function ResultPage() {
           — notícias e análises organizadas em um único lugar.
         </p>
 
+        {/* Transparência total */}
+        <Transparencia />
+
         {/* CTA de checkout */}
         <div className="mt-10">
           <button
@@ -1365,6 +1368,108 @@ function ResultPage() {
             Acesso rápido • Leia pelo celular • Ambiente digital
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+const TRANSPARENCIA_ITENS = [
+  {
+    titulo: "Aplicativo próprio",
+    valor: "R$ 19.500",
+    detalhe: "Custo escalonado conforme o número de leitores ativos.",
+    icone: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
+        <rect x="6" y="2.5" width="12" height="19" rx="2.5" />
+        <path d="M10.5 18.5h3" />
+      </svg>
+    ),
+  },
+  {
+    titulo: "Sites (domínio, hospedagem e SSL)",
+    valor: "R$ 500",
+    detalhe: "12 domínios ativos + proteção contra ataques DDoS.",
+    icone: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18" />
+      </svg>
+    ),
+  },
+  {
+    titulo: "Servidores de e-mail",
+    valor: "R$ 2.200",
+    detalhe: "500.000 e-mails/mês, criptografados ponta a ponta.",
+    icone: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="m3 7 9 6 9-6" />
+      </svg>
+    ),
+  },
+  {
+    titulo: "Ferramentas de criptografia",
+    valor: "R$ 6.500",
+    detalhe: "Proteção dos dados dos apoiadores — padrão militar.",
+    icone: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
+        <rect x="4" y="10" width="16" height="11" rx="2" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </svg>
+    ),
+  },
+];
+
+function Transparencia() {
+  const total = "R$ 28.700";
+  return (
+    <section className="mt-14 rounded-3xl border border-white/10 bg-[#0e1424] p-6 shadow-[0_20px_60px_-30px_rgba(212,169,55,0.25)] md:p-8">
+      <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#D4A937]/30 bg-[#D4A937]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#D4A937]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#D4A937]" />
+            Transparência total
+          </div>
+          <h3 className="mt-3 font-serif text-2xl font-black leading-tight text-white md:text-3xl">
+            Veja onde cada centavo é investido
+          </h3>
+          <p className="mt-1 text-sm text-slate-400">
+            Todo mês. Sem letra miúda. Sem intermediário.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[#1B7A4A]/40 bg-[#1B7A4A]/10 px-4 py-3 text-right">
+          <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1B7A4A]">
+            Total mensal
+          </div>
+          <div className="font-serif text-2xl font-black text-white">{total}</div>
+        </div>
+      </div>
+
+      <ul className="mt-6 grid gap-3 md:grid-cols-2">
+        {TRANSPARENCIA_ITENS.map((it) => (
+          <li
+            key={it.titulo}
+            className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-[#0a0e1a] p-4 transition hover:border-[#D4A937]/40"
+          >
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#D4A937]/10 text-[#D4A937] ring-1 ring-[#D4A937]/20">
+              {it.icone}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-3">
+                <div className="text-sm font-bold text-white">{it.titulo}</div>
+                <div className="whitespace-nowrap font-serif text-base font-black text-[#D4A937]">
+                  {it.valor}
+                </div>
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-400">{it.detalhe}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-5 flex items-center gap-2 rounded-xl border border-white/5 bg-black/40 px-4 py-3 text-[11px] uppercase tracking-widest text-slate-400">
+        <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[#1B7A4A]" />
+        Cada assinatura ajuda a manter a operação de pé — e independente.
       </div>
     </section>
   );
