@@ -1409,7 +1409,7 @@ const TRANSPARENCIA_ITENS = [
   },
   {
     titulo: "Ferramentas de criptografia",
-    valor: "R$ 6.500",
+    valor: "R$ 2.000",
     detalhe: "Proteção dos dados dos apoiadores — padrão militar.",
     icone: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
@@ -1421,7 +1421,7 @@ const TRANSPARENCIA_ITENS = [
 ];
 
 function Transparencia() {
-  const total = "R$ 28.700";
+  const total = "R$ 24.200";
   return (
     <section className="mt-14 rounded-3xl border border-white/10 bg-[#0e1424] p-6 shadow-[0_20px_60px_-30px_rgba(212,169,55,0.25)] md:p-8">
       <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
