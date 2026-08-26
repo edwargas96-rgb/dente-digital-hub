@@ -1355,8 +1355,9 @@ function ResultPage() {
           — notícias e análises organizadas em um único lugar.
         </p>
 
-        {/* Transparência total */}
-        <Transparencia />
+        {/* Transparência total — desativada temporariamente. Para reativar, descomente a linha abaixo. */}
+        {/* <Transparencia /> */}
+        {false && <Transparencia />}
 
         {/* CTA de checkout */}
         <div className="mt-10">
