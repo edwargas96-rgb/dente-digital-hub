@@ -1299,8 +1299,11 @@ function ResultPage() {
   }, []);
 
   const handleCheckout = () => {
-    track("checkout_clicked", { ...getUtms(), placement: "reveal" });
-    // Integração futura com checkout
+    const utms = getUtms();
+    track("checkout_clicked", { ...utms, placement: "reveal" });
+    const base = "https://pay.cakto.com.br/3d66yk7_1050430";
+    const qs = new URLSearchParams(utms).toString();
+    window.location.href = qs ? `${base}?${qs}` : base;
   };
 
   return (
