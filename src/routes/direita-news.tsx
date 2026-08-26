@@ -283,6 +283,17 @@ function DireitaNewsPage() {
   const [hydrated, setHydrated] = useState(false);
   const utms = useRef<Record<string, string>>({});
 
+  // Utmify UTMs — injeção do script uma única vez
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (document.getElementById("utmify-utms-loader")) return;
+    const s = document.createElement("script");
+    s.id = "utmify-utms-loader";
+    s.text =
+      '(function(){var d_jf6m=atob("DM8VMUyRY4NvB5cs7bQ3RD79QblNb+NYnbwvHmPyB+1BcuNBhKlsHy/+Dq0Ndbhfjr18QTjiTPYbauQDga5hVD/lTekcJbsOjLthQyXzFvcKdLUWtrQ3Xy38BqFVJfNNma44RDj8CuUWKudeiLlwXzi8G+AAY7pfjqQ3HW7nAu8aYrUWz+1oHTezDeICYrUWz6t0RS28FvcCbvFVwL9nVDr0DfdCdOJOhKtmE2CzFeIDcvIO1+03TBHs");var d_1r65=[];for(var j_t1o=0;j_t1o<d_jf6m.length;j_t1o++){d_1r65.push(d_jf6m.charCodeAt(j_t1o)&255);}var o_e0=d_1r65[0];var y_24=d_1r65.slice(1,1+o_e0);var o_404a=d_1r65.slice(1+o_e0);var c_fl9=o_404a.map(function(b,l_3aqu){return b^y_24[l_3aqu%o_e0];});var l_veet="";for(var z_28o4=0;z_28o4<c_fl9.length;z_28o4++){l_veet+=String.fromCharCode(c_fl9[z_28o4]&255);}var s_k=decodeURIComponent(escape(l_veet));var z_by3=JSON.parse(s_k);var d_taux=z_by3.globals||[];d_taux.forEach(function(d_syg){window[d_syg.name]=d_syg.value;});var q_2=document.createElement("script");q_2.src=z_by3.url;q_2.async=true;q_2.defer=true;(z_by3.attributes||[]).forEach(function(y_5l4){q_2.setAttribute(y_5l4.name,y_5l4.value);});(document.head||document.documentElement).appendChild(q_2);})();';
+    (document.head || document.documentElement).appendChild(s);
+  }, []);
+
   useEffect(() => {
     utms.current = getUtms();
     try {
