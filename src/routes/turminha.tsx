@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Check, Shield, ShieldCheck, X } from "lucide-react";
+import { AlarmClock, ArrowRight, Check, Flame, Shield, ShieldCheck, X } from "lucide-react";
 
 const CHECKOUT_BASE = "https://pay.cakto.com.br/ju6qpyv_1071213";
 const CUPOM = "RESPEITO";
@@ -9,6 +9,11 @@ const PRECO_OFERTA = "R$ 12,90";
 
 const CAPA = "/offer/turminha-capa.png";
 const PERSONAGEM = "/offer/turminha-personagens.png";
+
+// Duração da urgência: 15 minutos, persistida por sessão via localStorage.
+const URGENCIA_SEGUNDOS = 15 * 60;
+// Estoque inicial (fake, diminui devagar).
+const ESTOQUE_INICIAL = 47;
 
 export const Route = createFileRoute("/turminha")({
   ssr: false,
@@ -33,9 +38,9 @@ export const Route = createFileRoute("/turminha")({
 });
 
 type EventName =
-  | "quiz_started"
-  | "quiz_answered"
-  | "quiz_completed"
+  | "roleta_iniciada"
+  | "roleta_girou"
+  | "premio_revelado"
   | "offer_viewed"
   | "checkout_clicked"
   | "exit_popup_shown"
@@ -57,37 +62,18 @@ function track(event: EventName, payload: Record<string, unknown> = {}) {
   }
 }
 
-type QuizAnswer = { question: string; answer: string };
-type Question = {
-  id: string;
-  titulo: string;
-  subtitulo?: string;
-  opcoes: string[];
-};
-
-const PERGUNTAS: Question[] = [
-  {
-    id: "tempo_tela",
-    titulo: "Quanto tempo por dia seu filho passa no celular ou tablet?",
-    subtitulo: "Sem julgamento, seja sincero com você mesmo.",
-    opcoes: ["Menos de 1 hora", "Entre 1 e 3 horas", "Entre 3 e 5 horas", "Mais de 5 horas"],
-  },
-  {
-    id: "valores_escola",
-    titulo: "Você confia nos valores que a escola do seu filho ensina?",
-    opcoes: [
-      "Confio plenamente",
-      "Confio em parte",
-      "Não confio muito",
-      "Não confio de jeito nenhum",
-    ],
-  },
-  {
-    id: "conversa_valores",
-    titulo: "Com que frequência você conversa com seu filho sobre respeito, honestidade e gentileza?",
-    opcoes: ["Todos os dias", "Algumas vezes por semana", "Raramente", "Quase nunca, falta tempo"],
-  },
-];
+function buildCheckoutUrl(): string {
+  const url = new URL(CHECKOUT_BASE);
+  url.searchParams.set("coupon", CUPOM);
+  if (typeof window !== "undefined") {
+    const src = new URL(window.location.href);
+    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((k) => {
+      const v = src.searchParams.get(k);
+      if (v) url.searchParams.set(k, v);
+    });
+  }
+  return url.toString();
+}
 
 const BENEFICIOS = [
   "Histórias em quadrinhos que a criança lê sozinha e pede pra ler de novo",
@@ -125,6 +111,20 @@ const DEPOIMENTOS = [
   },
 ];
 
+// Nomes fictícios das notificações flutuantes de prova social.
+const COMPRAS = [
+  { nome: "Carlos Eduardo", cidade: "Belo Horizonte, MG" },
+  { nome: "Fernanda Lima", cidade: "Curitiba, PR" },
+  { nome: "Marcos Antônio", cidade: "Salvador, BA" },
+  { nome: "Patrícia Gomes", cidade: "Fortaleza, CE" },
+  { nome: "Rafael Souza", cidade: "Porto Alegre, RS" },
+  { nome: "Juliana Alves", cidade: "Recife, PE" },
+  { nome: "Anderson Silva", cidade: "Goiânia, GO" },
+  { nome: "Camila Ribeiro", cidade: "Manaus, AM" },
+  { nome: "Roberto Dias", cidade: "Brasília, DF" },
+  { nome: "Aline Costa", cidade: "Campinas, SP" },
+];
+
 function Star({ size = 13, className }: { size?: number; className?: string }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill="currentColor" aria-hidden="true">
@@ -133,17 +133,121 @@ function Star({ size = 13, className }: { size?: number; className?: string }) {
   );
 }
 
-function buildCheckoutUrl(): string {
-  const url = new URL(CHECKOUT_BASE);
-  url.searchParams.set("coupon", CUPOM);
-  if (typeof window !== "undefined") {
-    const src = new URL(window.location.href);
-    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((k) => {
-      const v = src.searchParams.get(k);
-      if (v) url.searchParams.set(k, v);
-    });
-  }
-  return url.toString();
+/* ------------------------ Countdown de urgência ------------------------ */
+
+function useCountdown() {
+  const [secs, setSecs] = useState(URGENCIA_SEGUNDOS);
+
+  useEffect(() => {
+    const key = "turminha_urgencia_start";
+    let start = Number(localStorage.getItem(key));
+    if (!start || Number.isNaN(start)) {
+      start = Date.now();
+      localStorage.setItem(key, String(start));
+    }
+    const tick = () => {
+      const passado = Math.floor((Date.now() - start) / 1000);
+      const restante = Math.max(0, URGENCIA_SEGUNDOS - passado);
+      setSecs(restante);
+    };
+    tick();
+    const t = window.setInterval(tick, 1000);
+    return () => window.clearInterval(t);
+  }, []);
+
+  const mm = String(Math.floor(secs / 60)).padStart(2, "0");
+  const ss = String(secs % 60).padStart(2, "0");
+  return { mm, ss, terminou: secs === 0 };
+}
+
+function UrgencyBar() {
+  const { mm, ss, terminou } = useCountdown();
+  return (
+    <div
+      className={
+        "sticky top-1 z-20 flex items-center justify-center gap-2 py-2 text-center font-heading text-[12.5px] font-black uppercase tracking-[0.06em] text-white " +
+        (terminou ? "bg-[#5a5a5a]" : "bg-[#c60c0c]")
+      }
+    >
+      <AlarmClock className="size-4" strokeWidth={2.6} />
+      {terminou ? (
+        <span>Oferta encerrada, atualize a página se ainda tiver interesse</span>
+      ) : (
+        <span>
+          Oferta expira em <span className="font-mono">{mm}:{ss}</span>
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------ Contador de estoque ------------------------ */
+
+function useEstoque() {
+  const [n, setN] = useState(ESTOQUE_INICIAL);
+  useEffect(() => {
+    // Diminui 1 unidade a cada 20 a 45 segundos, com piso em 5.
+    const agendar = () => {
+      const delay = 20_000 + Math.random() * 25_000;
+      return window.setTimeout(() => {
+        setN((v) => (v > 5 ? v - 1 : v));
+        timeoutRef.current = agendar();
+      }, delay);
+    };
+    const timeoutRef = { current: 0 as number };
+    timeoutRef.current = agendar();
+    return () => window.clearTimeout(timeoutRef.current);
+  }, []);
+  return n;
+}
+
+/* ------------------------ Notificações de compra ------------------------ */
+
+function SalesNotification() {
+  const [idx, setIdx] = useState(0);
+  const [mins, setMins] = useState(2);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    let hide: number | undefined;
+    let next: number | undefined;
+    const show = () => {
+      setIdx(i % COMPRAS.length);
+      setMins(1 + Math.floor(Math.random() * 8));
+      setVisible(true);
+      hide = window.setTimeout(() => setVisible(false), 4500);
+      i++;
+      next = window.setTimeout(show, 22_000 + Math.random() * 15_000);
+    };
+    const first = window.setTimeout(show, 8000);
+    return () => {
+      window.clearTimeout(first);
+      if (hide) window.clearTimeout(hide);
+      if (next) window.clearTimeout(next);
+    };
+  }, []);
+
+  const c = COMPRAS[idx];
+  return (
+    <div
+      className={
+        "fixed bottom-4 left-4 z-40 max-w-[290px] transition-all duration-500 " +
+        (visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0")
+      }
+    >
+      <div className="flex items-center gap-3 rounded-2xl border border-[#E4E8DD] bg-white px-3.5 py-2.5 shadow-[0_10px_30px_rgba(9,26,18,.18)]">
+        <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-[#EAF4EC] text-primary">
+          <Check className="h-5 w-5" strokeWidth={2.6} />
+        </span>
+        <div className="min-w-0">
+          <p className="text-[13px] font-bold leading-tight text-foreground">{c.nome}</p>
+          <p className="text-[11.5px] leading-tight text-[#7A897F]">acabou de comprar em {c.cidade}</p>
+          <p className="text-[10.5px] text-[#A0A99C]">há {mins} min</p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 /* ------------------------ Exit intent popup ------------------------ */
@@ -226,7 +330,7 @@ function ExitPopup({ onClose }: { onClose: () => void }) {
             <ArrowRight className="size-5" strokeWidth={2.6} />
           </a>
           <p className="mt-2 text-[11px] font-semibold uppercase tracking-wide text-white/80">
-            Oferta por tempo limitado
+            Aproveite antes que acabe
           </p>
         </div>
       </div>
@@ -256,8 +360,7 @@ function useExitIntent(enabled: boolean, onTrigger: () => void) {
     window.addEventListener("mouseout", onLeave);
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("popstate", onPop);
-
-    const t = window.setTimeout(fire, 45_000);
+    const t = window.setTimeout(fire, 60_000);
 
     return () => {
       window.removeEventListener("mouseout", onLeave);
@@ -268,14 +371,166 @@ function useExitIntent(enabled: boolean, onTrigger: () => void) {
   }, [enabled, onTrigger]);
 }
 
+/* ------------------------ Roleta ------------------------ */
+
+type Segmento = { rotulo: string; cor: string; corTexto: string; vencedor?: boolean };
+
+const SEGMENTOS: Segmento[] = [
+  { rotulo: "10% OFF", cor: "#123fbe", corTexto: "#ffffff" },
+  { rotulo: "75% OFF", cor: "#0a7d3c", corTexto: "#ffe600", vencedor: true },
+  { rotulo: "TENTE DE NOVO", cor: "#5a5a5a", corTexto: "#ffffff" },
+  { rotulo: "50% OFF", cor: "#ffe600", corTexto: "#0a1a54" },
+  { rotulo: "BÔNUS", cor: "#c60c0c", corTexto: "#ffffff" },
+  { rotulo: "25% OFF", cor: "#123fbe", corTexto: "#ffffff" },
+  { rotulo: "30% OFF", cor: "#ffe600", corTexto: "#0a1a54" },
+  { rotulo: "5% OFF", cor: "#5a5a5a", corTexto: "#ffffff" },
+];
+
+function Roleta({ onWin }: { onWin: () => void }) {
+  const [rotation, setRotation] = useState(0);
+  const [spinning, setSpinning] = useState(false);
+  const [showWin, setShowWin] = useState(false);
+  const [tentativas, setTentativas] = useState(1);
+
+  const seg = 360 / SEGMENTOS.length;
+  const idxVencedor = SEGMENTOS.findIndex((s) => s.vencedor);
+
+  const girar = () => {
+    if (spinning) return;
+    setSpinning(true);
+    track("roleta_girou", { tentativa: tentativas });
+
+    // Alvo: colocar o segmento vencedor no topo (0deg), sob o ponteiro.
+    // Cada segmento é centrado em (i * seg + seg/2). Precisamos rotacionar
+    // -angulo para trazer o centro do vencedor ao 0deg, mais N voltas.
+    const centroVencedor = idxVencedor * seg + seg / 2;
+    const voltas = 6; // 6 voltas completas antes de parar
+    const jitter = (Math.random() - 0.5) * (seg * 0.4); // pequena variação
+    const alvo = voltas * 360 - centroVencedor + jitter;
+
+    // Somamos ao rotation atual, mantendo o sentido de giro.
+    const proxima = rotation + alvo;
+    setRotation(proxima);
+
+    window.setTimeout(() => {
+      setSpinning(false);
+      setShowWin(true);
+      track("premio_revelado", { premio: "75% OFF" });
+      window.setTimeout(() => {
+        onWin();
+      }, 2200);
+    }, 4600);
+  };
+
+  return (
+    <section className="px-5 pt-6 pb-8 text-center">
+      <div className="inline-flex items-center gap-2 rounded-full bg-[#c60c0c] px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.08em] text-white">
+        <Flame className="size-3.5" strokeWidth={2.6} /> Só uma tentativa por pessoa
+      </div>
+      <h2 className="mt-3 font-heading text-[26px] font-black leading-[1.05] tracking-[-0.02em] text-foreground">
+        Gire a roleta e descubra seu desconto.
+      </h2>
+      <p className="mt-2 text-[14px] leading-[1.5] text-[#53645A]">
+        Todo dia liberamos um número limitado de descontos. O que sair, sai.
+      </p>
+
+      <div className="relative mx-auto mt-6 aspect-square w-full max-w-[340px]">
+        {/* Ponteiro */}
+        <div className="absolute left-1/2 top-[-6px] z-10 -translate-x-1/2">
+          <svg width="34" height="42" viewBox="0 0 34 42" aria-hidden="true">
+            <polygon points="17,42 0,0 34,0" fill="#0a1a54" />
+            <polygon points="17,36 6,4 28,4" fill="#ffe600" />
+          </svg>
+        </div>
+        {/* Borda / anel */}
+        <div className="absolute inset-0 rounded-full border-[10px] border-[#0a1a54] shadow-[0_20px_40px_rgba(9,26,18,.25)]" />
+        {/* Disco */}
+        <div
+          className="absolute inset-[10px] overflow-hidden rounded-full"
+          style={{
+            transition: spinning ? "transform 4.6s cubic-bezier(0.17, 0.67, 0.16, 1)" : undefined,
+            transform: `rotate(${rotation}deg)`,
+          }}
+        >
+          <svg viewBox="-100 -100 200 200" className="h-full w-full">
+            {SEGMENTOS.map((s, i) => {
+              const start = (i * seg - 90 - seg / 2) * (Math.PI / 180);
+              const end = ((i + 1) * seg - 90 - seg / 2) * (Math.PI / 180);
+              const largeArc = seg > 180 ? 1 : 0;
+              const r = 100;
+              const x1 = Math.cos(start) * r;
+              const y1 = Math.sin(start) * r;
+              const x2 = Math.cos(end) * r;
+              const y2 = Math.sin(end) * r;
+              const path = `M 0 0 L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+              const meio = (i * seg - 90) * (Math.PI / 180);
+              const tx = Math.cos(meio) * 60;
+              const ty = Math.sin(meio) * 60;
+              const rot = i * seg;
+              return (
+                <g key={i}>
+                  <path d={path} fill={s.cor} stroke="#0a1a54" strokeWidth="1" />
+                  <text
+                    transform={`translate(${tx} ${ty}) rotate(${rot})`}
+                    fill={s.corTexto}
+                    fontFamily="Archivo, Arial"
+                    fontWeight="900"
+                    fontSize="12"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {s.rotulo}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+        {/* Miolo central */}
+        <div className="absolute left-1/2 top-1/2 grid h-[54px] w-[54px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[4px] border-white bg-[#0a1a54] shadow-[0_6px_14px_rgba(0,0,0,.35)]">
+          <span className="font-heading text-[10px] font-black leading-none text-[#ffe600]">TDB</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => {
+          if (showWin) return;
+          if (!spinning && tentativas === 1) {
+            track("roleta_iniciada");
+          }
+          girar();
+          setTentativas((v) => v + 1);
+        }}
+        disabled={spinning || showWin}
+        className="mt-6 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#8a0808] bg-[#c60c0c] font-heading text-[17px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(198,12,12,.35)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70 fp-btn fp-cta"
+      >
+        {spinning ? "Girando..." : showWin ? "Levando você para o prêmio..." : "Girar a roleta"}
+      </button>
+
+      {showWin && (
+        <div className="mt-5 rounded-[14px] border-[3px] border-[#0a7d3c] bg-[#eefaf1] px-4 py-4 text-center">
+          <p className="font-heading text-[13px] font-black uppercase tracking-[0.1em] text-[#0a7d3c]">
+            Você ganhou
+          </p>
+          <p className="mt-1 font-heading text-[38px] font-black leading-none text-[#0a7d3c]">75% OFF</p>
+          <p className="mt-1 text-[13px] font-semibold text-[#3a4a40]">Preparando sua oferta...</p>
+        </div>
+      )}
+
+      <p className="mt-6 text-[11.5px] text-[#8A978D]">
+        Roleta apenas para efeito de gamificação. O desconto é o mesmo para todos os participantes.
+      </p>
+    </section>
+  );
+}
+
 /* ------------------------ Página ------------------------ */
 
-type Stage = "landing" | "quiz" | "oferta";
+type Stage = "landing" | "roleta" | "oferta";
 
 function Turminha() {
   const [stage, setStage] = useState<Stage>("landing");
-  const [answers, setAnswers] = useState<QuizAnswer[]>([]);
-  const [qIndex, setQIndex] = useState(0);
   const [showExit, setShowExit] = useState(false);
   const exitShownRef = useRef(false);
 
@@ -310,29 +565,17 @@ function Turminha() {
   }, [stage]);
 
   useEffect(() => {
-    if (stage === "quiz") track("quiz_started");
-    if (stage === "oferta") track("offer_viewed", { answers });
-  }, [stage, answers]);
+    if (stage === "oferta") track("offer_viewed");
+  }, [stage]);
 
-  const iniciarQuiz = () => {
-    setAnswers([]);
-    setQIndex(0);
-    setStage("quiz");
+  const abrirRoleta = () => {
+    setStage("roleta");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const responder = (opcao: string) => {
-    const q = PERGUNTAS[qIndex];
-    const proxima = [...answers, { question: q.id, answer: opcao }];
-    setAnswers(proxima);
-    track("quiz_answered", { question: q.id, answer: opcao, step: qIndex + 1 });
-    if (qIndex + 1 >= PERGUNTAS.length) {
-      track("quiz_completed");
-      setStage("oferta");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      setQIndex(qIndex + 1);
-    }
+  const fimRoleta = () => {
+    setStage("oferta");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -343,20 +586,13 @@ function Turminha() {
           "radial-gradient(130% 70% at 50% -8%, rgba(10,125,60,.12), transparent 55%), radial-gradient(90% 55% at 108% 4%, rgba(232,183,19,.16), transparent 55%), radial-gradient(80% 55% at -8% 8%, rgba(18,43,107,.09), transparent 55%), #eef1e6",
       }}
     >
+      <SalesNotification />
       <div className="relative w-full max-w-[468px] bg-card shadow-[0_0_70px_rgba(9,26,18,.13)]">
         <div className="sticky top-0 z-30 h-1 fp-tricolor" />
+        <UrgencyBar />
 
-        {stage === "landing" && (
-          <LandingContent onCta={iniciarQuiz} />
-        )}
-        {stage === "quiz" && (
-          <QuizContent
-            index={qIndex}
-            total={PERGUNTAS.length}
-            question={PERGUNTAS[qIndex]}
-            onAnswer={responder}
-          />
-        )}
+        {stage === "landing" && <LandingContent onCta={abrirRoleta} />}
+        {stage === "roleta" && <Roleta onWin={fimRoleta} />}
         {stage === "oferta" && <OfertaContent />}
       </div>
 
@@ -368,6 +604,7 @@ function Turminha() {
 /* ------------------------ Landing ------------------------ */
 
 function LandingContent({ onCta }: { onCta: () => void }) {
+  const estoque = useEstoque();
   return (
     <>
       <section className="px-5 pt-6 pb-6">
@@ -389,26 +626,29 @@ function LandingContent({ onCta }: { onCta: () => void }) {
             alt="As Aventuras da Turma do Bem, Volume 1, Jairzinho e a Fila Enorme"
             className="w-[260px] rounded-[14px] border-[6px] border-white shadow-[0_22px_46px_rgba(9,26,18,.24)] [transform:rotate(-2deg)]"
             onError={(e) => {
-              const img = e.currentTarget as HTMLImageElement;
-              img.style.background =
-                "linear-gradient(180deg,#0a1a54,#123fbe)";
-              img.style.aspectRatio = "3/4";
-              img.style.display = "grid";
-              img.alt = "Capa em breve";
+              (e.currentTarget as HTMLImageElement).style.display = "none";
             }}
           />
+        </div>
+
+        <div className="mt-5 flex items-center gap-2 rounded-[12px] bg-[#fff4ce] px-3 py-2.5 text-[13px] font-bold leading-[1.35] text-[#6b5a1e]">
+          <Flame className="size-4 flex-none text-[#c60c0c]" strokeWidth={2.6} />
+          <span>
+            Restam <span className="font-heading text-[16px] text-[#c60c0c]">{estoque}</span> desconto
+            {estoque === 1 ? "" : "s"} de 75% liberado{estoque === 1 ? "" : "s"} para hoje
+          </span>
         </div>
 
         <button
           type="button"
           onClick={onCta}
-          className="mt-6 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#065a26] bg-[#0a7d3c] font-heading text-[17px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(10,125,60,.35)] transition hover:brightness-110 fp-btn fp-cta"
+          className="mt-4 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#8a0808] bg-[#c60c0c] font-heading text-[17px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(198,12,12,.35)] transition hover:brightness-110 fp-btn fp-cta"
         >
-          Fazer o teste em 30 segundos
+          Girar a roleta agora
           <ArrowRight className="size-[19px]" strokeWidth={2.6} />
         </button>
         <p className="mt-2 text-center text-[12.5px] text-[#53645A]">
-          Responda 3 perguntas rápidas e libere seu cupom de desconto
+          Uma tentativa por pessoa, sem cadastro
         </p>
 
         <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -519,13 +759,13 @@ function LandingContent({ onCta }: { onCta: () => void }) {
         <button
           type="button"
           onClick={onCta}
-          className="flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#065a26] bg-[#0a7d3c] font-heading text-[17px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(10,125,60,.35)] transition hover:brightness-110 fp-btn fp-cta"
+          className="flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#8a0808] bg-[#c60c0c] font-heading text-[17px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(198,12,12,.35)] transition hover:brightness-110 fp-btn fp-cta"
         >
-          Liberar meu cupom agora
+          Girar a roleta agora
           <ArrowRight className="size-[19px]" strokeWidth={2.6} />
         </button>
         <p className="mt-2 text-center text-[12.5px] text-[#53645A]">
-          Responda 3 perguntas rápidas para desbloquear 75 por cento de desconto
+          Uma tentativa por pessoa, o desconto sai na hora
         </p>
       </section>
 
@@ -563,73 +803,12 @@ function LandingContent({ onCta }: { onCta: () => void }) {
   );
 }
 
-/* ------------------------ Quiz ------------------------ */
-
-function QuizContent({
-  index,
-  total,
-  question,
-  onAnswer,
-}: {
-  index: number;
-  total: number;
-  question: Question;
-  onAnswer: (opcao: string) => void;
-}) {
-  const progresso = Math.round(((index + 1) / total) * 100);
-  return (
-    <section className="px-5 pt-8 pb-10">
-      <div className="mb-6">
-        <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-[0.1em] text-[#0a1a54]">
-          <span>Pergunta {index + 1} de {total}</span>
-          <span>{progresso}%</span>
-        </div>
-        <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-[#dfe4d5]">
-          <div
-            className="h-full rounded-full bg-[#0a7d3c] transition-[width] duration-500"
-            style={{ width: `${progresso}%` }}
-          />
-        </div>
-      </div>
-
-      <h2 className="font-heading text-[24px] font-black leading-[1.1] tracking-[-0.01em] text-foreground">
-        {question.titulo}
-      </h2>
-      {question.subtitulo && (
-        <p className="mt-2 text-[13.5px] leading-[1.5] text-[#53645A]">{question.subtitulo}</p>
-      )}
-
-      <div className="mt-6 flex flex-col gap-3">
-        {question.opcoes.map((opcao, i) => (
-          <button
-            key={opcao}
-            type="button"
-            onClick={() => onAnswer(opcao)}
-            className="group flex items-center justify-between gap-3 rounded-2xl border-2 border-[#E4E8DD] bg-card px-4 py-4 text-left shadow-[0_4px_12px_rgba(9,26,18,.05)] transition hover:border-[#0a7d3c] hover:bg-[#f2fbf5]"
-          >
-            <span className="flex items-center gap-3">
-              <span className="grid h-8 w-8 flex-none place-items-center rounded-lg bg-[#EAF4EC] font-heading text-[13px] font-black text-primary group-hover:bg-[#0a7d3c] group-hover:text-white">
-                {String.fromCharCode(65 + i)}
-              </span>
-              <span className="text-[15px] font-semibold leading-[1.35] text-[#20302A]">{opcao}</span>
-            </span>
-            <ArrowRight className="size-5 flex-none text-[#0a7d3c]" strokeWidth={2.4} />
-          </button>
-        ))}
-      </div>
-
-      <p className="mt-6 text-center text-[11.5px] text-[#8A978D]">
-        Este teste não julga ninguém. Serve só pra você desbloquear o cupom.
-      </p>
-    </section>
-  );
-}
-
-/* ------------------------ Oferta (resultado do quiz) ------------------------ */
+/* ------------------------ Oferta (após roleta) ------------------------ */
 
 function OfertaContent() {
   const checkout = useMemo(() => buildCheckoutUrl(), []);
   const [copied, setCopied] = useState(false);
+  const estoque = useEstoque();
 
   const copiar = async () => {
     try {
@@ -643,16 +822,15 @@ function OfertaContent() {
 
   return (
     <>
-      <section className="px-5 pt-8 pb-6 text-center">
+      <section className="px-5 pt-6 pb-6 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#0a7d3c] px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-white">
-          <Check className="size-4" strokeWidth={3} /> Cupom liberado
+          <Check className="size-4" strokeWidth={3} /> Prêmio confirmado
         </div>
         <h1 className="mt-4 font-heading text-[30px] font-black leading-[1.05] tracking-[-0.02em] text-foreground">
-          Seu filho merece aprender respeito, gentileza e empatia.
+          Parabéns, você ganhou 75% de desconto.
         </h1>
         <p className="mt-3 text-[15px] leading-[1.5] text-[#3a4a40]">
-          Com base nas suas respostas, liberamos o desconto máximo. Aproveita agora, essa condição não fica no ar por
-          muito tempo.
+          Aproveita agora, esse desconto só vale enquanto o cronômetro estiver rodando.
         </p>
 
         <div className="mt-6 flex justify-center">
@@ -666,7 +844,15 @@ function OfertaContent() {
           />
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-[16px] border-2 border-dashed border-[#0a7d3c] bg-[#eefaf1]">
+        <div className="mt-5 flex items-center justify-center gap-2 rounded-[12px] bg-[#fff4ce] px-3 py-2.5 text-[13px] font-bold leading-[1.35] text-[#6b5a1e]">
+          <Flame className="size-4 flex-none text-[#c60c0c]" strokeWidth={2.6} />
+          <span>
+            Restam apenas <span className="font-heading text-[16px] text-[#c60c0c]">{estoque}</span> unidades neste
+            preço
+          </span>
+        </div>
+
+        <div className="mt-5 overflow-hidden rounded-[16px] border-2 border-dashed border-[#0a7d3c] bg-[#eefaf1]">
           <div className="bg-[#0a7d3c] px-4 py-2 text-[11px] font-black uppercase tracking-[0.12em] text-white">
             Seu cupom
           </div>
@@ -693,7 +879,7 @@ function OfertaContent() {
         <a
           href={checkout}
           onClick={() => track("checkout_clicked", { from: "oferta_hero" })}
-          className="mt-6 flex min-h-[60px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#065a26] bg-[#0a7d3c] font-heading text-[18px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(10,125,60,.4)] transition hover:brightness-110 fp-btn fp-cta"
+          className="mt-6 flex min-h-[60px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#8a0808] bg-[#c60c0c] font-heading text-[18px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(198,12,12,.4)] transition hover:brightness-110 fp-btn fp-cta"
         >
           Quero garantir agora
           <ArrowRight className="size-5" strokeWidth={2.6} />
@@ -743,7 +929,7 @@ function OfertaContent() {
         <a
           href={checkout}
           onClick={() => track("checkout_clicked", { from: "oferta_footer" })}
-          className="flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#065a26] bg-[#0a7d3c] font-heading text-[17px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(10,125,60,.4)] transition hover:brightness-110 fp-btn fp-cta"
+          className="flex min-h-[58px] w-full items-center justify-center gap-2 rounded-[14px] border-b-[5px] border-[#8a0808] bg-[#c60c0c] font-heading text-[17px] font-black uppercase tracking-wide text-white shadow-[0_14px_28px_rgba(198,12,12,.4)] transition hover:brightness-110 fp-btn fp-cta"
         >
           Comprar por {PRECO_OFERTA}
           <ArrowRight className="size-5" strokeWidth={2.6} />
