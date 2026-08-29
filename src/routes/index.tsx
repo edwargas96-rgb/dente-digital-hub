@@ -27,6 +27,7 @@ const FUNIL_HOSTS: Record<string, string> = {
   "minhafotocomozeroum.nobilex.com.br": "/patriota",
   "gazetadireita.nobilex.com.br": "/direita-news",
   "gazetadireita.vercel.app": "/direita-news",
+  "turminhadobem.nobilex.com.br": "/turminha",
 };
 
 function Index() {

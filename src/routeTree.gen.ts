@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PatriotaRouteImport } from './routes/patriota'
 import { Route as PatriotaGerarRouteImport } from './routes/patriota-gerar'
 import { Route as PigattoRouteImport } from './routes/pigatto'
+import { Route as TurminhaRouteImport } from './routes/turminha'
 import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
 import { Route as AppCalendarioRouteImport } from './routes/_app.calendario'
 import { Route as AppClinicasRouteImport } from './routes/_app.clinicas'
@@ -65,6 +66,11 @@ const PatriotaGerarRoute = PatriotaGerarRouteImport.update({
 const PigattoRoute = PigattoRouteImport.update({
   id: '/pigatto',
   path: '/pigatto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TurminhaRoute = TurminhaRouteImport.update({
+  id: '/turminha',
+  path: '/turminha',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
   '/pigatto': typeof PigattoRoute
+  '/turminha': typeof TurminhaRoute
   '/analytics': typeof AppAnalyticsRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
   '/pigatto': typeof PigattoRoute
+  '/turminha': typeof TurminhaRoute
   '/analytics': typeof AppAnalyticsRoute
   '/calendario': typeof AppCalendarioRoute
   '/clinicas': typeof AppClinicasRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
   '/pigatto': typeof PigattoRoute
+  '/turminha': typeof TurminhaRoute
   '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/calendario': typeof AppCalendarioRoute
   '/_app/clinicas': typeof AppClinicasRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/patriota'
     | '/patriota-gerar'
     | '/pigatto'
+    | '/turminha'
     | '/analytics'
     | '/calendario'
     | '/clinicas'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/patriota'
     | '/patriota-gerar'
     | '/pigatto'
+    | '/turminha'
     | '/analytics'
     | '/calendario'
     | '/clinicas'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/patriota'
     | '/patriota-gerar'
     | '/pigatto'
+    | '/turminha'
     | '/_app/analytics'
     | '/_app/calendario'
     | '/_app/clinicas'
@@ -247,6 +259,7 @@ export interface RootRouteChildren {
   PatriotaRoute: typeof PatriotaRoute
   PatriotaGerarRoute: typeof PatriotaGerarRoute
   PigattoRoute: typeof PigattoRoute
+  TurminhaRoute: typeof TurminhaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -305,6 +318,13 @@ declare module '@tanstack/react-router' {
       path: '/pigatto'
       fullPath: '/pigatto'
       preLoaderRoute: typeof PigattoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/turminha': {
+      id: '/turminha'
+      path: '/turminha'
+      fullPath: '/turminha'
+      preLoaderRoute: typeof TurminhaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/analytics': {
@@ -417,6 +437,7 @@ const rootRouteChildren: RootRouteChildren = {
   PatriotaRoute: PatriotaRoute,
   PatriotaGerarRoute: PatriotaGerarRoute,
   PigattoRoute: PigattoRoute,
+  TurminhaRoute: TurminhaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

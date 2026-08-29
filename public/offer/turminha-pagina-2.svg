@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
+  <rect width="300" height="400" fill="#fffdf5"/>
+  <rect x="12" y="12" width="276" height="376" rx="8" fill="none" stroke="#e2d9bf" stroke-width="2"/>
+  <text x="150" y="42" font-family="Archivo, Arial" font-size="16" font-weight="800" fill="#122b6b" text-anchor="middle">AMOR À PÁTRIA</text>
+
+  <!-- Flag -->
+  <rect x="70" y="90" width="160" height="112" fill="#0a7d3c"/>
+  <polygon points="150,100 220,146 150,192 80,146" fill="#f7c948"/>
+  <circle cx="150" cy="146" r="26" fill="#122b6b"/>
+
+  <!-- Kids saluting -->
+  <g transform="translate(100,290)">
+    <circle cx="0" cy="0" r="14" fill="#f2b98c"/>
+    <rect x="-12" y="12" width="24" height="34" fill="#122b6b"/>
+    <line x1="8" y1="-2" x2="20" y2="-10" stroke="#f2b98c" stroke-width="4"/>
+  </g>
+  <g transform="translate(200,290)">
+    <circle cx="0" cy="0" r="14" fill="#e6a978"/>
+    <rect x="-12" y="12" width="24" height="34" fill="#0a7d3c"/>
+    <line x1="-8" y1="-2" x2="-20" y2="-10" stroke="#e6a978" stroke-width="4"/>
+  </g>
+
+  <text x="150" y="370" font-family="Archivo, Arial" font-size="11" fill="#5a6a5f" text-anchor="middle">"Amar o Brasil é cuidar de todos que nele vivem."</text>
+</svg>
