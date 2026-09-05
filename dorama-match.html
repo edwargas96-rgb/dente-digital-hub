@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dorama Match — Descubra seu par ideal</title>
+<meta name="description" content="Um quiz emocional para descobrir qual arquétipo romântico de dorama mais combina com você.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     ROOT / TOKENS
+  ============================================================ */
+  :root{
+    --black:#0c0708;
+    --wine:#2b0c14;
+    --bordeaux:#5c1a2b;
+    --bordeaux-2:#7a2338;
+    --cream:#f4ead9;
+    --cream-dim:#d9c9b3;
+    --rose:#c98577;
+    --rose-2:#e0a596;
+    --gold:#c7a05e;
+    --gold-dim:#a4864f;
+    --line:rgba(244,234,217,0.14);
+    --shadow:0 20px 60px rgba(0,0,0,0.45);
+    --serif:'Playfair Display', Georgia, 'Times New Roman', serif;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --radius:18px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 0%, var(--wine) 0%, var(--black) 62%),
+      var(--black);
+    color:var(--cream);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;}
+  h1,h2,h3{font-family:var(--serif);margin:0;font-weight:600;letter-spacing:-0.01em;}
+  p{margin:0;}
+  .accent{color:var(--rose-2);font-style:italic;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 18px;}
+  .eyebrow{
+    font-family:var(--sans);
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{content:'';width:22px;height:1px;background:var(--gold-dim);display:inline-block;}
+  ::selection{background:var(--rose);color:var(--black);}
+
+  /* ============================================================
+     LANDING — HERO
+  ============================================================ */
+  .logo-bar{
+    padding:22px 18px 0;
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--serif);
+    font-size:19px;
+    letter-spacing:0.08em;
+    color:var(--cream);
+  }
+  .logo b{color:var(--rose-2);font-weight:600;}
+
+  .hero{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:36px;
+    padding:38px 0 10px;
+    align-items:center;
+  }
+  .hero-copy{max-width:640px;}
+  .hero h1{
+    font-size:clamp(28px,6.4vw,48px);
+    line-height:1.18;
+    margin:16px 0 20px;
+  }
+  .hero .sub{
+    font-size:clamp(15px,3.6vw,18px);
+    line-height:1.6;
+    color:var(--cream-dim);
+    max-width:560px;
+  }
+  .badge-row{
+    margin-top:22px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 18px;
+    align-items:center;
+  }
+  .badge-pill{
+    font-size:12.5px;
+    color:var(--cream-dim);
+    border:1px solid var(--line);
+    padding:7px 13px;
+    border-radius:99px;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+  }
+  .badge-pill svg{width:13px;height:13px;flex:none;}
+
+  /* Portrait illustration */
+  .hero-portrait{display:flex;justify-content:center;}
+  .portrait-card{
+    position:relative;
+    width:min(340px, 82vw);
+    aspect-ratio:3/4;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(244,234,217,0.12);
+  }
+  .portrait-card svg{width:100%;height:100%;display:block;}
+  .portrait-caption{
+    position:absolute;
+    left:0;right:0;bottom:0;
+    padding:16px 18px 14px;
+    background:linear-gradient(to top, rgba(12,7,8,0.92), rgba(12,7,8,0));
+  }
+  .portrait-caption .name{font-family:var(--serif);font-size:16px;color:var(--cream);}
+  .portrait-caption .role{font-size:11.5px;color:var(--cream-dim);letter-spacing:0.03em;margin-top:2px;}
+
+  @media (min-width:900px){
+    .hero{grid-template-columns:1.05fr 0.95fr;gap:52px;padding:64px 0 20px;}
+    .portrait-card{width:100%;max-width:400px;}
+  }
+
+  /* ============================================================
+     STORYTELLING
+  ============================================================ */
+  .story-section{padding:70px 0 20px;}
+  .story-inner{max-width:700px;margin:0 auto;text-align:left;}
+  .story-inner h2{font-size:clamp(22px,4.6vw,30px);line-height:1.3;margin-bottom:22px;}
+  .story-inner p{
+    font-size:16px;
+    line-height:1.85;
+    color:var(--cream-dim);
+    margin-bottom:16px;
+  }
+  .story-inner .lead{color:var(--cream);font-size:17px;}
+  .method-tag{
+    margin-top:26px;
+    display:inline-block;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:19px;
+    color:var(--rose-2);
+    border-top:1px solid var(--line);
+    padding-top:18px;
+  }
+
+  /* ============================================================
+     PILLARS
+  ============================================================ */
+  .pillars-section{padding:56px 0;}
+  .pillars-head{text-align:center;max-width:620px;margin:0 auto 34px;}
+  .pillars-head h2{font-size:clamp(22px,4.6vw,30px);margin-top:14px;}
+  .pillars-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  @media (min-width:760px){
+    .pillars-grid{grid-template-columns:repeat(3,1fr);gap:20px;}
+  }
+  .pillar-card{
+    background:linear-gradient(165deg, rgba(92,26,43,0.35), rgba(12,7,8,0.6));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px 22px;
+  }
+  .pillar-num{
+    font-family:var(--serif);
+    font-size:13px;
+    color:var(--gold);
+    letter-spacing:0.1em;
+  }
+  .pillar-card h3{font-size:19px;margin:12px 0 10px;color:var(--cream);}
+  .pillar-card p{font-size:14.5px;line-height:1.65;color:var(--cream-dim);margin-bottom:10px;}
+  .pillar-examples{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+  .pillar-examples span{
+    font-size:12px;
+    color:var(--rose-2);
+    border:1px solid rgba(201,133,119,0.35);
+    padding:4px 10px;
+    border-radius:99px;
+  }
+
+  /* ============================================================
+     QUOTE / TRANSITION
+  ============================================================ */
+  .quote-section{padding:60px 0;}
+  .quote-box{
+    max-width:760px;
+    margin:0 auto;
+    text-align:center;
+    padding:38px 22px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .quote-box p{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:clamp(19px,4.4vw,28px);
+    line-height:1.5;
+    color:var(--cream);
+  }
+
+  .transition-section{padding:40px 0 10px;text-align:center;}
+  .transition-section .wrap{max-width:640px;}
+  .transition-section h3{font-size:clamp(19px,4vw,23px);margin-bottom:14px;}
+  .transition-section p{font-size:15.5px;line-height:1.75;color:var(--cream-dim);}
+
+  .cta-section{padding:44px 0 90px;text-align:center;}
+  .cta-section .wrap{max-width:620px;}
+  .cta-section h2{font-size:clamp(23px,5.4vw,32px);line-height:1.35;margin-bottom:28px;}
+  .cta-section h2 em{font-style:italic;color:var(--rose-2);}
+
+  .btn-primary{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(135deg, var(--rose) 0%, var(--bordeaux-2) 100%);
+    color:var(--cream);
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:15.5px;
+    letter-spacing:0.02em;
+    padding:17px 30px;
+    border-radius:99px;
+    min-height:56px;
+    box-shadow:0 12px 30px rgba(122,35,56,0.45);
+    transition:transform .15s ease, box-shadow .15s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    max-width:420px;
+    justify-content:center;
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(122,35,56,0.55);}
+  .btn-primary:active{transform:translateY(0);}
+  .cta-micro{
+    margin-top:16px;
+    font-size:13px;
+    color:var(--cream-dim);
+  }
+
+  .btn-secondary{
+    appearance:none;
+    cursor:pointer;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--cream);
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:14.5px;
+    padding:14px 22px;
+    border-radius:99px;
+    min-height:52px;
+    width:100%;
+  }
+  .btn-secondary:hover{border-color:var(--rose);}
+
+  /* ============================================================
+     QUIZ
+  ============================================================ */
+  #quiz{
+    min-height:100vh;
+    padding:26px 0 60px;
+    display:none;
+  }
+  #quiz.active{display:block;}
+  #landing.hidden{display:none;}
+
+  .quiz-shell{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 4px;
+  }
+  .quiz-progress-wrap{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:30px;
+  }
+  .quiz-progress-track{
+    flex:1;
+    height:5px;
+    border-radius:99px;
+    background:rgba(244,234,217,0.1);
+    overflow:hidden;
+  }
+  .quiz-progress-bar{
+    height:100%;
+    border-radius:99px;
+    background:linear-gradient(90deg, var(--gold-dim), var(--rose-2));
+    transition:width .4s ease;
+    width:0%;
+  }
+  .quiz-progress-label{
+    font-size:12.5px;
+    color:var(--cream-dim);
+    white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .quiz-card{
+    animation:fadeUp .45s ease;
+  }
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(14px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .quiz-eyebrow{margin-bottom:14px;}
+  .quiz-question{
+    font-family:var(--serif);
+    font-size:clamp(20px,5vw,27px);
+    line-height:1.35;
+    margin-bottom:26px;
+  }
+
+  .field-label{
+    display:block;
+    font-size:13px;
+    color:var(--cream-dim);
+    margin-bottom:10px;
+  }
+  .text-input{
+    width:100%;
+    background:rgba(244,234,217,0.06);
+    border:1px solid var(--line);
+    color:var(--cream);
+    border-radius:14px;
+    padding:16px 16px;
+    font-size:16px;
+    font-family:var(--sans);
+    margin-bottom:22px;
+  }
+  .text-input:focus{outline:none;border-color:var(--rose);background:rgba(244,234,217,0.09);}
+  .text-input::placeholder{color:rgba(244,234,217,0.35);}
+
+  .option-list{display:flex;flex-direction:column;gap:12px;}
+  .option-btn{
+    text-align:left;
+    background:rgba(244,234,217,0.045);
+    border:1px solid var(--line);
+    color:var(--cream);
+    border-radius:16px;
+    padding:16px 18px;
+    font-size:15px;
+    line-height:1.5;
+    cursor:pointer;
+    min-height:52px;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  .option-btn:hover{border-color:var(--rose);background:rgba(201,133,119,0.09);}
+  .option-btn:active{transform:scale(0.99);}
+  .option-btn.selected{border-color:var(--rose);background:rgba(201,133,119,0.16);}
+
+  .quiz-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:26px;
+  }
+  .link-btn{
+    background:none;border:none;color:var(--cream-dim);
+    font-size:13.5px;cursor:pointer;padding:8px 0;
+  }
+  .link-btn:hover{color:var(--cream);}
+
+  /* feedback interstitial */
+  .feedback-card{
+    text-align:center;
+    padding:30px 22px;
+    border:1px solid rgba(201,133,119,0.3);
+    border-radius:var(--radius);
+    background:linear-gradient(165deg, rgba(92,26,43,0.3), rgba(12,7,8,0.5));
+  }
+  .feedback-card .icon{
+    width:38px;height:38px;margin:0 auto 16px;
+    border-radius:50%;
+    border:1px solid var(--gold-dim);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .feedback-card p{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:17px;
+    line-height:1.6;
+    color:var(--cream);
+    margin-bottom:24px;
+  }
+
+  /* processing */
+  .processing-wrap{
+    text-align:center;
+    padding:90px 0;
+  }
+  .spinner{
+    width:46px;height:46px;
+    margin:0 auto 26px;
+    border-radius:50%;
+    border:2px solid rgba(244,234,217,0.15);
+    border-top-color:var(--rose-2);
+    animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .processing-wrap p{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--cream-dim);}
+
+  /* ============================================================
+     RESULT
+  ============================================================ */
+  .result-wrap{padding:6px 0 20px;}
+  .result-eyebrow{text-align:center;margin-bottom:14px;}
+  .result-headline{
+    text-align:center;
+    font-size:clamp(23px,5.6vw,32px);
+    line-height:1.3;
+    margin-bottom:22px;
+  }
+  .result-hero-card{
+    text-align:center;
+    padding:30px 22px 26px;
+    border-radius:var(--radius);
+    background:linear-gradient(165deg, rgba(122,35,56,0.4), rgba(12,7,8,0.7));
+    border:1px solid rgba(201,133,119,0.3);
+    margin-bottom:22px;
+  }
+  .result-arch-name{
+    font-family:var(--serif);
+    font-size:clamp(26px,7vw,36px);
+    color:var(--rose-2);
+    margin:6px 0 14px;
+  }
+  .result-analysis{
+    font-size:15px;
+    line-height:1.75;
+    color:var(--cream-dim);
+    max-width:480px;
+    margin:0 auto 16px;
+  }
+  .result-score{
+    display:inline-block;
+    font-size:13px;
+    color:var(--gold);
+    border:1px solid rgba(199,160,94,0.35);
+    padding:7px 14px;
+    border-radius:99px;
+  }
+
+  .locked-list{display:flex;flex-direction:column;gap:10px;margin:26px 0 30px;}
+  .locked-item{
+    display:flex;align-items:center;gap:14px;
+    padding:15px 16px;
+    background:rgba(244,234,217,0.04);
+    border:1px solid var(--line);
+    border-radius:14px;
+    filter:saturate(0.7);
+  }
+  .locked-item .lock-ic{
+    flex:none;width:30px;height:30px;border-radius:50%;
+    background:rgba(199,160,94,0.12);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .locked-item .lock-ic svg{width:14px;height:14px;}
+  .locked-item .locked-text{flex:1;}
+  .locked-item .locked-title{font-size:14.5px;color:var(--cream);}
+  .locked-item .locked-sub{font-size:12px;color:var(--cream-dim);margin-top:2px;filter:blur(3px);user-select:none;}
+
+  .result-footnote{
+    text-align:center;
+    font-size:12px;
+    color:var(--cream-dim);
+    opacity:0.75;
+    max-width:460px;
+    margin:0 auto;
+    line-height:1.6;
+  }
+
+  /* ============================================================
+     POPUP
+  ============================================================ */
+  .popup-overlay{
+    position:fixed;inset:0;
+    background:rgba(8,4,5,0.72);
+    backdrop-filter:blur(3px);
+    display:flex;align-items:flex-end;justify-content:center;
+    z-index:200;
+    opacity:0;pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .popup-overlay.show{opacity:1;pointer-events:auto;}
+  .popup-card{
+    width:100%;
+    max-width:480px;
+    background:linear-gradient(175deg, #3a1420, #150609);
+    border:1px solid rgba(201,133,119,0.35);
+    border-radius:22px 22px 0 0;
+    padding:26px 22px 26px;
+    transform:translateY(30px);
+    transition:transform .35s ease;
+    max-height:88vh;
+    overflow-y:auto;
+  }
+  .popup-overlay.show .popup-card{transform:translateY(0);}
+  .popup-handle{
+    width:38px;height:4px;border-radius:99px;
+    background:rgba(244,234,217,0.25);
+    margin:0 auto 18px;
+  }
+  .popup-close{
+    position:absolute;top:16px;right:18px;
+    background:none;border:none;color:var(--cream-dim);
+    font-size:20px;cursor:pointer;line-height:1;
+  }
+  .popup-card h3{
+    font-size:clamp(19px,5vw,23px);
+    line-height:1.35;
+    margin-bottom:14px;
+  }
+  .popup-card > p{
+    font-size:14px;
+    line-height:1.7;
+    color:var(--cream-dim);
+    margin-bottom:12px;
+  }
+  .popup-recap{
+    margin:18px 0 20px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:16px 0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .recap-row{display:flex;gap:12px;}
+  .recap-key{
+    flex:none;width:96px;
+    font-size:11.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--gold);
+    padding-top:2px;
+  }
+  .recap-val{font-size:13.5px;color:var(--cream);line-height:1.55;}
+
+  @media (min-width:700px){
+    .popup-overlay{align-items:center;}
+    .popup-card{border-radius:22px;}
+  }
+
+  /* ============================================================
+     TOASTS (demo activity)
+  ============================================================ */
+  .toast-stack{
+    position:fixed;
+    left:0;right:0;bottom:14px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    z-index:150;
+    pointer-events:none;
+    padding:0 14px;
+  }
+  @media (min-width:760px){
+    .toast-stack{left:auto;right:22px;bottom:22px;align-items:flex-end;}
+  }
+  .toast{
+    max-width:320px;
+    width:100%;
+    background:rgba(20,10,12,0.94);
+    border:1px solid rgba(199,160,94,0.3);
+    border-radius:13px;
+    padding:11px 14px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    box-shadow:0 10px 26px rgba(0,0,0,0.4);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast .dot{
+    flex:none;width:8px;height:8px;border-radius:50%;
+    background:var(--rose-2);
+  }
+  .toast .toast-text{font-size:12.5px;color:var(--cream);line-height:1.4;}
+  .toast .toast-tag{font-size:10px;color:var(--cream-dim);opacity:0.7;display:block;margin-top:1px;}
+
+  /* ============================================================
+     MOBILE FINE-TUNING
+  ============================================================ */
+  @media (max-width:480px){
+    .wrap{padding:0 15px;}
+    .quiz-shell{padding:0 2px;}
+    .option-btn{font-size:14.5px;padding:15px 16px;}
+    .btn-primary{padding:16px 20px;}
+    .recap-key{width:78px;}
+  }
+  .footer-note{
+    text-align:center;
+    padding:0 18px 50px;
+    font-size:11.5px;
+    color:var(--cream-dim);
+    opacity:0.6;
+  }
+  [hidden]{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LANDING
+============================================================ -->
+<div id="landing">
+  <div class="logo-bar">
+    <div class="logo">DORAMA <b>MATCH</b></div>
+  </div>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">O Método do Par Ideal</span>
+        <h1>Talvez você <span class="accent">nunca</span> tenha escolhido seu personagem favorito <span class="accent">por acaso</span>.</h1>
+        <p class="sub">Existe um padrão escondido nas pessoas que mais prendem sua atenção nos doramas. Suas próximas escolhas podem revelar qual é o seu.</p>
+        <div class="badge-row">
+          <span class="badge-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+            +38 mil pessoas já fizeram
+          </span>
+          <span class="badge-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+            Leva menos de 4 minutos
+          </span>
+        </div>
+      </div>
+
+      <div class="hero-portrait">
+        <div class="portrait-card">
+          <!-- Stylized editorial illustration representing the character Han Ji-eun -->
+          <svg viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustração de Han Ji-eun segurando o livro O Método do Par Ideal">
+            <defs>
+              <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#3d1420"/>
+                <stop offset="100%" stop-color="#120608"/>
+              </linearGradient>
+              <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#caa387"/>
+                <stop offset="100%" stop-color="#a97e63"/>
+              </linearGradient>
+              <linearGradient id="blouse" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7a2338"/>
+                <stop offset="100%" stop-color="#4a1420"/>
+              </linearGradient>
+              <linearGradient id="bookCover" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#c7a05e"/>
+                <stop offset="100%" stop-color="#8f6f3a"/>
+              </linearGradient>
+              <filter id="grain">
+                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/>
+                <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.03 0"/>
+                <feComposite operator="over" in2="SourceGraphic"/>
+              </filter>
+              <radialGradient id="spot" cx="50%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#5c1a2b" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#0c0708" stop-opacity="1"/>
+              </radialGradient>
+            </defs>
+
+            <rect width="400" height="520" fill="url(#bg1)"/>
+            <rect width="400" height="520" fill="url(#spot)" opacity="0.55"/>
+
+            <!-- shoulders / blouse -->
+            <path d="M60 520 C60 400 130 340 200 340 C270 340 340 400 340 520 Z" fill="url(#blouse)"/>
+            <path d="M140 400 Q200 430 260 400 L260 460 Q200 480 140 460 Z" fill="#8a2c3f" opacity="0.6"/>
+
+            <!-- neck -->
+            <rect x="178" y="300" width="44" height="60" rx="18" fill="url(#skin)"/>
+
+            <!-- face -->
+            <ellipse cx="200" cy="235" rx="72" ry="86" fill="url(#skin)"/>
+
+            <!-- soft cheek texture / marks -->
+            <circle cx="165" cy="255" r="1.6" fill="#7a5138" opacity="0.5"/>
+            <circle cx="171" cy="262" r="1.2" fill="#7a5138" opacity="0.4"/>
+            <circle cx="238" cy="250" r="1.4" fill="#7a5138" opacity="0.45"/>
+            <path d="M150 232 q4 -3 8 0" stroke="#7a5138" stroke-width="1" fill="none" opacity="0.35"/>
+            <path d="M242 230 q4 -3 8 0" stroke="#7a5138" stroke-width="1" fill="none" opacity="0.35"/>
+
+            <!-- fine lines near eyes (natural, mature) -->
+            <path d="M156 222 q6 4 10 1" stroke="#8a624a" stroke-width="1" fill="none" opacity="0.5"/>
+            <path d="M234 222 q-6 4 -10 1" stroke="#8a624a" stroke-width="1" fill="none" opacity="0.5"/>
+            <path d="M150 205 q8 -6 16 -3" stroke="#8a624a" stroke-width="0.8" fill="none" opacity="0.4"/>
+            <path d="M234 205 q-8 -6 -16 -3" stroke="#8a624a" stroke-width="0.8" fill="none" opacity="0.4"/>
+
+            <!-- eyes, closed-soft smile -->
+            <path d="M168 218 q10 8 20 0" stroke="#3a2418" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+            <path d="M212 218 q10 8 20 0" stroke="#3a2418" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+
+            <!-- eyebrows -->
+            <path d="M164 202 q12 -8 24 -3" stroke="#3a2418" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path d="M212 199 q12 -5 24 3" stroke="#3a2418" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+
+            <!-- nose -->
+            <path d="M198 222 q-4 18 -2 26 q4 4 10 0" stroke="#8a624a" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+            <!-- gentle smile -->
+            <path d="M178 268 q22 16 44 0" stroke="#6b3226" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path d="M182 271 q18 8 36 0" stroke="#a45c47" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.35"/>
+
+            <!-- hair, pulled back simple bun -->
+            <path d="M128 210 C120 140 155 96 200 96 C245 96 280 140 272 210 C272 175 250 150 200 150 C150 150 128 175 128 210 Z" fill="#1c1210"/>
+            <circle cx="200" cy="112" r="26" fill="#1c1210"/>
+            <circle cx="200" cy="105" r="3" fill="#c7a05e"/>
+
+            <!-- collar detail -->
+            <path d="M170 350 L200 380 L230 350" stroke="#e0a596" stroke-width="2" fill="none" opacity="0.5"/>
+
+            <!-- hands + book -->
+            <g transform="translate(0,0)">
+              <rect x="150" y="452" width="100" height="72" rx="6" fill="url(#bookCover)" transform="rotate(-4 200 488)"/>
+              <rect x="156" y="458" width="88" height="60" rx="3" fill="#efe3cf" transform="rotate(-4 200 488)"/>
+              <text x="200" y="482" transform="rotate(-4 200 488)" text-anchor="middle" font-family="Georgia, serif" font-size="9.5" fill="#4a1420" font-weight="700">O MÉTODO DO</text>
+              <text x="200" y="496" transform="rotate(-4 200 488)" text-anchor="middle" font-family="Georgia, serif" font-size="9.5" fill="#4a1420" font-weight="700">PAR IDEAL</text>
+              <ellipse cx="165" cy="500" rx="16" ry="11" fill="url(#skin)"/>
+              <ellipse cx="238" cy="500" rx="16" ry="11" fill="url(#skin)"/>
+            </g>
+
+            <rect width="400" height="520" filter="url(#grain)" opacity="0.6"/>
+          </svg>
+          <div class="portrait-caption">
+            <div class="name">Han Ji-eun</div>
+            <div class="role">A história por trás do método</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STORYTELLING
+    ============================================================ -->
+    <section class="story-section">
+      <div class="story-inner">
+        <span class="eyebrow">A origem</span>
+        <h2 style="margin-top:14px;">Como tudo começou</h2>
+        <p class="lead">Han Ji-eun começou a perceber uma coisa curiosa enquanto acompanhava histórias românticas.</p>
+        <p>Duas pessoas podiam assistir ao mesmo dorama e se apaixonar por personagens completamente diferentes. Uma não conseguia resistir ao personagem frio, distante, que demonstrava carinho em pequenas doses. Outra queria que a protagonista escolhesse o melhor amigo, aquele que esteve presente desde o começo.</p>
+        <p>Outra ficava presa justamente no rival arrogante que provocava, discutia e criava uma química impossível de ignorar. E algumas só queriam descobrir o que o personagem misterioso estava escondendo.</p>
+        <p>Com o tempo, uma pergunta começou a aparecer: <em>"E se a gente não escolhesse personagens favoritos ao acaso?"</em> Talvez existam padrões nas histórias que mais prendem nossa atenção.</p>
+        <p>E foi dessa ideia que surgiu o conceito do:</p>
+        <span class="method-tag">O Método do Par Ideal</span>
+      </div>
+    </section>
+
+    <!-- PILLARS -->
+    <section class="pillars-section">
+      <div class="pillars-head">
+        <span class="eyebrow" style="justify-content:center;">Os 3 pilares do método</span>
+        <h2>O método organiza suas escolhas em padrões narrativos de romance</h2>
+      </div>
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-num">01</div>
+          <h3>O que te atrai</h3>
+          <p>Qual tipo de pessoa chama sua atenção primeiro.</p>
+          <div class="pillar-examples">
+            <span>distância</span><span>segurança</span><span>provocação</span><span>mistério</span>
+          </div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-num">02</div>
+          <h3>O que te prende</h3>
+          <p>O que faz você continuar emocionalmente envolvido.</p>
+          <div class="pillar-examples">
+            <span>olhares</span><span>cuidado</span><span>ciúme</span><span>tensão</span><span>segredos</span>
+          </div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-num">03</div>
+          <h3>O que se repete</h3>
+          <p>Quais características continuam aparecendo nas suas escolhas.</p>
+          <div class="pillar-examples">
+            <span>padrões</span><span>repetição</span><span>afinidade</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUOTE -->
+    <section class="quote-section">
+      <div class="quote-box">
+        <p>"A pergunta não é quem seria o personagem perfeito. É quem faria você querer continuar a história."</p>
+      </div>
+    </section>
+
+    <!-- TRANSITION -->
+    <section class="transition-section">
+      <div class="wrap">
+        <h3>Agora esqueça seus doramas favoritos por alguns minutos.<br>Vamos colocar você dentro da história.</h3>
+        <p>Nas próximas situações, você vai precisar escolher quem chamaria sua atenção, quem faria você baixar a guarda, que tipo de tensão seria impossível ignorar e qual pessoa faria você querer descobrir o próximo episódio.</p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="wrap">
+        <h2>Chega de descobrir com quem a protagonista vai ficar.<br><em>Descubra quem faria VOCÊ continuar a história.</em></h2>
+        <button class="btn-primary" id="start-quiz-btn" type="button">DESCOBRIR QUEM SERIA MEU PAR →</button>
+        <p class="cta-micro">15 decisões. Sem resposta certa. Suas escolhas constroem o resultado.</p>
+      </div>
+    </section>
+  </div>
+
+  <p class="footer-note">Dorama Match é uma experiência de entretenimento baseada em preferência narrativa. Não é um teste científico, psicológico ou diagnóstico.</p>
+</div>
+
+<!-- ============================================================
+     QUIZ
+============================================================ -->
+<section id="quiz">
+  <div class="wrap quiz-shell">
+    <div class="quiz-progress-wrap" id="quiz-progress-wrap" hidden>
+      <div class="quiz-progress-track"><div class="quiz-progress-bar" id="quiz-progress-bar"></div></div>
+      <div class="quiz-progress-label" id="quiz-progress-label">1/15</div>
+    </div>
+    <div id="quiz-stage"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     POPUP
+============================================================ -->
+<div class="popup-overlay" id="popup-overlay">
+  <div class="popup-card" style="position:relative;">
+    <button class="popup-close" id="popup-close" aria-label="Fechar">×</button>
+    <div class="popup-handle"></div>
+    <span class="eyebrow">Sua história começou</span>
+    <h3 style="margin-top:14px;">Seu quiz acabou de montar o começo de uma história que só combina com você.</h3>
+    <p>Você já escolheu quem chama sua atenção, como seria o primeiro beijo, o tipo de toque que cria tensão, o lugar onde tudo poderia acontecer e a complicação que colocaria a história em risco.</p>
+    <p>Agora falta descobrir quem é essa pessoa e o que acontece quando vocês param de fingir que não existe nada ali.</p>
+
+    <div class="popup-recap" id="popup-recap"></div>
+
+    <button class="btn-primary" id="popup-cta" type="button">VER COMO MINHA HISTÓRIA COMEÇA →</button>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-stack" id="toast-stack"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   STATE
+============================================================ */
+var state = {
+  nome:'',
+  genero:'',
+  atracao:'', // 'mulheres' | 'homens' | 'mais_um' | 'prefiro_nao'
+  step:0,     // 0 name, 1 gender, 2 attraction, 3..17 questions, 18 processing, 19 result
+  qIndex:0,   // 0-based question index (0-14)
+  scores:{gelo:0, amigo:0, rival:0, misterio:0},
+  answers:{}, // detalhe, beijo, toque, lugar, complicacao
+  pendingFeedback:null // {archKey}
+};
+
+/* ============================================================
+   GENDER LANGUAGE — central adaptation layer
+============================================================ */
+// Every dynamic string in the quiz is either a plain string (gender-neutral)
+// or an object {f, m, n} picked through pick(). This avoids naive word
+// substitution and keeps every sentence grammatically correct.
+function orientKey(){
+  if(state.atracao === 'mulheres') return 'f';
+  if(state.atracao === 'homens') return 'm';
+  return 'n'; // mais_um / prefiro_nao
+}
+function pick(v){
+  if(typeof v === 'string') return v;
+  var k = orientKey();
+  return v[k] != null ? v[k] : v.n;
+}
+function getRomanceLanguage(){
+  var k = orientKey();
+  var dict = {
+    f:{ pronome:'ela', possessivo:'dela', pessoa:'a mulher', chefe:'a chefe', amigo:'melhor amiga', rival:'a rival', desconhecida:'a desconhecida', misteriosa:'a mulher misteriosa' },
+    m:{ pronome:'ele', possessivo:'dele', pessoa:'o homem', chefe:'o chefe', amigo:'melhor amigo', rival:'o rival', desconhecida:'o desconhecido', misteriosa:'o homem misterioso' },
+    n:{ pronome:'essa pessoa', possessivo:'dessa pessoa', pessoa:'essa pessoa', chefe:'uma pessoa do trabalho', amigo:'porto seguro', rival:'uma pessoa rival', desconhecida:'uma pessoa desconhecida', misteriosa:'alguém misterioso' }
+  };
+  return dict[k];
+}
+function archetypeTitle(key){
+  var titles = {
+    gelo:{f:'Gelo', m:'Gelo', n:'Gelo'},
+    amigo:{f:'Melhor Amiga', m:'Melhor Amigo', n:'Porto Seguro'},
+    rival:{f:'Rival', m:'Rival', n:'Rival'},
+    misterio:{f:'Mistério', m:'Mistério', n:'Mistério'}
+  };
+  return pick(titles[key]);
+}
+
+/* ============================================================
+   QUIZ — question bank (progressively more intense)
+============================================================ */
+var QUESTIONS = [
+  { // 1 - encontro casual
+    text:'Você está saindo de um café quando começa a chover. Quem chama sua atenção?',
+    options:[
+      {arch:'gelo', label:{f:'A mulher que oferece o guarda-chuva sem dizer quase nada.', m:'O homem que oferece o guarda-chuva sem dizer quase nada.', n:'A pessoa que oferece o guarda-chuva sem dizer quase nada.'}},
+      {arch:'amigo', label:{f:'A mulher que ri e corre com você para debaixo de uma cobertura.', m:'O homem que ri e corre com você para debaixo de uma cobertura.', n:'A pessoa que ri e corre com você para debaixo de uma cobertura.'}},
+      {arch:'rival', label:{f:'A mulher que provoca você por ter esquecido o guarda-chuva.', m:'O homem que provoca você por ter esquecido o guarda-chuva.', n:'A pessoa que provoca você por ter esquecido o guarda-chuva.'}},
+      {arch:'misterio', label:{f:'A desconhecida que entrega o próprio guarda-chuva e desaparece.', m:'O desconhecido que entrega o próprio guarda-chuva e desaparece.', n:'Alguém desconhecido que entrega o próprio guarda-chuva e desaparece.'}}
+    ]
+  },
+  { // 2 - primeira impressão
+    text:'Em uma festa cheia de gente, uma pessoa chama sua atenção assim que você entra. O que faz você reparar nela primeiro?',
+    options:[
+      {arch:'gelo', label:{f:'Ela está sozinha, observando tudo com uma expressão indecifrável.', m:'Ele está sozinho, observando tudo com uma expressão indecifrável.', n:'Essa pessoa está sozinha, observando tudo com uma expressão indecifrável.'}},
+      {arch:'amigo', label:{f:'Ela puxa conversa com naturalidade, como se vocês já se conhecessem.', m:'Ele puxa conversa com naturalidade, como se vocês já se conhecessem.', n:'Essa pessoa puxa conversa com naturalidade, como se vocês já se conhecessem.'}},
+      {arch:'rival', label:{f:'Ela faz um comentário sarcástico sobre algo que você disse.', m:'Ele faz um comentário sarcástico sobre algo que você disse.', n:'Essa pessoa faz um comentário sarcástico sobre algo que você disse.'}},
+      {arch:'misterio', label:{f:'Ela some no meio da conversa antes de você descobrir o nome.', m:'Ele some no meio da conversa antes de você descobrir o nome.', n:'Essa pessoa some no meio da conversa antes de você descobrir o nome.'}}
+    ]
+  },
+  { // 3 - comportamento após o encontro
+    text:'Depois de um primeiro encontro que pareceu bom, o que aconteceria em seguida?',
+    options:[
+      {arch:'gelo', label:{f:'Ela demora para escrever, mas quando escreve a mensagem é certeira.', m:'Ele demora para escrever, mas quando escreve a mensagem é certeira.', n:'Essa pessoa demora para escrever, mas quando escreve a mensagem é certeira.'}},
+      {arch:'amigo', label:{f:'Ela manda mensagem ainda no caminho de casa, animada com tudo.', m:'Ele manda mensagem ainda no caminho de casa, animado com tudo.', n:'Essa pessoa manda mensagem ainda no caminho de casa, animada com tudo.'}},
+      {arch:'rival', label:{f:'Ela manda uma mensagem provocando você sobre algo que disse durante o encontro.', m:'Ele manda uma mensagem provocando você sobre algo que disse durante o encontro.', n:'Essa pessoa manda uma mensagem provocando você sobre algo que disse durante o encontro.'}},
+      {arch:'misterio', label:{f:'Ela leva dias para responder e não explica o motivo do silêncio.', m:'Ele leva dias para responder e não explica o motivo do silêncio.', n:'Essa pessoa leva dias para responder e não explica o motivo do silêncio.'}}
+    ]
+  },
+  { // 4 - defeito que você toleraria
+    text:'Toda pessoa tem um defeito que incomodaria qualquer um, menos você. Qual seria o seu limite?',
+    options:[
+      {arch:'gelo', label:'A frieza aparente, mesmo sabendo que é só uma forma de proteção.'},
+      {arch:'amigo', label:'O excesso de proximidade, mesmo quando você precisa de espaço.'},
+      {arch:'rival', label:'A implicância constante, mesmo quando incomoda um pouco.'},
+      {arch:'misterio', label:'Os segredos guardados, mesmo sem explicação nenhuma.'}
+    ]
+  },
+  { // 5 - cuidado inesperado (feedback depois)
+    text:'Depois de um dia ruim, alguém aparece com um gesto de cuidado que você não esperava. O que seria?',
+    options:[
+      {arch:'gelo', label:{f:'Ela aparece sem avisar, só para garantir que você comeu algo no dia.', m:'Ele aparece sem avisar, só para garantir que você comeu algo no dia.', n:'Essa pessoa aparece sem avisar, só para garantir que você comeu algo no dia.'}},
+      {arch:'amigo', label:{f:'Ela larga tudo e vai até você, mesmo sem pedir.', m:'Ele larga tudo e vai até você, mesmo sem pedir.', n:'Essa pessoa larga tudo e vai até você, mesmo sem pedir.'}},
+      {arch:'rival', label:{f:'Ela manda uma mensagem provocando, mas depois pergunta se está tudo bem de verdade.', m:'Ele manda uma mensagem provocando, mas depois pergunta se está tudo bem de verdade.', n:'Essa pessoa manda uma mensagem provocando, mas depois pergunta se está tudo bem de verdade.'}},
+      {arch:'misterio', label:{f:'Ela deixa um bilhete ou um presente sem assinar, e você sabe que foi ela.', m:'Ele deixa um bilhete ou um presente sem assinar, e você sabe que foi ele.', n:'Essa pessoa deixa um bilhete ou um presente sem assinar, e você sabe exatamente de quem foi.'}}
+    ]
+  },
+  { // 6 - ciúme
+    text:'Alguém demonstra ciúme de um jeito que só depois você percebe o que realmente era. Como isso aconteceria?',
+    options:[
+      {arch:'gelo', label:{f:'Ela fica mais quieta que o normal e muda de assunto rápido demais.', m:'Ele fica mais quieto que o normal e muda de assunto rápido demais.', n:'Essa pessoa fica mais quieta que o normal e muda de assunto rápido demais.'}},
+      {arch:'amigo', label:{f:'Ela faz uma piada sobre a situação, mas evita seu olhar por alguns segundos.', m:'Ele faz uma piada sobre a situação, mas evita seu olhar por alguns segundos.', n:'Essa pessoa faz uma piada sobre a situação, mas evita seu olhar por alguns segundos.'}},
+      {arch:'rival', label:{f:'Ela provoca a outra pessoa envolvida sem nenhuma necessidade.', m:'Ele provoca a outra pessoa envolvida sem nenhuma necessidade.', n:'Essa pessoa provoca a outra pessoa envolvida sem nenhuma necessidade.'}},
+      {arch:'misterio', label:{f:'Ela some da conversa e só reaparece horas depois, sem explicação.', m:'Ele some da conversa e só reaparece horas depois, sem explicação.', n:'Essa pessoa some da conversa e só reaparece horas depois, sem explicação.'}}
+    ]
+  },
+  { // 7 - provocação
+    text:'No meio de uma conversa qualquer, o clima muda quando alguém decide provocar você. Como seria essa provocação?',
+    options:[
+      {arch:'gelo', label:{f:'Ela solta um comentário seco que só depois você entende que era flerte.', m:'Ele solta um comentário seco que só depois você entende que era flerte.', n:'Essa pessoa solta um comentário seco que só depois você entende que era flerte.'}},
+      {arch:'amigo', label:{f:'Ela zoa você do jeito que só quem te conhece bem consegue zoar.', m:'Ele zoa você do jeito que só quem te conhece bem consegue zoar.', n:'Essa pessoa zoa você do jeito que só quem te conhece bem consegue zoar.'}},
+      {arch:'rival', label:{f:'Ela desafia você abertamente, só para ver como você reage.', m:'Ele desafia você abertamente, só para ver como você reage.', n:'Essa pessoa desafia você abertamente, só para ver como você reage.'}},
+      {arch:'misterio', label:{f:'Ela faz uma pergunta que revela que sabe mais sobre você do que devia.', m:'Ele faz uma pergunta que revela que sabe mais sobre você do que devia.', n:'Essa pessoa faz uma pergunta que revela que sabe mais sobre você do que devia.'}}
+    ]
+  },
+  { // 8 - olhar (feedback depois)
+    text:'Existe um tipo de olhar que muda tudo em uma cena. Qual seria o mais perigoso para você?',
+    options:[
+      {arch:'gelo', label:{f:'O olhar que ela desvia rápido demais para não deixar transparecer algo.', m:'O olhar que ele desvia rápido demais para não deixar transparecer algo.', n:'O olhar que essa pessoa desvia rápido demais para não deixar transparecer algo.'}},
+      {arch:'amigo', label:'O olhar cúmplice que só vocês dois entendem em uma sala cheia de gente.'},
+      {arch:'rival', label:'O olhar de desafio bem antes de uma discussão começar.'},
+      {arch:'misterio', label:{f:'O olhar longo demais, como se ela soubesse de algo que você não sabe.', m:'O olhar longo demais, como se ele soubesse de algo que você não sabe.', n:'O olhar longo demais, como se essa pessoa soubesse de algo que você não sabe.'}}
+    ]
+  },
+  { // 9 - perfume / cheiro
+    text:'Qual detalhe faria uma cena continuar na sua cabeça depois?',
+    options:[
+      {arch:'gelo', label:{f:'Ela chega perto para falar baixo e você reconhece o perfume dela depois.', m:'Ele chega perto para falar baixo e você reconhece o perfume dele depois.', n:'Essa pessoa chega perto para falar baixo e você reconhece o perfume dessa pessoa depois.'}},
+      {arch:'amigo', label:'O cheiro familiar durante um abraço que dura mais do que deveria.'},
+      {arch:'rival', label:{f:'Ela passa perto demais durante uma provocação.', m:'Ele passa perto demais durante uma provocação.', n:'Essa pessoa passa perto demais durante uma provocação.'}},
+      {arch:'misterio', label:{f:'Você reconhece o perfume dela antes mesmo de perceber que ela entrou no lugar.', m:'Você reconhece o perfume dele antes mesmo de perceber que ele entrou no lugar.', n:'Você reconhece o perfume antes mesmo de perceber que essa pessoa entrou no lugar.'}}
+    ]
+  },
+  { // 10 - proximidade física
+    text:'Em um espaço apertado — um elevador, um carro, um corredor — a proximidade física muda tudo. O que aconteceria?',
+    options:[
+      {arch:'gelo', label:{f:'Ela fica em silêncio, mas você sente que ela está tão consciente da distância quanto você.', m:'Ele fica em silêncio, mas você sente que ele está tão consciente da distância quanto você.', n:'Essa pessoa fica em silêncio, mas você sente que está tão consciente da distância quanto você.'}},
+      {arch:'amigo', label:{f:'Ela encosta o ombro no seu sem pensar duas vezes, como sempre fez.', m:'Ele encosta o ombro no seu sem pensar duas vezes, como sempre fez.', n:'Essa pessoa encosta o ombro no seu sem pensar duas vezes, como sempre fez.'}},
+      {arch:'rival', label:{f:'Ela não se afasta, só para ver se você é quem vai recuar primeiro.', m:'Ele não se afasta, só para ver se você é quem vai recuar primeiro.', n:'Essa pessoa não se afasta, só para ver se você é quem vai recuar primeiro.'}},
+      {arch:'misterio', label:{f:'Ela se aproxima devagar, como se estivesse testando até onde você deixaria chegar.', m:'Ele se aproxima devagar, como se estivesse testando até onde você deixaria chegar.', n:'Essa pessoa se aproxima devagar, como se estivesse testando até onde você deixaria chegar.'}}
+    ]
+  },
+  { // 11 - primeiro beijo (feedback depois)
+    text:'Qual situação criaria mais tensão antes do primeiro beijo?',
+    options:[
+      {arch:'gelo', label:'Silêncio e troca de olhar. Ninguém quer ser o primeiro a se aproximar.'},
+      {arch:'amigo', label:'Uma conversa íntima termina com vocês percebendo que já estão perto demais.'},
+      {arch:'rival', label:'Uma discussão termina quando os dois param de prestar atenção no que estavam discutindo.'},
+      {arch:'misterio', label:{f:'Ela quase beija você, para e diz que precisa contar alguma coisa primeiro.', m:'Ele quase beija você, para e diz que precisa contar alguma coisa primeiro.', n:'Essa pessoa quase beija você, para e diz que precisa contar alguma coisa primeiro.'}}
+    ]
+  },
+  { // 12 - toque / mão boba
+    text:'E quando o toque deixa de parecer acidental?',
+    options:[
+      {arch:'gelo', label:{f:'A mão dela toca sua cintura por alguns segundos além do necessário.', m:'A mão dele toca sua cintura por alguns segundos além do necessário.', n:'A mão dessa pessoa toca sua cintura por alguns segundos além do necessário.'}},
+      {arch:'amigo', label:'Vocês percebem que estão de mãos dadas sem saber exatamente quando aconteceu.'},
+      {arch:'rival', label:'No meio da provocação, uma mão boba quase passa do limite e os dois percebem.'},
+      {arch:'misterio', label:{f:'Ela toca você como se soubesse exatamente qual seria sua reação.', m:'Ele toca você como se soubesse exatamente qual seria sua reação.', n:'Essa pessoa toca você como se soubesse exatamente qual seria sua reação.'}}
+    ]
+  },
+  { // 13 - ficar sozinho com a pessoa
+    text:'Vocês acabam sozinhos em algum lugar sem planejar. O que tornaria esse momento inesquecível?',
+    options:[
+      {arch:'gelo', label:{f:'O silêncio confortável, quebrado só quando ela diz algo inesperadamente sincero.', m:'O silêncio confortável, quebrado só quando ele diz algo inesperadamente sincero.', n:'O silêncio confortável, quebrado só quando essa pessoa diz algo inesperadamente sincero.'}},
+      {arch:'amigo', label:'A sensação de que, mesmo sem fazer nada, é o melhor lugar para estar.'},
+      {arch:'rival', label:'A provocação que quase vira uma briga e depois vira outra coisa.'},
+      {arch:'misterio', label:{f:'Ela quase conta um segredo, mas muda de ideia no último segundo.', m:'Ele quase conta um segredo, mas muda de ideia no último segundo.', n:'Essa pessoa quase conta um segredo, mas muda de ideia no último segundo.'}}
+    ]
+  },
+  { // 14 - lugar proibido (feedback depois)
+    text:'Vocês não deveriam estar ali. Qual cenário deixaria tudo pior?',
+    options:[
+      {arch:'gelo', label:'Escritório vazio depois do expediente.'},
+      {arch:'amigo', label:'Viagem em grupo em que vocês acabam sozinhos.'},
+      {arch:'rival', label:'Corredor reservado durante uma festa onde vocês deveriam estar em lados opostos.'},
+      {arch:'misterio', label:{f:'Um lugar ligado ao passado dela onde você claramente não deveria ter entrado.', m:'Um lugar ligado ao passado dele onde você claramente não deveria ter entrado.', n:'Um lugar ligado ao passado dessa pessoa onde você claramente não deveria ter entrado.'}}
+    ]
+  },
+  { // 15 - complicação emocional
+    text:'Qual complicação deixaria a história mais difícil de abandonar?',
+    options:[
+      {arch:'gelo', label:{f:'Existe uma posição profissional que faz ela tentar manter distância.', m:'Existe uma posição profissional que faz ele tentar manter distância.', n:'Existe uma posição profissional que faz essa pessoa tentar manter distância.'}},
+      {arch:'amigo', label:'Uma amizade antiga pode mudar completamente.'},
+      {arch:'rival', label:{f:'Existe atração evidente, mas ela ainda precisa encerrar outra relação antes de qualquer romance avançar.', m:'Existe atração evidente, mas ele ainda precisa encerrar outra relação antes de qualquer romance avançar.', n:'Existe atração evidente, mas essa pessoa ainda precisa encerrar outra relação antes de qualquer romance avançar.'}},
+      {arch:'misterio', label:{f:'Ela evita se envolver porque existe alguém ou alguma história do passado que você ainda não conhece.', m:'Ele evita se envolver porque existe alguém ou alguma história do passado que você ainda não conhece.', n:'Essa pessoa evita se envolver porque existe alguém ou alguma história do passado que você ainda não conhece.'}}
+    ]
+  }
+];
+
+// which 1-based question triggers a "special answer" saved for the popup
+var SPECIAL_ANSWER_BY_QINDEX = { 8:'detalhe', 10:'beijo', 11:'toque', 13:'lugar', 14:'complicacao' };
+// 1-based question numbers after which a feedback interstitial appears
+var FEEDBACK_AFTER = [5,8,11,14];
+
+var FEEDBACK_TEXT = {
+  gelo:'Você parece prestar atenção justamente no que a pessoa tenta esconder. Pequenos gestos pesam mais para você do que uma declaração enorme.',
+  amigo:'Para você, intimidade construída aos poucos parece valer mais do que uma atração instantânea.',
+  rival:'Você não parece fugir de provocação. Quando existe química junto com confronto, sua atenção aumenta.',
+  misterio:'Quando falta uma peça da história, você não perde o interesse. Você quer descobrir.'
+};
+
+var RESULT_ANALYSIS = {
+  gelo:'Você demonstrou interesse repetido por pessoas difíceis de decifrar. Quando o afeto aparece em pequenas doses, sua curiosidade parece aumentar.',
+  amigo:'Suas escolhas mostram um padrão claro: você se prende quando existe segurança e proximidade construída aos poucos, não quando tudo acontece rápido demais.',
+  rival:'Mais de uma vez, o mesmo padrão se repetiu nas suas respostas: tensão e provocação parecem prender sua atenção mais do que gentileza óbvia.',
+  misterio:'Nas suas respostas, o que fica incompleto ganha mais peso do que o que já está resolvido. Você se interessa pelo que ainda precisa ser descoberto.'
+};
+
+/* ============================================================
+   NAV HELPERS
+============================================================ */
+function el(html){
+  var d = document.createElement('div');
+  d.innerHTML = html.trim();
+  return d.firstChild;
+}
+function stage(){ return document.getElementById('quiz-stage'); }
+function renderInto(html){
+  var s = stage();
+  s.innerHTML = '';
+  var card = el('<div class="quiz-card">'+html+'</div>');
+  s.appendChild(card);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function updateProgress(){
+  var wrap = document.getElementById('quiz-progress-wrap');
+  if(state.step >= 3 && state.step <= 17){
+    wrap.hidden = false;
+    var n = state.qIndex + 1;
+    document.getElementById('quiz-progress-bar').style.width = (n/15*100)+'%';
+    document.getElementById('quiz-progress-label').textContent = n+'/15';
+  } else {
+    wrap.hidden = true;
+  }
+}
+
+/* ============================================================
+   RENDER: personalization steps
+============================================================ */
+function renderName(){
+  updateProgress();
+  renderInto(
+    '<span class="eyebrow">Antes de começar</span>'+
+    '<h2 class="quiz-question" style="margin-top:14px;">Antes de entrar na história, como podemos te chamar?</h2>'+
+    '<label class="field-label">Seu nome ou apelido</label>'+
+    '<input class="text-input" id="name-input" type="text" placeholder="Digite aqui..." maxlength="40" value="'+escapeHtml(state.nome)+'">'+
+    '<button class="btn-primary" id="name-continue" type="button" style="max-width:none;">CONTINUAR →</button>'
+  );
+  var input = document.getElementById('name-input');
+  input.focus();
+  function go(){
+    var v = input.value.trim();
+    if(!v) v = 'Você';
+    state.nome = v;
+    state.step = 1;
+    renderGender();
+  }
+  document.getElementById('name-continue').addEventListener('click', go);
+  input.addEventListener('keydown', function(e){ if(e.key==='Enter') go(); });
+}
+
+function renderGender(){
+  updateProgress();
+  var opts = ['Mulher','Homem','Não binário ou outro','Prefiro não responder'];
+  renderInto(
+    '<span class="eyebrow">'+escapeHtml(state.nome)+', só mais um passo</span>'+
+    '<h2 class="quiz-question" style="margin-top:14px;">Com qual gênero você se identifica?</h2>'+
+    '<div class="option-list">'+
+      opts.map(function(o,i){ return '<button class="option-btn" data-i="'+i+'">'+o+'</button>'; }).join('')+
+    '</div>'+
+    backLink('name')
+  );
+  Array.prototype.forEach.call(document.querySelectorAll('.option-btn'), function(btn){
+    btn.addEventListener('click', function(){
+      state.genero = opts[+btn.dataset.i];
+      state.step = 2;
+      renderAttraction();
+    });
+  });
+}
+
+function renderAttraction(){
+  updateProgress();
+  var opts = [
+    {label:'Mulheres', value:'mulheres'},
+    {label:'Homens', value:'homens'},
+    {label:'Mais de um gênero', value:'mais_um'},
+    {label:'Prefiro não responder', value:'prefiro_nao'}
+  ];
+  renderInto(
+    '<span class="eyebrow">Isso vai moldar sua história</span>'+
+    '<h2 class="quiz-question" style="margin-top:14px;">Por quem você sente atração?</h2>'+
+    '<div class="option-list">'+
+      opts.map(function(o,i){ return '<button class="option-btn" data-i="'+i+'">'+o.label+'</button>'; }).join('')+
+    '</div>'+
+    backLink('gender')
+  );
+  Array.prototype.forEach.call(document.querySelectorAll('.option-btn'), function(btn){
+    btn.addEventListener('click', function(){
+      state.atracao = opts[+btn.dataset.i].value;
+      state.step = 3;
+      state.qIndex = 0;
+      renderQuestion();
+    });
+  });
+}
+
+function backLink(target){
+  return '<div class="quiz-nav"><button class="link-btn" id="back-btn" type="button">← Voltar</button><span></span></div>'
+    .replace('id="back-btn"', 'id="back-btn" data-target="'+target+'"');
+}
+document.addEventListener('click', function(e){
+  var t = e.target.closest && e.target.closest('#back-btn');
+  if(!t) return;
+  var target = t.dataset.target;
+  if(target==='name'){ state.step=0; renderName(); }
+  if(target==='gender'){ state.step=1; renderGender(); }
+});
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+/* ============================================================
+   RENDER: quiz question
+============================================================ */
+function renderQuestion(){
+  updateProgress();
+  var q = QUESTIONS[state.qIndex];
+  var num = state.qIndex + 1;
+  renderInto(
+    '<span class="eyebrow quiz-eyebrow">Pergunta '+num+' de 15</span>'+
+    '<h2 class="quiz-question">'+q.text+'</h2>'+
+    '<div class="option-list">'+
+      q.options.map(function(o,i){ return '<button class="option-btn" data-i="'+i+'">'+pick(o.label)+'</button>'; }).join('')+
+    '</div>'
+  );
+  Array.prototype.forEach.call(document.querySelectorAll('.option-btn'), function(btn){
+    btn.addEventListener('click', function(){
+      answerQuestion(q.options[+btn.dataset.i]);
+    });
+  });
+}
+
+function answerQuestion(option){
+  state.scores[option.arch]++;
+  var num = state.qIndex + 1;
+  var specialKey = SPECIAL_ANSWER_BY_QINDEX[num];
+  if(specialKey){ state.answers[specialKey] = pick(option.label); }
+
+  var needsFeedback = FEEDBACK_AFTER.indexOf(num) !== -1;
+  state.qIndex++;
+
+  if(needsFeedback){
+    renderFeedback(option.arch);
+  } else if(state.qIndex >= QUESTIONS.length){
+    goProcessing();
+  } else {
+    renderQuestion();
+  }
+}
+
+function renderFeedback(archKey){
+  renderInto(
+    '<div class="feedback-card">'+
+      '<div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c7a05e" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>'+
+      '<p>"'+FEEDBACK_TEXT[archKey]+'"</p>'+
+      '<button class="btn-primary" id="feedback-continue" type="button" style="max-width:none;">CONTINUAR →</button>'+
+    '</div>'
+  );
+  document.getElementById('feedback-continue').addEventListener('click', function(){
+    if(state.qIndex >= QUESTIONS.length){ goProcessing(); }
+    else { renderQuestion(); }
+  });
+}
+
+/* ============================================================
+   PROCESSING → RESULT
+============================================================ */
+function goProcessing(){
+  state.step = 18;
+  updateProgress();
+  renderInto(
+    '<div class="processing-wrap">'+
+      '<div class="spinner"></div>'+
+      '<p>Cruzando suas escolhas...</p>'+
+    '</div>'
+  );
+  setTimeout(function(){
+    state.step = 19;
+    renderResult();
+  }, 2200);
+}
+
+function winningArchetype(){
+  var order = ['gelo','amigo','rival','misterio'];
+  var sorted = order.slice().sort(function(a,b){ return state.scores[b]-state.scores[a]; });
+  return { winner:sorted[0], second:sorted[1] };
+}
+
+function renderResult(){
+  updateProgress();
+  var res = winningArchetype();
+  var winnerScore = state.scores[res.winner];
+  var lang = getRomanceLanguage();
+
+  renderInto(
+    '<div class="result-wrap">'+
+      '<div class="result-eyebrow"><span class="eyebrow" style="justify-content:center;">'+escapeHtml(state.nome)+', seu resultado</span></div>'+
+      '<h2 class="result-headline">Encontramos um padrão claro nas suas escolhas.</h2>'+
+      '<div class="result-hero-card">'+
+        '<span class="eyebrow" style="justify-content:center;">Seu arquétipo predominante</span>'+
+        '<div class="result-arch-name">'+archetypeTitle(res.winner)+'</div>'+
+        '<p class="result-analysis">'+RESULT_ANALYSIS[res.winner]+'</p>'+
+        '<span class="result-score">'+winnerScore+' das suas 15 escolhas românticas apontaram diretamente para este padrão.</span>'+
+      '</div>'+
+      '<div class="locked-list">'+
+        lockedItem('Seu arquétipo romântico exato', 'nível de precisão completo')+
+        lockedItem('O que mais aumenta sua atração dentro de uma história', 'gatilho emocional principal')+
+        lockedItem('Seu ponto fraco narrativo', 'onde sua guarda cai')+
+        lockedItem('Sua segunda tendência mais forte', 'padrão secundário')+
+        lockedItem('O cenário de dorama que mais combina com suas escolhas', 'ambientação ideal')+
+      '</div>'+
+      '<p class="result-footnote">Isso é uma experiência de entretenimento baseada em preferência narrativa — não é um diagnóstico psicológico nem um teste científico.</p>'+
+    '</div>'
+  );
+
+  setTimeout(showPopup, 30000);
+}
+
+function lockedItem(title, sub){
+  return '<div class="locked-item">'+
+    '<div class="lock-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#c7a05e" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>'+
+    '<div class="locked-text"><div class="locked-title">'+title+'</div><div class="locked-sub">'+sub+'</div></div>'+
+  '</div>';
+}
+
+/* ============================================================
+   POPUP
+============================================================ */
+var popupShown = false;
+function showPopup(){
+  if(popupShown) return;
+  popupShown = true;
+  var res = winningArchetype();
+  var recap = document.getElementById('popup-recap');
+  recap.innerHTML = [
+    recapRow('Arquétipo', archetypeTitle(res.winner)),
+    recapRow('Primeiro beijo', state.answers.beijo || '—'),
+    recapRow('Lugar', state.answers.lugar || '—'),
+    recapRow('Complicação', state.answers.complicacao || '—')
+  ].join('');
+  document.getElementById('popup-overlay').classList.add('show');
+}
+function recapRow(key, val){
+  return '<div class="recap-row"><div class="recap-key">'+key+'</div><div class="recap-val">'+val+'</div></div>';
+}
+function hidePopup(){
+  document.getElementById('popup-overlay').classList.remove('show');
+}
+document.getElementById('popup-close').addEventListener('click', hidePopup);
+document.getElementById('popup-overlay').addEventListener('click', function(e){
+  if(e.target === this) hidePopup();
+});
+document.getElementById('popup-cta').addEventListener('click', function(){
+  var res = winningArchetype();
+  var params = new URLSearchParams({
+    nome: state.nome,
+    genero: state.genero,
+    atracao: state.atracao,
+    arquetipo: archetypeTitle(res.winner),
+    beijo: state.answers.beijo || '',
+    toque: state.answers.toque || '',
+    lugar: state.answers.lugar || '',
+    detalhe: state.answers.detalhe || '',
+    complicacao: state.answers.complicacao || ''
+  });
+  window.location.href = 'crie-seu-dorama.html?'+params.toString();
+});
+
+/* ============================================================
+   LANDING → QUIZ TRANSITION
+============================================================ */
+document.getElementById('start-quiz-btn').addEventListener('click', function(){
+  document.getElementById('landing').classList.add('hidden');
+  var quiz = document.getElementById('quiz');
+  quiz.classList.add('active');
+  window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  state.step = 0;
+  renderName();
+});
+
+/* ============================================================
+   TOASTS (demo activity — NOT real user data)
+============================================================ */
+// DEMO ONLY: these are illustrative placeholder events, clearly labeled
+// "Exemplo de atividade" in the UI. Set TOASTS_ENABLED to false to disable
+// before any real deployment.
+var TOASTS_ENABLED = true;
+var DEMO_NAMES = ['Lúcia','Marta','Rafael','Carolina','Bruno','Aline','Diego','Patrícia','Camila','Felipe'];
+var DEMO_ACTIONS = [
+  'descobriu seu padrão romântico.',
+  'terminou o quiz.',
+  'começou a montar a própria história.',
+  'abriu o criador de história.',
+  'descobriu seu arquétipo.'
+];
+function spawnToast(){
+  if(!TOASTS_ENABLED) return;
+  var name = DEMO_NAMES[Math.floor(Math.random()*DEMO_NAMES.length)];
+  var action = DEMO_ACTIONS[Math.floor(Math.random()*DEMO_ACTIONS.length)];
+  var stack = document.getElementById('toast-stack');
+  var t = el(
+    '<div class="toast">'+
+      '<div class="dot"></div>'+
+      '<div><div class="toast-text">'+name+' '+action+'</div><span class="toast-tag">Exemplo de atividade</span></div>'+
+    '</div>'
+  );
+  stack.appendChild(t);
+  requestAnimationFrame(function(){ t.classList.add('show'); });
+  setTimeout(function(){
+    t.classList.remove('show');
+    setTimeout(function(){ t.remove(); }, 350);
+  }, 4200);
+  scheduleToast();
+}
+function scheduleToast(){
+  var delay = 15000 + Math.random()*15000; // 15–30s
+  setTimeout(spawnToast, delay);
+}
+scheduleToast();
+
+})();
+</script>
+</body>
+</html>
