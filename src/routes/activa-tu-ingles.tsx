@@ -1,14 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
+  AlertTriangle,
   ArrowRight,
+  Briefcase,
   Check,
   Clock,
+  DollarSign,
   Flame,
+  Globe,
   GraduationCap,
+  Heart,
   Lock,
+  Plane,
   Sparkles,
   Star,
+  TrendingUp,
   Trophy,
   X,
 } from "lucide-react";
@@ -103,6 +110,67 @@ const PREGUNTAS: Record<Nivel, Pregunta[]> = {
         'Para describir cómo te sientes tú se usa el adjetivo terminado en "-ed": excited. "Exciting" describe a la cosa, no a la persona.',
     },
   ],
+};
+
+type MotivoId = "trabajo" | "viajar" | "migrar" | "negocios" | "estudios" | "personal";
+
+const MOTIVOS: { id: MotivoId; label: string; icon: typeof Briefcase }[] = [
+  { id: "trabajo", label: "Conseguir un mejor trabajo o un aumento", icon: Briefcase },
+  { id: "viajar", label: "Viajar sin depender de un traductor", icon: Plane },
+  { id: "migrar", label: "Emigrar a EE.UU. o Canadá", icon: Globe },
+  { id: "negocios", label: "Ganar en dólares (remoto o freelance)", icon: DollarSign },
+  { id: "estudios", label: "Estudiar en el extranjero", icon: GraduationCap },
+  { id: "personal", label: "Sentirme más seguro/a y crecer", icon: Heart },
+];
+
+const COPIA_MOTIVO: Record<MotivoId, { dolor: string; oportunidad: string; cierre: string }> = {
+  trabajo: {
+    dolor:
+      '¿Cuántas ofertas de trabajo pidieron "inglés intermedio" y las dejaste pasar? Cada mes que no avanzas, alguien con menos experiencia que tú se queda con el puesto solo por hablar inglés.',
+    oportunidad:
+      "Los puestos bilingües pagan hasta 40% más en Latinoamérica. Dominar el inglés cotidiano en 30 días puede ser la diferencia entre seguir igual o subir de nivel en tu carrera.",
+    cierre:
+      "El Mapa Mental te da el vocabulario de entrevistas y ambiente laboral que la escuela nunca te enseñó.",
+  },
+  viajar: {
+    dolor:
+      "Imagina llegar a otro país y no poder pedir lo que necesitas, perderte por no entender un letrero, o depender de que alguien más hable por ti todo el viaje.",
+    oportunidad:
+      "Con el inglés básico-intermedio bien puesto, viajas con seguridad, resuelves cualquier imprevisto tú mismo/a y disfrutas el viaje en vez de sobrevivirlo.",
+    cierre:
+      "Las frases más usadas del Kit son justo las que necesitas en aeropuertos, hoteles y restaurantes.",
+  },
+  migrar: {
+    dolor:
+      "El idioma es la barrera #1 para quien emigra — no es la visa, es no entender ni poder hacerte entender en el día a día.",
+    oportunidad:
+      "Quien llega con inglés funcional se adapta 3 veces más rápido, consigue trabajo antes y no depende de nadie para lo básico.",
+    cierre:
+      "El Plan de Estudio de 30 días está pensado para dejarte funcional antes de dar el paso.",
+  },
+  negocios: {
+    dolor:
+      "El inglés es el idioma de los clientes, las plataformas y los pagos en dólares. Sin él, sigues compitiendo solo en el mercado local.",
+    oportunidad:
+      "Quien negocia en inglés accede a clientes y contratos que pagan en dólares — el doble o el triple de lo que se cobra en moneda local.",
+    cierre:
+      "Las jergas y frases de negocios del Kit te dan el vocabulario para sonar profesional desde el primer mensaje.",
+  },
+  estudios: {
+    dolor:
+      "Las mejores becas y universidades piden inglés certificado — sin él, ni siquiera puedes aplicar.",
+    oportunidad:
+      "Con una base sólida, un examen como el TOEFL o el IELTS deja de ser una montaña imposible.",
+    cierre: "El Mapa Mental cubre el vocabulario académico que las apps genéricas no enseñan.",
+  },
+  personal: {
+    dolor:
+      'Sentir que "no se te da el inglés" después de tantos intentos frustrados es agotador — y frena tu confianza en todo lo demás.',
+    oportunidad:
+      "Aprender con un método visual y sin gramática aburrida cambia esa historia — la confianza que ganas se nota en todo lo que haces.",
+    cierre:
+      "Este Kit está pensado para el método que sí funciona: visual, práctico y sin llenarte de reglas.",
+  },
 };
 
 const NOMBRES = [
@@ -308,7 +376,7 @@ function useCountdown(segundosIniciales: number) {
   return { mm, ss };
 }
 
-type Fase = "intro" | "quiz" | "cargando" | "nivel-feedback" | "oferta";
+type Fase = "datos" | "intro" | "quiz" | "cargando" | "nivel-feedback" | "oferta";
 
 const MENSAJES_CARGA = [
   "Analizando tus respuestas...",
@@ -366,7 +434,9 @@ function Cargando({ nivel, onCompleto }: { nivel: Nivel; onCompleto: () => void 
 }
 
 function QuizIngles() {
-  const [fase, setFase] = useState<Fase>("intro");
+  const [fase, setFase] = useState<Fase>("datos");
+  const [nombre, setNombre] = useState("");
+  const [motivo, setMotivo] = useState<MotivoId | null>(null);
   const [nivel, setNivel] = useState<Nivel>("medio");
   const [indice, setIndice] = useState(0);
   const [seleccion, setSeleccion] = useState<number | null>(null);
@@ -375,6 +445,8 @@ function QuizIngles() {
     dificil: [],
   });
   const [videoConfirmado, setVideoConfirmado] = useState(false);
+
+  const primerNombre = nombre.trim().split(/\s+/)[0] || "";
 
   const preguntaActual = PREGUNTAS[nivel][indice];
   const totalPreguntasNivel = PREGUNTAS[nivel].length;
@@ -427,7 +499,7 @@ function QuizIngles() {
         <div className="px-5 pb-24 pt-4">
           <div className="flex items-center justify-between">
             <Logo />
-            {fase !== "intro" && (
+            {fase !== "intro" && fase !== "datos" && (
               <span className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 font-ai-heading text-[12px] font-extrabold text-[#10204F] shadow-[0_4px_10px_rgba(16,32,79,.12)]">
                 <Star className="h-3.5 w-3.5 text-[#F4B400]" fill="currentColor" strokeWidth={0} />
                 {puntajeTotal}
@@ -435,19 +507,21 @@ function QuizIngles() {
             )}
           </div>
 
-          <div className="mt-4 flex items-center justify-center gap-2">
-            <LevelPill label="FÁCIL" state="hecho" />
-            <span className="h-px w-4 bg-[#E4DFCC]" />
-            <LevelPill
-              label="MEDIO"
-              state={nivel === "medio" && fase !== "oferta" ? "actual" : "hecho"}
-            />
-            <span className="h-px w-4 bg-[#E4DFCC]" />
-            <LevelPill
-              label="DIFÍCIL"
-              state={fase === "oferta" ? "hecho" : nivel === "dificil" ? "actual" : "pendiente"}
-            />
-          </div>
+          {fase !== "datos" && (
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <LevelPill label="FÁCIL" state="hecho" />
+              <span className="h-px w-4 bg-[#E4DFCC]" />
+              <LevelPill
+                label="MEDIO"
+                state={nivel === "medio" && fase !== "oferta" ? "actual" : "hecho"}
+              />
+              <span className="h-px w-4 bg-[#E4DFCC]" />
+              <LevelPill
+                label="DIFÍCIL"
+                state={fase === "oferta" ? "hecho" : nivel === "dificil" ? "actual" : "pendiente"}
+              />
+            </div>
+          )}
 
           {fase === "quiz" && (
             <div className="mt-3 h-[7px] w-full overflow-hidden rounded-full bg-[#EFEBDD]">
@@ -456,6 +530,68 @@ function QuizIngles() {
                 style={{ width: `${((indice + 1) / totalPreguntasNivel) * 100}%` }}
               />
             </div>
+          )}
+
+          {/* DATOS — nombre y motivo, para personalizar todo el diagnóstico */}
+          {fase === "datos" && (
+            <Card>
+              <p className="font-ai-heading text-[11.5px] font-bold uppercase tracking-[0.06em] text-[#9A937D]">
+                Antes de empezar
+              </p>
+              <Titulo>¿Cómo te llamas?</Titulo>
+              <Sub>Así vamos a llamarte durante el reto y en tu diagnóstico final.</Sub>
+              <input
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                placeholder="Escribe tu nombre"
+                className="mt-3 w-full rounded-[12px] border border-[#E7E1D2] bg-white px-[14px] py-[13px] text-[14.5px] text-[#20263A] placeholder:text-[#B7BCC9] focus:border-[#10204F] focus:outline-none"
+              />
+
+              <p className="mt-5 font-ai-heading text-[15px] font-bold text-[#10204F]">
+                ¿Por qué quieres aprender inglés?
+              </p>
+              <div className="mt-2.5 flex flex-col gap-2.5">
+                {MOTIVOS.map((m) => {
+                  const seleccionado = motivo === m.id;
+                  const Icono = m.icon;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setMotivo(m.id)}
+                      className={
+                        "flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors " +
+                        (seleccionado
+                          ? "border-[#10204F] bg-[#EAF0FF]"
+                          : "border-[#E7E1D2] bg-white hover:border-[#C7CBE0]")
+                      }
+                    >
+                      <span
+                        className={
+                          "grid h-9 w-9 flex-none place-items-center rounded-full " +
+                          (seleccionado ? "bg-[#10204F] text-white" : "bg-[#F3F1E6] text-[#10204F]")
+                        }
+                      >
+                        <Icono className="h-[18px] w-[18px]" strokeWidth={2.2} />
+                      </span>
+                      <span className="text-[13.5px] font-semibold leading-[1.3] text-[#20263A]">
+                        {m.label}
+                      </span>
+                      {seleccionado && (
+                        <Check
+                          className="ml-auto h-[18px] w-[18px] flex-none text-[#10204F]"
+                          strokeWidth={3}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <Boton onClick={() => setFase("intro")} disabled={primerNombre.length < 2 || !motivo}>
+                Continuar
+              </Boton>
+            </Card>
           )}
 
           {/* INTRO — recapitula el nivel fácil (video) y presenta el nivel medio */}
@@ -469,7 +605,7 @@ function QuizIngles() {
                   Nivel Fácil superado
                 </p>
               </div>
-              <Titulo>¡Bien hecho! Ya diste el primer paso 🎉</Titulo>
+              <Titulo>¡Bien hecho, {primerNombre}! Ya diste el primer paso 🎉</Titulo>
               <Sub>
                 Respondiste las 3 preguntas básicas del video. Ahora vamos a subir la dificultad
                 para saber tu nivel real de inglés.
@@ -606,8 +742,8 @@ function QuizIngles() {
               <Sub>
                 {nivel === "medio"
                   ? aciertosNivel >= 2
-                    ? "¡Vas muy bien! Tu vocabulario básico está sólido. Ahora vamos a ver si sobrevives al Nivel Difícil."
-                    : "No pasa nada, es normal fallar algunas al inicio. El Mapa Mental está pensado justo para esto."
+                    ? `¡Vas muy bien, ${primerNombre}! Tu vocabulario básico está sólido. Ahora vamos a ver si sobrevives al Nivel Difícil.`
+                    : `No pasa nada, ${primerNombre}, es normal fallar algunas al inicio. El Mapa Mental está pensado justo para esto.`
                   : aciertosNivel >= 2
                     ? "Impresionante. Ya entiendes expresiones que la mayoría de hispanohablantes no conoce."
                     : "Aquí es donde casi todos se traban — por eso existe el Mapa Mental de 300 frases."}
@@ -631,7 +767,9 @@ function QuizIngles() {
           )}
 
           {/* OFERTA FINAL */}
-          {fase === "oferta" && <Oferta puntajeTotal={puntajeTotal} />}
+          {fase === "oferta" && motivo && (
+            <Oferta puntajeTotal={puntajeTotal} nombre={primerNombre} motivo={motivo} />
+          )}
         </div>
       </div>
 
@@ -662,9 +800,18 @@ function diagnostico(puntaje: number): { titulo: string; texto: string } {
   };
 }
 
-function Oferta({ puntajeTotal }: { puntajeTotal: number }) {
+function Oferta({
+  puntajeTotal,
+  nombre,
+  motivo,
+}: {
+  puntajeTotal: number;
+  nombre: string;
+  motivo: MotivoId;
+}) {
   const { mm, ss } = useCountdown(15 * 60);
   const diag = diagnostico(puntajeTotal);
+  const copia = COPIA_MOTIVO[motivo];
 
   return (
     <Card>
@@ -676,8 +823,30 @@ function Oferta({ puntajeTotal }: { puntajeTotal: number }) {
           Tu resultado: {puntajeTotal}/6
         </p>
       </div>
-      <Titulo>{diag.titulo}</Titulo>
+      <Titulo>
+        {nombre}, tu nivel es: {diag.titulo}
+      </Titulo>
       <Sub>{diag.texto}</Sub>
+
+      <div className="mt-4 rounded-2xl border border-[#F3D2D2] bg-[#FDF1F1] p-[14px]">
+        <div className="flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 flex-none text-[#D8202F]" strokeWidth={2.4} />
+          <p className="font-ai-heading text-[12.5px] font-extrabold uppercase tracking-[0.04em] text-[#8A2A2A]">
+            Esto es lo que te está costando no saberlo
+          </p>
+        </div>
+        <p className="mt-2 text-[13px] leading-[1.5] text-[#7A2E2E]">{copia.dolor}</p>
+      </div>
+
+      <div className="mt-3 rounded-2xl border border-[#CDEAD6] bg-[#F1FAF3] p-[14px]">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 flex-none text-[#1E8E3E]" strokeWidth={2.4} />
+          <p className="font-ai-heading text-[12.5px] font-extrabold uppercase tracking-[0.04em] text-[#1E6B33]">
+            Lo que cambia cuando lo resuelves
+          </p>
+        </div>
+        <p className="mt-2 text-[13px] leading-[1.5] text-[#1E6B33]">{copia.oportunidad}</p>
+      </div>
 
       <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl border border-[#F3D2D2] bg-[#FDF1F1] px-4 py-2.5">
         <Clock className="h-4 w-4 flex-none text-[#D8202F]" strokeWidth={2.4} />
@@ -691,8 +860,9 @@ function Oferta({ puntajeTotal }: { puntajeTotal: number }) {
         style={{ background: "linear-gradient(180deg, #FFFFFF, #F3F5FC)" }}
       >
         <p className="font-ai-heading text-[15px] font-extrabold leading-[1.25] text-[#10204F]">
-          Desbloquea el Kit completo para subir de nivel:
+          {copia.cierre}
         </p>
+        <p className="mt-2 text-[13px] font-semibold text-[#374056]">Desbloquea el Kit completo:</p>
         <ul className="mt-3 space-y-2 text-[13px] leading-[1.4] text-[#374056]">
           {[
             "300 Mapas Mentales de inglés (vocabulario visual, fácil de recordar)",
