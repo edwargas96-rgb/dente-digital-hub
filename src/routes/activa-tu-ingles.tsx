@@ -197,7 +197,22 @@ function FomoToast() {
   );
 }
 
+// Usa el logo real quando /logo-activa-ingles.png existir em public/; até lá,
+// cai no badge desenhado em CSS abaixo (mesma paleta da marca).
 function Logo() {
+  const [imagemFalhou, setImagemFalhou] = useState(false);
+
+  if (!imagemFalhou) {
+    return (
+      <img
+        src="/logo-activa-ingles.png"
+        alt="Activa tu Inglés"
+        className="h-10 w-auto flex-none object-contain"
+        onError={() => setImagemFalhou(true)}
+      />
+    );
+  }
+
   return (
     <div className="flex items-center gap-2">
       <span className="relative grid h-9 w-9 flex-none place-items-center rounded-[10px] bg-[#10204F] text-white shadow-[0_4px_10px_rgba(16,32,79,.35)]">
@@ -293,7 +308,62 @@ function useCountdown(segundosIniciales: number) {
   return { mm, ss };
 }
 
-type Fase = "intro" | "quiz" | "nivel-feedback" | "oferta";
+type Fase = "intro" | "quiz" | "cargando" | "nivel-feedback" | "oferta";
+
+const MENSAJES_CARGA = [
+  "Analizando tus respuestas...",
+  "Comparando con miles de estudiantes de LATAM...",
+  "Calculando tu nivel de inglés...",
+  "Preparando tu diagnóstico...",
+];
+
+function Cargando({ nivel, onCompleto }: { nivel: Nivel; onCompleto: () => void }) {
+  const [progreso, setProgreso] = useState(0);
+
+  useEffect(() => {
+    const inicio = Date.now();
+    const duracion = 2200;
+    const id = setInterval(() => {
+      const t = Math.min(1, (Date.now() - inicio) / duracion);
+      setProgreso(Math.round(t * 100));
+      if (t >= 1) {
+        clearInterval(id);
+        setTimeout(onCompleto, 350);
+      }
+    }, 45);
+    return () => clearInterval(id);
+    // Solo corre una vez al montar: recalcular con cada render reiniciaría la barra.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const mensaje = MENSAJES_CARGA[Math.min(MENSAJES_CARGA.length - 1, Math.floor(progreso / 25))];
+
+  return (
+    <Card>
+      <div className="flex flex-col items-center py-4 text-center">
+        <span className="relative grid h-20 w-20 place-items-center">
+          <span className="absolute inset-0 animate-spin rounded-full border-4 border-[#EFEBDD] border-t-[#10204F]" />
+          <span className="font-ai-heading text-[17px] font-extrabold text-[#10204F]">
+            {progreso}%
+          </span>
+        </span>
+        <p className="mt-4 font-ai-heading text-[16px] font-bold text-[#10204F]">
+          {nivel === "medio"
+            ? "Calculando tu resultado del Nivel Medio..."
+            : "Generando tu diagnóstico final..."}
+        </p>
+        <p className="mt-1.5 text-[13px] text-[#6B7280]">{mensaje}</p>
+        <div className="mt-4 h-[7px] w-full overflow-hidden rounded-full bg-[#EFEBDD]">
+          <div
+            className="h-full rounded-full bg-[#10204F] transition-[width] duration-150 ease-linear"
+            style={{ width: `${progreso}%` }}
+          />
+        </div>
+        <p className="mt-4 text-[11.5px] text-[#9A937D]">No cierres esta pantalla...</p>
+      </div>
+    </Card>
+  );
+}
 
 function QuizIngles() {
   const [fase, setFase] = useState<Fase>("intro");
@@ -327,7 +397,7 @@ function QuizIngles() {
       setSeleccion(null);
       return;
     }
-    setFase("nivel-feedback");
+    setFase("cargando");
   }
 
   function siguienteNivel() {
@@ -514,6 +584,11 @@ function QuizIngles() {
                 {indice < totalPreguntasNivel - 1 ? "Siguiente pregunta" : "Ver mi resultado"}
               </Boton>
             </Card>
+          )}
+
+          {/* LOADING — genera expectativa antes de revelar el resultado */}
+          {fase === "cargando" && (
+            <Cargando nivel={nivel} onCompleto={() => setFase("nivel-feedback")} />
           )}
 
           {/* FEEDBACK DE FIN DE NIVEL */}
