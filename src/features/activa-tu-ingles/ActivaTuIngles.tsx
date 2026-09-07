@@ -8,12 +8,14 @@ import { ActivityToast } from "./components/ActivityToast";
 import { ProcessingResult } from "./components/ProcessingResult";
 import { QuizResult } from "./components/QuizResult";
 import { Diagnosis } from "./components/Diagnosis";
+import { LeadCapture } from "./components/LeadCapture";
 import { OfferSection } from "./components/OfferSection";
 
 import { QUIZ_QUESTIONS } from "./data/questions";
 import { getActivityNotifications } from "./data/activityNotifications";
 import { calculateResult } from "./utils/scoring";
 import { trackEvent, metaPixel } from "./utils/tracking";
+import { saveLeadLocally } from "./utils/leadCapture";
 import { PRODUCT_CONFIG } from "./config/product";
 import type { QuizResultData } from "./types";
 
@@ -29,7 +31,8 @@ const MICRO_MESSAGE_AFTER_INDEX: Record<number, string> = {
   5: "Últimas preguntas.",
 };
 
-type Stage = "intro" | "question" | "micro" | "processing" | "result" | "diagnosis" | "offer";
+type Stage =
+  "intro" | "question" | "micro" | "processing" | "result" | "diagnosis" | "lead" | "offer";
 
 function randomBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -147,9 +150,23 @@ export function ActivaTuIngles() {
   }
 
   function handleDiagnosisContinue() {
+    setStage("lead");
+  }
+
+  function handleLeadSubmit(lead: { name: string; email: string }) {
+    saveLeadLocally(lead);
+    trackEvent("lead_captured");
+    metaPixel.lead({ content_name: PRODUCT_CONFIG.name });
+    goToOffer();
+  }
+
+  function handleLeadSkip() {
+    goToOffer();
+  }
+
+  function goToOffer() {
     if (!result.current) return;
     trackEvent("offer_viewed", { weakestCategory: result.current.weakestCategory.key });
-    metaPixel.lead({ content_name: PRODUCT_CONFIG.name });
     setStage("offer");
   }
 
@@ -204,9 +221,14 @@ export function ActivaTuIngles() {
       return (
         <Diagnosis
           weakestCategory={result.current.weakestCategory}
+          allCategoriesMastered={result.current.allCategoriesMastered}
           onContinue={handleDiagnosisContinue}
         />
       );
+    }
+
+    if (stage === "lead") {
+      return <LeadCapture onSubmit={handleLeadSubmit} onSkip={handleLeadSkip} />;
     }
 
     return <OfferSection onCheckout={handleCheckoutClick} />;

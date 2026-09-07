@@ -31,6 +31,7 @@ export interface QuizResultData {
   level: string;
   categories: CategoryScore[];
   weakestCategory: CategoryScore;
+  allCategoriesMastered: boolean;
 }
 
 export interface ActivityNotification {

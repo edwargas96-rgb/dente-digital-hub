@@ -61,6 +61,7 @@ export function calculateResult(answers: Array<number | null>): QuizResultData {
   );
 
   const overallPercent = Math.round((correctCount / totalQuestions) * 100);
+  const allCategoriesMastered = categories.every((c) => c.percent === 100);
 
   return {
     correctCount,
@@ -69,5 +70,6 @@ export function calculateResult(answers: Array<number | null>): QuizResultData {
     level: getLevel(correctCount),
     categories,
     weakestCategory,
+    allCategoriesMastered,
   };
 }

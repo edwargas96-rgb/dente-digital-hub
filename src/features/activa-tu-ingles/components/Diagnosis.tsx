@@ -3,9 +3,11 @@ import { paperBackgroundStyle } from "../utils/paperBackground";
 
 export function Diagnosis({
   weakestCategory,
+  allCategoriesMastered,
   onContinue,
 }: {
   weakestCategory: CategoryScore;
+  allCategoriesMastered: boolean;
   onContinue: () => void;
 }) {
   return (
@@ -25,14 +27,25 @@ export function Diagnosis({
           inglés empiece a tener sentido.
         </p>
 
-        <div className="mt-8 rounded-2xl border-2 border-dashed border-[#E4283F]/30 bg-white p-5 shadow-[0_2px_0_rgba(11,33,69,0.06)]">
-          <p className="font-display text-xs font-bold uppercase tracking-wider text-[#0B2145]/55">
-            Tu mayor oportunidad de mejora
-          </p>
-          <p className="mt-1.5 font-display text-2xl font-extrabold text-[#E4283F]">
-            {weakestCategory.label.toUpperCase()}
-          </p>
-        </div>
+        {allCategoriesMastered ? (
+          <div className="mt-8 rounded-2xl border-2 border-dashed border-[#1E4FD6]/30 bg-white p-5 shadow-[0_2px_0_rgba(11,33,69,0.06)]">
+            <p className="font-display text-xs font-bold uppercase tracking-wider text-[#0B2145]/55">
+              Tu diagnóstico
+            </p>
+            <p className="mt-1.5 font-display text-xl font-extrabold text-[#1E4FD6]">
+              Ya tienes una base sólida en todo
+            </p>
+          </div>
+        ) : (
+          <div className="mt-8 rounded-2xl border-2 border-dashed border-[#E4283F]/30 bg-white p-5 shadow-[0_2px_0_rgba(11,33,69,0.06)]">
+            <p className="font-display text-xs font-bold uppercase tracking-wider text-[#0B2145]/55">
+              Tu mayor oportunidad de mejora
+            </p>
+            <p className="mt-1.5 font-display text-2xl font-extrabold text-[#E4283F]">
+              {weakestCategory.label.toUpperCase()}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mt-8">
