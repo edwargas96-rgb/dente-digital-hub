@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as DireitaNewsRouteImport } from './routes/direita-news'
 import { Route as IndiqueRouteImport } from './routes/indique'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MapaInglesRouteImport } from './routes/mapa-ingles'
 import { Route as PatriotaRouteImport } from './routes/patriota'
 import { Route as PatriotaGerarRouteImport } from './routes/patriota-gerar'
 import { Route as PigattoRouteImport } from './routes/pigatto'
@@ -50,6 +51,11 @@ const IndiqueRoute = IndiqueRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapaInglesRoute = MapaInglesRouteImport.update({
+  id: '/mapa-ingles',
+  path: '/mapa-ingles',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatriotaRoute = PatriotaRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/direita-news': typeof DireitaNewsRoute
   '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
+  '/mapa-ingles': typeof MapaInglesRoute
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
   '/pigatto': typeof PigattoRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/direita-news': typeof DireitaNewsRoute
   '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
+  '/mapa-ingles': typeof MapaInglesRoute
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
   '/pigatto': typeof PigattoRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/direita-news': typeof DireitaNewsRoute
   '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
+  '/mapa-ingles': typeof MapaInglesRoute
   '/patriota': typeof PatriotaRoute
   '/patriota-gerar': typeof PatriotaGerarRoute
   '/pigatto': typeof PigattoRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/direita-news'
     | '/indique'
     | '/login'
+    | '/mapa-ingles'
     | '/patriota'
     | '/patriota-gerar'
     | '/pigatto'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/direita-news'
     | '/indique'
     | '/login'
+    | '/mapa-ingles'
     | '/patriota'
     | '/patriota-gerar'
     | '/pigatto'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/direita-news'
     | '/indique'
     | '/login'
+    | '/mapa-ingles'
     | '/patriota'
     | '/patriota-gerar'
     | '/pigatto'
@@ -244,6 +256,7 @@ export interface RootRouteChildren {
   DireitaNewsRoute: typeof DireitaNewsRoute
   IndiqueRoute: typeof IndiqueRoute
   LoginRoute: typeof LoginRoute
+  MapaInglesRoute: typeof MapaInglesRoute
   PatriotaRoute: typeof PatriotaRoute
   PatriotaGerarRoute: typeof PatriotaGerarRoute
   PigattoRoute: typeof PigattoRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapa-ingles': {
+      id: '/mapa-ingles'
+      path: '/mapa-ingles'
+      fullPath: '/mapa-ingles'
+      preLoaderRoute: typeof MapaInglesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/patriota': {
@@ -414,6 +434,7 @@ const rootRouteChildren: RootRouteChildren = {
   DireitaNewsRoute: DireitaNewsRoute,
   IndiqueRoute: IndiqueRoute,
   LoginRoute: LoginRoute,
+  MapaInglesRoute: MapaInglesRoute,
   PatriotaRoute: PatriotaRoute,
   PatriotaGerarRoute: PatriotaGerarRoute,
   PigattoRoute: PigattoRoute,
