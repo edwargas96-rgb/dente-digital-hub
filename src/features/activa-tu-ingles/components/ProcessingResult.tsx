@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
+import { paperBackgroundStyle } from "../utils/paperBackground";
 
 const STEPS = [
   "Analizando tus respuestas...",
@@ -26,16 +27,19 @@ export function ProcessingResult({ onDone }: { onDone: () => void }) {
   const percent = Math.round(((stepIndex + 1) / STEPS.length) * 100);
 
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-[#f4f6fb] px-8 text-center">
-      <div className="relative flex h-24 w-24 items-center justify-center">
-        <svg className="h-24 w-24 -rotate-90" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="44" fill="none" stroke="#dbe4f5" strokeWidth="8" />
+    <div
+      className="flex min-h-[100dvh] flex-col items-center justify-center px-8 text-center"
+      style={paperBackgroundStyle}
+    >
+      <div className="relative flex h-28 w-28 items-center justify-center">
+        <svg className="h-28 w-28 -rotate-90" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="44" fill="none" stroke="#E4E9F5" strokeWidth="8" />
           <circle
             cx="50"
             cy="50"
             r="44"
             fill="none"
-            stroke="#1e4fd6"
+            stroke="#E4283F"
             strokeWidth="8"
             strokeLinecap="round"
             strokeDasharray={2 * Math.PI * 44}
@@ -43,10 +47,12 @@ export function ProcessingResult({ onDone }: { onDone: () => void }) {
             className="transition-all duration-500 ease-out"
           />
         </svg>
-        <span className="absolute text-lg font-bold text-[#0b2b6b]">{percent}%</span>
+        <span className="absolute font-display text-xl font-extrabold text-[#0B2145]">
+          {percent}%
+        </span>
       </div>
 
-      <div className="mt-8 space-y-2">
+      <div className="mt-8 space-y-2.5">
         {STEPS.map((step, index) => {
           const isDone = index < stepIndex;
           const isActive = index === stepIndex;
@@ -55,11 +61,13 @@ export function ProcessingResult({ onDone }: { onDone: () => void }) {
             <p
               key={step}
               className={[
-                "flex items-center justify-center gap-2 text-sm font-medium transition-opacity",
-                isActive ? "text-[#0b2b6b]" : "text-[#0b2b6b]/50",
+                "flex items-center justify-center gap-2 font-body text-sm font-semibold transition-opacity",
+                isActive ? "text-[#0B2145]" : "text-[#0B2145]/45",
               ].join(" ")}
             >
-              {isDone ? <Check className="h-4 w-4 shrink-0" strokeWidth={3} /> : null}
+              {isDone ? (
+                <Check className="h-4 w-4 shrink-0 text-[#E4283F]" strokeWidth={3} />
+              ) : null}
               {step}
             </p>
           );

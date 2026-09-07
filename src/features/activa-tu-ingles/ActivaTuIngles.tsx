@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
+import { FontStyles } from "./components/FontStyles";
 import { AdContinuation } from "./components/AdContinuation";
 import { QuizQuestion } from "./components/QuizQuestion";
 import { MotivationToast } from "./components/MotivationToast";
@@ -160,51 +161,61 @@ export function ActivaTuIngles() {
     }
   }
 
-  if (stage === "intro") {
-    return <AdContinuation />;
-  }
+  function renderStage() {
+    if (stage === "intro") {
+      return <AdContinuation />;
+    }
 
-  if (stage === "micro") {
-    return <MotivationToast message={pendingMicroMessage} />;
-  }
+    if (stage === "micro") {
+      return <MotivationToast message={pendingMicroMessage} />;
+    }
 
-  if (stage === "question") {
-    const current = QUIZ_QUESTIONS[questionIndex];
-    if (!current) return null;
-    return (
-      <>
-        <QuizQuestion
-          questionNumber={current.id}
-          totalQuestions={10}
-          question={current.question}
-          options={current.options}
-          onAnswer={handleAnswer}
+    if (stage === "question") {
+      const current = QUIZ_QUESTIONS[questionIndex];
+      if (!current) return null;
+      return (
+        <>
+          <QuizQuestion
+            key={current.id}
+            questionNumber={current.id}
+            totalQuestions={10}
+            question={current.question}
+            options={current.options}
+            onAnswer={handleAnswer}
+          />
+          <ActivityToast text={toast.text} visible={toast.visible} />
+        </>
+      );
+    }
+
+    if (stage === "processing") {
+      return <ProcessingResult onDone={handleProcessingDone} />;
+    }
+
+    if (!result.current) {
+      return null;
+    }
+
+    if (stage === "result") {
+      return <QuizResult result={result.current} onContinue={handleResultContinue} />;
+    }
+
+    if (stage === "diagnosis") {
+      return (
+        <Diagnosis
+          weakestCategory={result.current.weakestCategory}
+          onContinue={handleDiagnosisContinue}
         />
-        <ActivityToast text={toast.text} visible={toast.visible} />
-      </>
-    );
+      );
+    }
+
+    return <OfferSection onCheckout={handleCheckoutClick} />;
   }
 
-  if (stage === "processing") {
-    return <ProcessingResult onDone={handleProcessingDone} />;
-  }
-
-  if (!result.current) {
-    return null;
-  }
-
-  if (stage === "result") {
-    return <QuizResult result={result.current} onContinue={handleResultContinue} />;
-  }
-
-  if (stage === "diagnosis") {
-    return (
-      <Diagnosis
-        weakestCategory={result.current.weakestCategory}
-        onContinue={handleDiagnosisContinue}
-      />
-    );
-  }
-
-  return <OfferSection onCheckout={handleCheckoutClick} />;
+  return (
+    <Fragment>
+      <FontStyles />
+      {renderStage()}
+    </Fragment>
+  );
 }

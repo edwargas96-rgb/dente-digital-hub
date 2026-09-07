@@ -1,11 +1,11 @@
-export function ScoreCircle({ percent, level }: { percent: number; level: string }) {
+export function ScoreCircle({ percent }: { percent: number }) {
   const radius = 70;
   const circumference = 2 * Math.PI * radius;
 
   return (
     <div className="relative mx-auto flex h-44 w-44 items-center justify-center">
       <svg className="h-44 w-44 -rotate-90" viewBox="0 0 160 160">
-        <circle cx="80" cy="80" r={radius} fill="none" stroke="#dbe4f5" strokeWidth="12" />
+        <circle cx="80" cy="80" r={radius} fill="none" stroke="#E4E9F5" strokeWidth="12" />
         <circle
           cx="80"
           cy="80"
@@ -20,16 +20,13 @@ export function ScoreCircle({ percent, level }: { percent: number; level: string
         />
         <defs>
           <linearGradient id="activaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#1e4fd6" />
-            <stop offset="100%" stopColor="#d21f3c" />
+            <stop offset="0%" stopColor="#1E4FD6" />
+            <stop offset="100%" stopColor="#E4283F" />
           </linearGradient>
         </defs>
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-extrabold text-[#0b2b6b]">{percent}%</span>
-        <span className="mt-1 max-w-[7.5rem] text-center text-[11px] font-bold uppercase tracking-wide text-[#d21f3c]">
-          {level}
-        </span>
+        <span className="font-display text-4xl font-extrabold text-[#0B2145]">{percent}%</span>
       </div>
     </div>
   );

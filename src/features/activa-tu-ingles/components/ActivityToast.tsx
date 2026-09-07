@@ -13,7 +13,8 @@ export function ActivityToast({ text, visible }: { text: string; visible: boolea
       ].join(" ")}
       aria-hidden={!visible}
     >
-      <div className="rounded-full bg-[#0b2b6b]/95 px-4 py-2 text-xs font-semibold text-white shadow-lg">
+      <div className="flex items-center gap-2 rounded-full bg-[#0B2145] px-4 py-2.5 font-body text-xs font-semibold text-white shadow-[0_6px_16px_rgba(11,33,69,0.35)]">
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#F6C445]" />
         {text}
       </div>
     </div>

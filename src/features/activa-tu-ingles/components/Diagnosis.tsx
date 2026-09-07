@@ -1,4 +1,5 @@
 import type { CategoryScore } from "../types";
+import { paperBackgroundStyle } from "../utils/paperBackground";
 
 export function Diagnosis({
   weakestCategory,
@@ -8,27 +9,27 @@ export function Diagnosis({
   onContinue: () => void;
 }) {
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-[#f4f6fb] px-6 pb-8 pt-14">
+    <div className="flex min-h-[100dvh] flex-col px-6 pb-8 pt-14" style={paperBackgroundStyle}>
       <div className="flex-1">
-        <h1 className="text-2xl font-extrabold leading-snug text-[#0b2b6b]">
+        <h1 className="font-display text-[1.7rem] font-bold leading-tight text-[#0B2145]">
           Ya tienes algunas piezas.
           <br />
-          Ahora necesitas conectarlas.
+          <span className="text-[#E4283F]">Ahora necesitas conectarlas.</span>
         </h1>
 
-        <p className="mt-5 text-base leading-relaxed text-[#0b2b6b]/80">
+        <p className="mt-5 font-body text-base leading-relaxed text-[#0B2145]/75">
           Tu resultado muestra que ya reconoces palabras y expresiones en inglés.
         </p>
-        <p className="mt-3 text-base leading-relaxed text-[#0b2b6b]/80">
+        <p className="mt-3 font-body text-base leading-relaxed text-[#0B2145]/75">
           El siguiente paso es aprender a conectar vocabulario, frases y estructuras para que el
           inglés empiece a tener sentido.
         </p>
 
-        <div className="mt-8 rounded-2xl border-2 border-[#d21f3c]/20 bg-white p-5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-[#0b2b6b]/60">
+        <div className="mt-8 rounded-2xl border-2 border-dashed border-[#E4283F]/30 bg-white p-5 shadow-[0_2px_0_rgba(11,33,69,0.06)]">
+          <p className="font-display text-xs font-bold uppercase tracking-wider text-[#0B2145]/55">
             Tu mayor oportunidad de mejora
           </p>
-          <p className="mt-1 text-xl font-extrabold text-[#d21f3c]">
+          <p className="mt-1.5 font-display text-2xl font-extrabold text-[#E4283F]">
             {weakestCategory.label.toUpperCase()}
           </p>
         </div>
@@ -38,7 +39,7 @@ export function Diagnosis({
         <button
           type="button"
           onClick={onContinue}
-          className="min-h-[52px] w-full rounded-2xl bg-[#0b2b6b] text-base font-bold text-white shadow-md transition-transform active:scale-[0.98]"
+          className="min-h-[52px] w-full rounded-2xl bg-[#0B2145] font-display text-base font-bold text-white shadow-[0_4px_0_rgba(11,33,69,0.35)] transition-transform active:translate-y-0.5 active:shadow-none"
         >
           Continuar
         </button>
