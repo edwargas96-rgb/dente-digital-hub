@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as ActivaTuInglesRouteImport } from './routes/activa-tu-ingles'
 import { Route as DireitaNewsRouteImport } from './routes/direita-news'
 import { Route as IndiqueRouteImport } from './routes/indique'
 import { Route as LoginRouteImport } from './routes/login'
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivaTuInglesRoute = ActivaTuInglesRouteImport.update({
+  id: '/activa-tu-ingles',
+  path: '/activa-tu-ingles',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DireitaNewsRoute = DireitaNewsRouteImport.update({
@@ -120,6 +126,7 @@ const AppOrdensIdRoute = AppOrdensIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activa-tu-ingles': typeof ActivaTuInglesRoute
   '/direita-news': typeof DireitaNewsRoute
   '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activa-tu-ingles': typeof ActivaTuInglesRoute
   '/direita-news': typeof DireitaNewsRoute
   '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/activa-tu-ingles': typeof ActivaTuInglesRoute
   '/direita-news': typeof DireitaNewsRoute
   '/indique': typeof IndiqueRoute
   '/login': typeof LoginRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activa-tu-ingles'
     | '/direita-news'
     | '/indique'
     | '/login'
@@ -200,6 +210,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activa-tu-ingles'
     | '/direita-news'
     | '/indique'
     | '/login'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_app'
+    | '/activa-tu-ingles'
     | '/direita-news'
     | '/indique'
     | '/login'
@@ -241,6 +253,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  ActivaTuInglesRoute: typeof ActivaTuInglesRoute
   DireitaNewsRoute: typeof DireitaNewsRoute
   IndiqueRoute: typeof IndiqueRoute
   LoginRoute: typeof LoginRoute
@@ -263,6 +276,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activa-tu-ingles': {
+      id: '/activa-tu-ingles'
+      path: '/activa-tu-ingles'
+      fullPath: '/activa-tu-ingles'
+      preLoaderRoute: typeof ActivaTuInglesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/direita-news': {
@@ -411,6 +431,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  ActivaTuInglesRoute: ActivaTuInglesRoute,
   DireitaNewsRoute: DireitaNewsRoute,
   IndiqueRoute: IndiqueRoute,
   LoginRoute: LoginRoute,
