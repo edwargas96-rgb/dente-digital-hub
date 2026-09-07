@@ -277,3 +277,64 @@
   .fp-reveal { opacity: 1; transform: none; transition: none; }
   .fp-cta::after { animation: none; display: none; }
 }
+
+/*
+ * ACTIVA TU INGLÉS — quiz gamificado (rota /activa-tu-ingles).
+ * Paleta escopada em .ai-scope: azul-marinho + vermelho (bandeira dos EUA),
+ * clima de "escola americana" — separada do design system clínico.
+ */
+.ai-scope {
+  font-family: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 27px,
+    rgba(16, 32, 79, 0.045) 27px 28px
+  );
+}
+
+.font-ai-heading {
+  font-family: "Baloo 2", "Archivo", ui-sans-serif, system-ui, sans-serif;
+}
+
+.ai-tricolor {
+  background: linear-gradient(90deg, #10204f 0 50%, #d8202f 50% 100%);
+}
+
+@keyframes aiUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ai-btn {
+  transition: transform 0.12s ease, filter 0.18s ease, box-shadow 0.2s ease;
+}
+.ai-btn:active {
+  transform: scale(0.97);
+}
+
+.ai-cta {
+  position: relative;
+  overflow: hidden;
+}
+.ai-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-20deg);
+  animation: fpSheen 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-cta::after { animation: none; display: none; }
+}
