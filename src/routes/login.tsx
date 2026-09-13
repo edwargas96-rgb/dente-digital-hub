@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,13 +10,13 @@ export const Route = createFileRoute("/login")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Entrar — LAB PIGATTO" },
+      { title: "Entrar — DALLARMI FLUXO DIGITAL" },
       {
         name: "description",
-        content: "Acesso das clínicas e dentistas parceiros do LAB PIGATTO.",
+        content: "Acesso das clínicas e dentistas parceiros do DALLARMI FLUXO DIGITAL.",
       },
-      { property: "og:title", content: "Entrar — LAB PIGATTO" },
-      { property: "og:description", content: "Portal de ordens de serviço do LAB PIGATTO." },
+      { property: "og:title", content: "Entrar — DALLARMI FLUXO DIGITAL" },
+      { property: "og:description", content: "Portal de ordens de serviço do DALLARMI FLUXO DIGITAL." },
     ],
   }),
   component: Login,
@@ -25,7 +24,7 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const navigate = useNavigate();
-  const { session, loading } = useAuth();
+  const { session, loading, demoEntrar } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [enviando, setEnviando] = useState(false);
@@ -34,19 +33,11 @@ function Login() {
     if (!loading && session) navigate({ to: "/dashboard", replace: true });
   }, [loading, session, navigate]);
 
-  const entrar = async (e: React.FormEvent) => {
+  const entrar = (e: React.FormEvent) => {
     e.preventDefault();
     setEnviando(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password: senha,
-    });
-    setEnviando(false);
-    if (error) {
-      toast.error("Não foi possível entrar", { description: "Verifique o e-mail e a senha." });
-      return;
-    }
-    toast.success("Bem-vindo(a) ao LAB PIGATTO");
+    demoEntrar();
+    toast.success("Bem-vindo(a) ao DALLARMI FLUXO DIGITAL");
     navigate({ to: "/dashboard", replace: true });
   };
 
@@ -57,7 +48,7 @@ function Login() {
           <img src="/logo.svg" alt="" className="size-11 shrink-0" />
           <div>
             <div className="font-display text-2xl font-bold text-sidebar-accent-foreground">
-              LAB <span className="text-sidebar-primary">PIGATTO</span>
+              DALLARMI <span className="text-sidebar-primary">FLUXO DIGITAL</span>
             </div>
             <div className="mt-2 text-xs tracking-[0.18em] text-sidebar-foreground/55 uppercase">
               Laboratório de prótese dentária
@@ -84,7 +75,7 @@ function Login() {
             <img src="/logo.svg" alt="" className="size-9 shrink-0" />
             <div>
               <div className="font-display text-xl font-bold">
-                LAB <span className="text-primary">PIGATTO</span>
+                DALLARMI <span className="text-primary">FLUXO DIGITAL</span>
               </div>
               <div className="mt-1 text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
                 Prótese dentária
@@ -103,7 +94,6 @@ function Login() {
               <Input
                 id="email"
                 type="email"
-                required
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -115,7 +105,6 @@ function Login() {
               <Input
                 id="senha"
                 type="password"
-                required
                 autoComplete="current-password"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
@@ -128,7 +117,7 @@ function Login() {
           </form>
 
           <p className="mt-6 text-xs text-muted-foreground">
-            Ainda não tem acesso? Solicite o cadastro da sua clínica ao LAB PIGATTO.
+            Ainda não tem acesso? Solicite o cadastro da sua clínica ao DALLARMI FLUXO DIGITAL.
           </p>
         </div>
       </div>

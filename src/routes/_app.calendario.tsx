@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_app/calendario")({
   head: () => ({
     meta: [
-      { title: "Calendário de entregas — LAB PIGATTO" },
+      { title: "Calendário de entregas — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Visualize as entregas de próteses por data." },
-      { property: "og:title", content: "Calendário de entregas — LAB PIGATTO" },
+      { property: "og:title", content: "Calendário de entregas — DALLARMI FLUXO DIGITAL" },
       { property: "og:description", content: "Entregas do laboratório organizadas por dia." },
     ],
   }),

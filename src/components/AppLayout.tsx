@@ -96,7 +96,7 @@ export function AppLayout({
       <img src="/logo.svg" alt="" className="size-9 shrink-0" />
       <div>
         <div className="font-display text-lg leading-none font-bold tracking-tight text-sidebar-accent-foreground">
-          LAB <span className="text-sidebar-primary">PIGATTO</span>
+          DALLARMI <span className="text-sidebar-primary">FLUXO DIGITAL</span>
         </div>
         <div className="mt-1.5 text-[11px] tracking-[0.14em] text-sidebar-foreground/55 uppercase">
           Prótese dentária

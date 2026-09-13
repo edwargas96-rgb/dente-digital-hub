@@ -39,7 +39,7 @@ import {
 export const Route = createFileRoute("/_app/os")({
   head: () => ({
     meta: [
-      { title: "Ordens — LAB PIGATTO" },
+      { title: "Ordens — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Gestão das ordens de serviço do laboratório." },
     ],
   }),
@@ -639,7 +639,7 @@ function fichaBase(titulo: string, os: OS, linhas: string[]): string {
   .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eef1f3;font-size:14px}
   .row b{color:#5C6B73;font-weight:500}.tit{color:#0D6E6C;font-weight:700}.foot{margin-top:28px;font-size:12px;color:#5C6B73}</style>
   </head><body>
-  <h1>LAB <span style="color:#0D6E6C">PIGATTO</span></h1><div class="sub">${titulo}</div>
+  <h1>DALLARMI <span style="color:#0D6E6C">FLUXO DIGITAL</span></h1><div class="sub">${titulo}</div>
   <div class="box"><div class="row"><b>O.S.</b><span class="tit">${os.numero}</span></div>
   ${linhas.map((l) => `<div class="row">${l}</div>`).join("")}</div>
   <div class="foot">Emitido em ${new Date().toLocaleString("pt-BR")}</div>

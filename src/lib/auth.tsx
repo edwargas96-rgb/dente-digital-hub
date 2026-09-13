@@ -15,9 +15,15 @@ export type AuthState = {
   loading: boolean;
   refresh: () => Promise<void>;
   signOut: () => Promise<void>;
+  demoEntrar: () => void;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
+
+// Demo do Dallarmi Fluxo Digital: o botão "Entrar" chama demoEntrar() em vez
+// de autenticar de verdade, enquanto não há um projeto Supabase dedicado ao
+// cliente. Remover ao ligar o backend real.
+const DEMO_SESSION = { user: { id: "demo-dallarmi", email: "demo@dallarmi.com" } } as Session;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -98,6 +104,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     signOut: async () => {
       await supabase.auth.signOut();
+    },
+    demoEntrar: () => {
+      setSession(DEMO_SESSION);
+      setRole("laboratorio");
+      setNomeCompleto("Equipe Dallarmi");
+      setClinicId(null);
+      setClinicNome(null);
+      setLoading(false);
     },
   };
 

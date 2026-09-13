@@ -12,9 +12,9 @@ import { Input } from "@/components/ui/input";
 export const Route = createFileRoute("/_app/configuracoes")({
   head: () => ({
     meta: [
-      { title: "Configurações — LAB PIGATTO" },
+      { title: "Configurações — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Catálogos de itens, materiais, implantes e cores." },
-      { property: "og:title", content: "Configurações — LAB PIGATTO" },
+      { property: "og:title", content: "Configurações — DALLARMI FLUXO DIGITAL" },
       { property: "og:description", content: "Gerencie os catálogos do laboratório." },
     ],
   }),

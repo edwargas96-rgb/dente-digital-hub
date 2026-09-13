@@ -27,10 +27,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_app/nova-ordem")({
   head: () => ({
     meta: [
-      { title: "Nova ordem — LAB PIGATTO" },
+      { title: "Nova ordem — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Abertura de ordem de serviço de prótese dentária." },
-      { property: "og:title", content: "Nova ordem — LAB PIGATTO" },
-      { property: "og:description", content: "Envie uma nova ordem de serviço ao LAB PIGATTO." },
+      { property: "og:title", content: "Nova ordem — DALLARMI FLUXO DIGITAL" },
+      { property: "og:description", content: "Envie uma nova ordem de serviço ao DALLARMI FLUXO DIGITAL." },
     ],
   }),
   component: NovaOrdem,

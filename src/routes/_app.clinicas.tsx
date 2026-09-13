@@ -22,10 +22,10 @@ import { criarAcessoClinica } from "@/lib/clinicas.functions";
 export const Route = createFileRoute("/_app/clinicas")({
   head: () => ({
     meta: [
-      { title: "Clínicas parceiras — LAB PIGATTO" },
+      { title: "Clínicas parceiras — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Cadastro das clínicas parceiras do laboratório." },
-      { property: "og:title", content: "Clínicas parceiras — LAB PIGATTO" },
-      { property: "og:description", content: "Gestão das clínicas atendidas pelo LAB PIGATTO." },
+      { property: "og:title", content: "Clínicas parceiras — DALLARMI FLUXO DIGITAL" },
+      { property: "og:description", content: "Gestão das clínicas atendidas pelo DALLARMI FLUXO DIGITAL." },
     ],
   }),
   component: Clinicas,

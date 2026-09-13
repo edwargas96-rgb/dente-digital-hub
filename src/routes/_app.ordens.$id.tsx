@@ -23,10 +23,10 @@ import { STATUS_LIST, formatarData, formatarDataHora, formatarTamanho } from "@/
 export const Route = createFileRoute("/_app/ordens/$id")({
   head: () => ({
     meta: [
-      { title: "Ordem de serviço — LAB PIGATTO" },
+      { title: "Ordem de serviço — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Detalhes e acompanhamento da ordem de serviço." },
-      { property: "og:title", content: "Ordem de serviço — LAB PIGATTO" },
-      { property: "og:description", content: "Detalhes e histórico da ordem no LAB PIGATTO." },
+      { property: "og:title", content: "Ordem de serviço — DALLARMI FLUXO DIGITAL" },
+      { property: "og:description", content: "Detalhes e histórico da ordem no DALLARMI FLUXO DIGITAL." },
     ],
   }),
   component: DetalheOrdem,

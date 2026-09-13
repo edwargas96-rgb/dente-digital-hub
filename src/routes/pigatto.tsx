@@ -12,14 +12,14 @@ export const Route = createFileRoute("/pigatto")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Acesso do laboratório — LAB PIGATTO" },
+      { title: "Acesso do laboratório — DALLARMI FLUXO DIGITAL" },
       {
         name: "description",
-        content: "Área restrita da equipe do laboratório LAB PIGATTO.",
+        content: "Área restrita da equipe do laboratório DALLARMI FLUXO DIGITAL.",
       },
       { name: "robots", content: "noindex, nofollow" },
-      { property: "og:title", content: "Acesso do laboratório — LAB PIGATTO" },
-      { property: "og:description", content: "Área restrita do LAB PIGATTO." },
+      { property: "og:title", content: "Acesso do laboratório — DALLARMI FLUXO DIGITAL" },
+      { property: "og:description", content: "Área restrita do DALLARMI FLUXO DIGITAL." },
     ],
   }),
   component: LoginPigatto,
@@ -82,7 +82,7 @@ function LoginPigatto() {
           <img src="/logo.svg" alt="" className="size-11 shrink-0" />
           <div>
             <div className="font-display text-2xl font-bold text-sidebar-accent-foreground">
-              LAB <span className="text-sidebar-primary">PIGATTO</span>
+              DALLARMI <span className="text-sidebar-primary">FLUXO DIGITAL</span>
             </div>
             <div className="mt-2 text-xs tracking-[0.18em] text-sidebar-foreground/55 uppercase">
               Área interna do laboratório
@@ -109,7 +109,7 @@ function LoginPigatto() {
             <img src="/logo.svg" alt="" className="size-9 shrink-0" />
             <div>
               <div className="font-display text-xl font-bold">
-                LAB <span className="text-primary">PIGATTO</span>
+                DALLARMI <span className="text-primary">FLUXO DIGITAL</span>
               </div>
               <div className="mt-1 text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
                 Área interna
@@ -122,7 +122,7 @@ function LoginPigatto() {
           </div>
           <h1 className="text-2xl font-semibold">Entrar no laboratório</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Área exclusiva da equipe interna do LAB PIGATTO.
+            Área exclusiva da equipe interna do DALLARMI FLUXO DIGITAL.
           </p>
 
           <form onSubmit={entrar} className="mt-6 space-y-4">
