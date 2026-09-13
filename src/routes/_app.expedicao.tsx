@@ -8,7 +8,7 @@ import { useOrdens, type OS } from "@/components/gestao-shared";
 export const Route = createFileRoute("/_app/expedicao")({
   head: () => ({
     meta: [
-      { title: "Expedição — LAB PIGATTO" },
+      { title: "Expedição — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Entregas e trabalhos a expedir." },
     ],
   }),

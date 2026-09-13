@@ -6,16 +6,16 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "LAB PIGATTO — Portal de ordens de serviço" },
+      { title: "DALLARMI FLUXO DIGITAL — Portal de ordens de serviço" },
       {
         name: "description",
         content:
-          "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária.",
+          "Acesse o portal do DALLARMI FLUXO DIGITAL para abrir e acompanhar ordens de serviço de prótese dentária.",
       },
-      { property: "og:title", content: "LAB PIGATTO — Portal de ordens de serviço" },
+      { property: "og:title", content: "DALLARMI FLUXO DIGITAL — Portal de ordens de serviço" },
       {
         property: "og:description",
-        content: "Acesse o portal do LAB PIGATTO para abrir e acompanhar ordens de serviço de prótese dentária.",
+        content: "Acesse o portal do DALLARMI FLUXO DIGITAL para abrir e acompanhar ordens de serviço de prótese dentária.",
       },
     ],
   }),

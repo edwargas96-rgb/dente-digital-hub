@@ -18,7 +18,7 @@ import { useOrdens, Kpi } from "@/components/gestao-shared";
 export const Route = createFileRoute("/_app/visao")({
   head: () => ({
     meta: [
-      { title: "Visão geral — LAB PIGATTO" },
+      { title: "Visão geral — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Indicadores das ordens de serviço do laboratório." },
     ],
   }),

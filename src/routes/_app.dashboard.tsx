@@ -11,9 +11,9 @@ import { formatarData, prazoTipo, diasRestantes } from "@/lib/ordens";
 export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({
     meta: [
-      { title: "Painel — LAB PIGATTO" },
-      { name: "description", content: "Acompanhe as ordens de serviço do LAB PIGATTO." },
-      { property: "og:title", content: "Painel — LAB PIGATTO" },
+      { title: "Painel — DALLARMI FLUXO DIGITAL" },
+      { name: "description", content: "Acompanhe as ordens de serviço do DALLARMI FLUXO DIGITAL." },
+      { property: "og:title", content: "Painel — DALLARMI FLUXO DIGITAL" },
       { property: "og:description", content: "Ordens de serviço e prazos em um só lugar." },
     ],
   }),

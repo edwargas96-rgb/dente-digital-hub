@@ -17,7 +17,7 @@ import { useOrdens } from "@/components/gestao-shared";
 export const Route = createFileRoute("/_app/analytics")({
   head: () => ({
     meta: [
-      { title: "Analytics — LAB PIGATTO" },
+      { title: "Analytics — DALLARMI FLUXO DIGITAL" },
       { name: "description", content: "Tendências e distribuição das ordens." },
     ],
   }),
