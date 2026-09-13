@@ -19,6 +19,11 @@ export type AuthState = {
 
 const AuthContext = createContext<AuthState | null>(null);
 
+// Demo do Dallarmi Fluxo Digital: acesso liberado sem login enquanto não há
+// um projeto Supabase dedicado para o cliente. Remover ao ligar o backend real.
+const DEMO_SEM_LOGIN = true;
+const DEMO_SESSION = { user: { id: "demo-dallarmi", email: "demo@dallarmi.com" } } as Session;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<Perfil | null>(null);
@@ -53,6 +58,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    if (DEMO_SEM_LOGIN) {
+      setSession(DEMO_SESSION);
+      setRole("laboratorio");
+      setNomeCompleto("Equipe Dallarmi");
+      setClinicId(null);
+      setClinicNome(null);
+      setLoading(false);
+      return;
+    }
+
     let ativo = true;
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, novaSessao) => {
