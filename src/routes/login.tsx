@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +24,7 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const navigate = useNavigate();
-  const { session, loading } = useAuth();
+  const { session, loading, demoEntrar } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [enviando, setEnviando] = useState(false);
@@ -34,18 +33,10 @@ function Login() {
     if (!loading && session) navigate({ to: "/dashboard", replace: true });
   }, [loading, session, navigate]);
 
-  const entrar = async (e: React.FormEvent) => {
+  const entrar = (e: React.FormEvent) => {
     e.preventDefault();
     setEnviando(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password: senha,
-    });
-    setEnviando(false);
-    if (error) {
-      toast.error("Não foi possível entrar", { description: "Verifique o e-mail e a senha." });
-      return;
-    }
+    demoEntrar();
     toast.success("Bem-vindo(a) ao DALLARMI FLUXO DIGITAL");
     navigate({ to: "/dashboard", replace: true });
   };
@@ -103,7 +94,6 @@ function Login() {
               <Input
                 id="email"
                 type="email"
-                required
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -115,7 +105,6 @@ function Login() {
               <Input
                 id="senha"
                 type="password"
-                required
                 autoComplete="current-password"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
