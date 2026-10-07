@@ -68,17 +68,30 @@ nav a:hover,nav a.on{color:var(--gold2);border-color:var(--gold)}
 .deco.l{left:5%;top:46%;transform:rotate(-8deg)}
 .deco.r{right:5%;top:40%;transform:rotate(-8deg)}
 
-/* GALERIA */
-.gallery{padding:90px 0;background:var(--cream)}
-.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.gal figure{position:relative;overflow:hidden;aspect-ratio:3/4;border:1px solid #cdb78f}
-.gal img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.gal figure:hover img{transform:scale(1.05)}
-.gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:44px 14px 12px;background:linear-gradient(180deg,transparent,rgba(30,16,8,.88));font-family:'Caveat',cursive;font-size:1.45rem;color:#f6e7c4;text-align:center}
+/* GALERIA / CARROSSEL */
+.gallery{padding:90px 0 80px;background:var(--cream);overflow:hidden}
 .gallery .sec-h h2{color:var(--ink)}
 .gallery .sec-h p{color:var(--mut)}
-@media(max-width:980px){.gal{grid-template-columns:1fr 1fr}.mosaic{grid-template-columns:1fr 1fr}.mosaic div:nth-child(3){display:none}}
-@media(max-width:520px){.gal{grid-template-columns:1fr}.sign{padding:28px 20px}}
+.carousel{position:relative}
+.track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:6px 24px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 calc((100% - 36px - 48px)/2.6);scroll-snap-align:center;position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:4px;border:1px solid var(--gold);padding:7px;background:var(--cream)}
+.slide img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s}
+.slide:hover img{transform:scale(1.04)}
+.slide figcaption{position:absolute;left:7px;right:7px;bottom:7px;padding:56px 14px 14px;background:linear-gradient(180deg,transparent,rgba(30,16,8,.9));font-family:'Caveat',cursive;font-size:1.6rem;line-height:1.1;color:#f6e7c4;text-align:center}
+.slide figcaption small{display:block;font-family:'Montserrat',sans-serif;font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold2);margin-top:4px}
+.car-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);background:rgba(58,35,22,.92);color:var(--gold2);font-size:1.3rem;cursor:pointer;display:grid;place-items:center}
+.car-btn:hover{background:var(--brown2)}
+.car-btn.prev{left:14px}.car-btn.next{right:14px}
+.dots{display:flex;justify-content:center;gap:10px;margin-top:22px}
+.dots button{width:9px;height:9px;border-radius:50%;border:1px solid var(--gold);background:transparent;padding:0;cursor:pointer;transition:.3s}
+.dots button.on{background:var(--gold);width:26px;border-radius:6px}
+@media(max-width:700px){
+ .gallery{padding:60px 0 56px}
+ .track{gap:12px;padding:6px 20px 10px;scroll-padding:0 20px}
+ .slide{flex:0 0 76%;aspect-ratio:4/5}
+ .car-btn{display:none}
+}
 
 /* PRODUTOS */
 .dark{background:var(--brown);color:#f1e3c6;padding:84px 0}
@@ -141,6 +154,46 @@ footer b{color:var(--gold2);font-family:'Playfair Display',serif;font-size:1.1re
  .story .wrap,.visit .wrap{grid-template-columns:1fr}
 }
 @media(max-width:520px){.feats{grid-template-columns:1fr}.feat{border-left:0}.logo .t b{font-size:1.5rem}.stats{grid-template-columns:1fr}.stat{border-left:0;border-top:1px solid #cdb78f}.stat:first-child{border-top:0}}
+
+/* MOBILE POLISH */
+@media(max-width:700px){
+ .wrap{padding:0 20px}
+ header.top .wrap{height:68px}
+ .logo .t b{font-size:1.5rem}
+ .logo svg{width:22px;height:34px}
+ .hero{min-height:0;display:flex;flex-direction:column;background:var(--brown)}
+ .hero::after{display:none}
+ .mosaic{position:relative;inset:auto;height:300px;grid-template-columns:1fr 1fr}
+ .mosaic div:nth-child(3){display:none}
+ .mosaic div span{display:none}
+ .mosaic::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(180deg,transparent,var(--brown))}
+ .hero .wrap{min-height:0;padding:0 20px 44px;margin-top:-14px;z-index:3}
+ .sign{border:0;background:transparent;backdrop-filter:none;padding:0;max-width:none}
+ .sign small{font-size:.58rem;letter-spacing:.34em}
+ .sign h1{font-size:2rem;line-height:1.18;margin:12px 0 14px}
+ .sign p{font-size:.68rem;letter-spacing:.16em;line-height:1.9;color:#cdb892}
+ .sign .btn{display:flex;justify-content:center;margin-top:24px;padding:16px 20px;font-size:.7rem}
+ .sign hr{margin-top:26px}
+ .welcome{padding:48px 0 52px}
+ .welcome .eyebrow{font-size:.66rem;letter-spacing:.3em}
+ .welcome h2{font-size:1.9rem}
+ .welcome p.lead{font-size:.92rem}
+ .feats{margin:30px auto 30px;gap:18px 0}
+ .feat{padding:4px 8px;gap:10px}
+ .feat svg{width:34px;height:34px}
+ .feat b{font-size:.62rem;letter-spacing:.12em}
+ .feat span{font-size:.58rem;letter-spacing:.06em}
+ .dark{padding:60px 0}
+ .sec-h{margin-bottom:32px}
+ .sec-h h2{font-size:1.75rem}
+ .pcard{padding:26px 20px}
+ .story{padding:60px 0}
+ .story .wrap{gap:34px}
+ .visit{padding:60px 0}
+ .map,.map iframe{min-height:260px}
+ .fab{right:14px;bottom:14px;padding:12px 18px;font-size:.76rem}
+ footer{padding-bottom:84px}
+}
 </style>
 </head>
 <body>
@@ -204,14 +257,19 @@ footer b{color:var(--gold2);font-family:'Playfair Display',serif;font-size:1.1re
 <section class="gallery" id="vitrine">
   <div class="wrap">
     <div class="sec-h"><small>Nossa vitrine</small><h2>Tudo é maior por aqui</h2><p>O tamanho que virou assunto nas redes sociais.</p></div>
-    <div class="gal">
-      <figure><img src="img/croissants.jpg" alt="Croissants gigantes recheados" loading="lazy"><figcaption>Croissants gigantes</figcaption></figure>
-      <figure><img src="img/morango.jpg" alt="Croissants com morango e chocolate" loading="lazy"><figcaption>Morango e chocolate</figcaption></figure>
-      <figure><img src="img/salgados.jpg" alt="Salgados recheados" loading="lazy"><figcaption>Salgados recheados</figcaption></figure>
-      <figure><img src="img/paes.jpg" alt="Pães fresquinhos na cesta" loading="lazy"><figcaption>Pães fresquinhos</figcaption></figure>
-    </div>
-    <div class="center" style="margin-top:40px"><a class="btn" href="https://www.instagram.com/stpanificadoraeconfeitaria" target="_blank" rel="noopener">Ver mais no Instagram</a></div>
   </div>
+  <div class="carousel" id="carousel">
+    <button class="car-btn prev" aria-label="Anterior">‹</button>
+    <div class="track" id="track">
+      <figure class="slide"><img src="img/croissants.jpg" alt="Croissants gigantes recheados" loading="lazy"><figcaption>Croissants gigantes<small>Recheio generoso</small></figcaption></figure>
+      <figure class="slide"><img src="img/morango.jpg" alt="Croissants com morango e chocolate" loading="lazy"><figcaption>Morango e chocolate<small>Direto do forno</small></figcaption></figure>
+      <figure class="slide"><img src="img/salgados.jpg" alt="Salgados recheados" loading="lazy"><figcaption>Salgados recheados<small>Para o dia a dia e festas</small></figcaption></figure>
+      <figure class="slide"><img src="img/paes.jpg" alt="Pães fresquinhos na cesta" loading="lazy"><figcaption>Pães fresquinhos<small>Toda hora</small></figcaption></figure>
+    </div>
+    <button class="car-btn next" aria-label="Próximo">›</button>
+    <div class="dots" id="dots"></div>
+  </div>
+  <div class="center" style="margin-top:34px"><a class="btn" href="https://www.instagram.com/stpanificadoraeconfeitaria" target="_blank" rel="noopener">Ver mais no Instagram</a></div>
 </section>
 
 <section class="dark" id="produtos">
@@ -281,5 +339,35 @@ footer b{color:var(--gold2);font-family:'Playfair Display',serif;font-size:1.1re
 </footer>
 
 <a class="fab" href="https://wa.me/5541998511986?text=Ol%C3%A1!%20Vim%20pelo%20site." target="_blank" rel="noopener">Peça no WhatsApp</a>
+<script>
+(function(){
+ var track=document.getElementById('track'),dots=document.getElementById('dots');
+ if(!track)return;
+ var slides=[].slice.call(track.children),idx=0,timer=null,paused=false,resume=null;
+ slides.forEach(function(_,i){var b=document.createElement('button');b.setAttribute('aria-label','Foto '+(i+1));b.onclick=function(){go(i,true)};dots.appendChild(b)});
+ function setDot(){[].forEach.call(dots.children,function(d,i){d.classList.toggle('on',i===idx)})}
+ function go(i,user){
+  idx=(i+slides.length)%slides.length;
+  var el=slides[idx];
+  track.scrollTo({left:el.offsetLeft-(track.clientWidth-el.clientWidth)/2,behavior:'smooth'});
+  setDot();
+  if(user)hold();
+ }
+ function hold(){paused=true;clearTimeout(resume);resume=setTimeout(function(){paused=false},6000)}
+ var t;track.addEventListener('scroll',function(){
+  clearTimeout(t);t=setTimeout(function(){
+   var c=track.scrollLeft+track.clientWidth/2,best=0,d=1e9;
+   slides.forEach(function(el,i){var m=Math.abs(el.offsetLeft+el.clientWidth/2-c);if(m<d){d=m;best=i}});
+   idx=best;setDot();
+  },80)});
+ ['touchstart','pointerdown','wheel','mouseenter'].forEach(function(e){track.addEventListener(e,hold,{passive:true})});
+ document.querySelector('.car-btn.prev').onclick=function(){go(idx-1,true)};
+ document.querySelector('.car-btn.next').onclick=function(){go(idx+1,true)};
+ setDot();
+ if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  timer=setInterval(function(){if(!paused&&!document.hidden)go(idx+1)},3600);
+ }
+})();
+</script>
 </body>
 </html>
